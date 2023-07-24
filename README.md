@@ -40,4 +40,4 @@ Windows 10-11 / Linux with kernel 5-6
 Intellectual Management Laboratory at Ailamazyan Program Systems Institute of the Russian Academy of Sciences (https://icontrol.psiras.ru/)
 
 # Acknowledgments 
-This project got fund from the Foundation for Assistance to Small Innovative Enterprises (FASIE) (https://fasie.ru)
+This project got fund from the [Foundation for Assistance to Small Innovative Enterprises (FASIE)](https://fasie.ru)
