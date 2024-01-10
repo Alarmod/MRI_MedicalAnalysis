@@ -1,0 +1,363 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="dicomlib">
+      <UniqueIdentifier>{f2b1fe35-d460-464c-8201-ec447c34b08a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dicomlib\socket">
+      <UniqueIdentifier>{d385e2aa-2dc3-4da4-ba42-6816e42f4635}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="seidel">
+      <UniqueIdentifier>{b81da5ed-5315-4655-b84d-11f6798458f0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NewSeriesForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extendedtextedit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="myprocessstarter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="aspectratiopixmaplabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\aaac.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\aarj.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\aarq.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\AssociationRejection.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Buffer.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Cdimse.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\ClientConnection.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\CommandSets.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\DataDictionary.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Decoder.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Dumper.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Encoder.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Exceptions.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\File.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\FileMetaInformation.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\GroupLength.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Ndimse.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\pdata.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\PresentationContexts.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\QueryRetrieve.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Server.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\ServiceBase.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Tag.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\ThreadSpecificServer.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\TransferSyntax.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\UID.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\UIDs.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Utility.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\ValueToStream.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Version.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\ViewCodeSequence.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="aboutdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="selecttypedialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ischemia_percentage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="seidel\predicates.cpp">
+      <Filter>seidel</Filter>
+    </ClCompile>
+    <ClCompile Include="seidel\geometry.cpp">
+      <Filter>seidel</Filter>
+    </ClCompile>
+    <ClCompile Include="NewSeriesFormCombined.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="mainwindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtUic Include="mainwindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtRcc Include="mainwindow.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+    <QtMoc Include="NewSeriesForm.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtUic Include="NewSeriesForm.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtMoc Include="aboutdialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtUic Include="aboutdialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtMoc Include="extendedtextedit.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="myprocessstarter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="dicomViewer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtUic Include="dicomViewer.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtMoc Include="aspectratiopixmaplabel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="custom_widgets.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtUic Include="selecttypedialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtMoc Include="selecttypedialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtUic Include="ischemia_percentage.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtMoc Include="ischemia_percentage.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="NewSeriesFormCombined.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtUic Include="NewSeriesFormCombined.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dicomlib\aaac.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\aarj.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\aarq.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\AssociationRejection.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Buffer.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Cdimse.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ClientConnection.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\CommandSets.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\DataDictionary.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\DataSet.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Decoder.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\dicomlib.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Dumper.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Encoder.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Exceptions.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\File.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\FileMetaInformation.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\GroupLength.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ImplementationUID.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Ndimse.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\pdata.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\PresentationContexts.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\QueryRetrieve.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Server.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ServiceBase.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Tag.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ThreadSpecificServer.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\TransferSyntax.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Types.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\UID.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\UIDs.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Utility.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Value.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ValueToStream.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Version.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ViewCodeSequence.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\VR.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="concave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="seidel\defs.h">
+      <Filter>seidel</Filter>
+    </ClInclude>
+    <ClInclude Include="seidel\splay.h">
+      <Filter>seidel</Filter>
+    </ClInclude>
+    <ClInclude Include="seidel\parse.h">
+      <Filter>seidel</Filter>
+    </ClInclude>
+    <ClInclude Include="seidel\geometry.h">
+      <Filter>seidel</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\socket\Base.hpp" />
+    <ClInclude Include="dicomlib\socket\EnablesWinSock.hpp" />
+    <ClInclude Include="dicomlib\socket\Socket.hpp" />
+    <ClInclude Include="dicomlib\socket\SwitchEndian.hpp" />
+    <ClInclude Include="dicomlib\socket\SystemError.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MRT-Researcher.rc" />
+  </ItemGroup>
+</Project>

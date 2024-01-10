@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExtractYoloObjectsFromDICOM", "ExtractYoloObjectsFromDICOM.vcxproj", "{EAD66D80-C756-4B5A-92F5-DC51D1DCA5FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAD66D80-C756-4B5A-92F5-DC51D1DCA5FF}.Release|x64.ActiveCfg = Release|x64
+		{EAD66D80-C756-4B5A-92F5-DC51D1DCA5FF}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {927286D8-7017-4DEC-9FE8-6CE80021A262}
+	EndGlobalSection
+EndGlobal

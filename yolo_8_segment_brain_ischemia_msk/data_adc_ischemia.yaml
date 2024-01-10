@@ -1,0 +1,8 @@
+
+train: adc_data/ischemia/train/images
+val: adc_data/ischemia/test/images
+test: adc_data/ischemia/test/images
+
+ch: 3 # input channels
+names: ['Ischemia']
+    

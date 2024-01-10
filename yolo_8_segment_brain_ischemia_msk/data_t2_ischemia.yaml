@@ -1,0 +1,8 @@
+
+train: t2_data/ischemia/train/images
+val: t2_data/ischemia/test/images
+test: t2_data/ischemia/test/images
+
+ch: 3 # input channels
+names: ['Ischemia']
+    

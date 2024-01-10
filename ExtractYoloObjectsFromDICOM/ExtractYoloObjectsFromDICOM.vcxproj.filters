@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ExtractYoloObjectsFromDICOM.cpp" />
+    <ClCompile Include="dicomlib\aaac.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\aarj.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\aarq.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\AssociationRejection.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Buffer.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Cdimse.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\ClientConnection.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\CommandSets.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\DataDictionary.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Decoder.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Dumper.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Encoder.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Exceptions.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\File.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\FileMetaInformation.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\GroupLength.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Ndimse.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\pdata.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\PresentationContexts.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\QueryRetrieve.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\ServiceBase.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Tag.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\TransferSyntax.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\UID.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\UIDs.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Utility.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\ValueToStream.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\Version.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="dicomlib\ViewCodeSequence.cpp">
+      <Filter>dicomlib</Filter>
+    </ClCompile>
+    <ClCompile Include="flann\src\cpp\flann\ext\lz4\lib\lz4.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="flann\src\cpp\flann\ext\lz4\lib\lz4hc.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="dicomlib">
+      <UniqueIdentifier>{2e25fc36-3ba6-4d28-a9ab-9123b9ebee8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dicomlib\socket">
+      <UniqueIdentifier>{0c2fcd0c-4fe7-41cc-9d35-2836dfd52a84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lz4">
+      <UniqueIdentifier>{88c88e30-0bec-4555-b80e-43987a04ab3d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dicomlib\aaac.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\aarj.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\aarq.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\AssociationRejection.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Buffer.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Cdimse.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ClientConnection.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\CommandSets.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\DataDictionary.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\DataSet.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Decoder.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\dicomlib.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Dumper.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Encoder.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Exceptions.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\File.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\FileMetaInformation.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\GroupLength.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ImplementationUID.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Ndimse.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\pdata.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\PresentationContexts.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\QueryRetrieve.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ServiceBase.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Tag.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\TransferSyntax.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Types.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\UID.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\UIDs.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Utility.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Value.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ValueToStream.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\Version.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\ViewCodeSequence.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\VR.hpp">
+      <Filter>dicomlib</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\socket\Base.hpp">
+      <Filter>dicomlib\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\socket\EnablesWinSock.hpp">
+      <Filter>dicomlib\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\socket\Socket.hpp">
+      <Filter>dicomlib\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\socket\SwitchEndian.hpp">
+      <Filter>dicomlib\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="dicomlib\socket\SystemError.hpp">
+      <Filter>dicomlib\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\src\cpp\flann\ext\lz4\lib\lz4.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\src\cpp\flann\ext\lz4\lib\lz4hc.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

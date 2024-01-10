@@ -1,0 +1,8 @@
+
+train: swi_data/brain/train/images
+val: swi_data/brain/test/images
+test: swi_data/brain/test/images
+
+ch: 3 # input channels
+names: ['Brain']
+    

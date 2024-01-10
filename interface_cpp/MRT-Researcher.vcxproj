@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <UseNativeEnvironment>true</UseNativeEnvironment>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <ProjectName>MRT-Researcher</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.20348.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>G:\flann-1.9.1\src\cpp;E:\boost_1_82_vc141;F:\My programs\new_system\OpenCV_3.1\opencv\build\include;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include;.\irrlicht\include;.;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\boost_1_82_vc141\lib64-msvc-14.1;G:\flann-1.9.1\build\x64\Release;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib;F:\My programs\new_system\OpenCV_3.1\opencv\build\x64\vc14\lib;.\irrlicht\lib\Win64-visualStudio;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>$(DefaultQtVersion)</QtInstall>
+    <QtModules>core;xml;gui;xmlpatterns;widgets</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_NO_DEBUG;NDEBUG;QT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.\GeneratedFiles;.;.\GeneratedFiles\$(ConfigurationName);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat />
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <OpenMP>None</OpenMP>
+      <Cpp0xSupport>true</Cpp0xSupport>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <OpenMPSupport>false</OpenMPSupport>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>flann_cpp.lib;opencv_world310.lib;ws2_32.lib;Irrlicht.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\vcvars64.bat"
+windeployqt --release "$(OutDir)$(ProjectName).exe"</Command>
+    </PostBuildEvent>
+    <QtMoc>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>.\GeneratedFiles\$(ConfigurationName)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtRcc>
+      <InitFuncName>%(Filename)</InitFuncName>
+      <Compression>default</Compression>
+      <NoCompression>true</NoCompression>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <QtRccDir>.\GeneratedFiles</QtRccDir>
+      <QtRccFileName>qrc_%(Filename).cpp</QtRccFileName>
+    </QtRcc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>.\GeneratedFiles</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="aboutdialog.cpp" />
+    <ClCompile Include="aspectratiopixmaplabel.cpp" />
+    <ClCompile Include="dicomlib\aaac.cpp" />
+    <ClCompile Include="dicomlib\aarj.cpp" />
+    <ClCompile Include="dicomlib\aarq.cpp" />
+    <ClCompile Include="dicomlib\AssociationRejection.cpp" />
+    <ClCompile Include="dicomlib\Buffer.cpp" />
+    <ClCompile Include="dicomlib\Cdimse.cpp" />
+    <ClCompile Include="dicomlib\ClientConnection.cpp" />
+    <ClCompile Include="dicomlib\CommandSets.cpp" />
+    <ClCompile Include="dicomlib\DataDictionary.cpp" />
+    <ClCompile Include="dicomlib\Decoder.cpp" />
+    <ClCompile Include="dicomlib\Dumper.cpp" />
+    <ClCompile Include="dicomlib\Encoder.cpp" />
+    <ClCompile Include="dicomlib\Exceptions.cpp" />
+    <ClCompile Include="dicomlib\File.cpp" />
+    <ClCompile Include="dicomlib\FileMetaInformation.cpp" />
+    <ClCompile Include="dicomlib\GroupLength.cpp" />
+    <ClCompile Include="dicomlib\Ndimse.cpp" />
+    <ClCompile Include="dicomlib\pdata.cpp" />
+    <ClCompile Include="dicomlib\PresentationContexts.cpp" />
+    <ClCompile Include="dicomlib\QueryRetrieve.cpp" />
+    <ClCompile Include="dicomlib\Server.cpp" />
+    <ClCompile Include="dicomlib\ServiceBase.cpp" />
+    <ClCompile Include="dicomlib\Tag.cpp" />
+    <ClCompile Include="dicomlib\ThreadSpecificServer.cpp" />
+    <ClCompile Include="dicomlib\TransferSyntax.cpp" />
+    <ClCompile Include="dicomlib\UID.cpp" />
+    <ClCompile Include="dicomlib\UIDs.cpp" />
+    <ClCompile Include="dicomlib\Utility.cpp" />
+    <ClCompile Include="dicomlib\ValueToStream.cpp" />
+    <ClCompile Include="dicomlib\Version.cpp" />
+    <ClCompile Include="dicomlib\ViewCodeSequence.cpp" />
+    <ClCompile Include="dicomViewer.cpp" />
+    <ClCompile Include="extendedtextedit.cpp" />
+    <ClCompile Include="ischemia_percentage.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="myprocessstarter.cpp" />
+    <ClCompile Include="NewSeriesForm.cpp" />
+    <ClCompile Include="NewSeriesFormCombined.cpp" />
+    <ClCompile Include="seidel\geometry.cpp" />
+    <ClCompile Include="seidel\predicates.cpp" />
+    <ClCompile Include="selecttypedialog.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="mainwindow.h">
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="mainwindow.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="concave.h" />
+    <QtMoc Include="NewSeriesFormCombined.h">
+    </QtMoc>
+    <ClInclude Include="dicomlib\socket\Base.hpp" />
+    <ClInclude Include="dicomlib\socket\EnablesWinSock.hpp" />
+    <ClInclude Include="dicomlib\socket\Socket.hpp" />
+    <ClInclude Include="dicomlib\socket\SwitchEndian.hpp" />
+    <ClInclude Include="dicomlib\socket\SystemError.hpp" />
+    <ClInclude Include="seidel\defs.h" />
+    <ClInclude Include="seidel\geometry.h" />
+    <ClInclude Include="seidel\parse.h" />
+    <ClInclude Include="seidel\splay.h" />
+    <ClInclude Include="Thread3D.h" />
+    <QtMoc Include="selecttypedialog.h">
+    </QtMoc>
+    <QtMoc Include="ischemia_percentage.h">
+    </QtMoc>
+    <QtMoc Include="myprocessstarter.h">
+    </QtMoc>
+    <QtMoc Include="aboutdialog.h">
+    </QtMoc>
+    <QtMoc Include="extendedtextedit.h">
+    </QtMoc>
+    <QtMoc Include="dicomViewer.h">
+    </QtMoc>
+    <QtMoc Include="aspectratiopixmaplabel.h">
+    </QtMoc>
+    <QtMoc Include="custom_widgets.h">
+    </QtMoc>
+    <ClInclude Include="dicomlib\aaac.hpp" />
+    <ClInclude Include="dicomlib\aarj.hpp" />
+    <ClInclude Include="dicomlib\aarq.hpp" />
+    <ClInclude Include="dicomlib\AssociationRejection.hpp" />
+    <ClInclude Include="dicomlib\Buffer.hpp" />
+    <ClInclude Include="dicomlib\Cdimse.hpp" />
+    <ClInclude Include="dicomlib\ClientConnection.hpp" />
+    <ClInclude Include="dicomlib\CommandSets.hpp" />
+    <ClInclude Include="dicomlib\DataDictionary.hpp" />
+    <ClInclude Include="dicomlib\DataSet.hpp" />
+    <ClInclude Include="dicomlib\Decoder.hpp" />
+    <ClInclude Include="dicomlib\dicomlib.hpp" />
+    <ClInclude Include="dicomlib\Dumper.hpp" />
+    <ClInclude Include="dicomlib\Encoder.hpp" />
+    <ClInclude Include="dicomlib\Exceptions.hpp" />
+    <ClInclude Include="dicomlib\File.hpp" />
+    <ClInclude Include="dicomlib\FileMetaInformation.hpp" />
+    <ClInclude Include="dicomlib\GroupLength.hpp" />
+    <ClInclude Include="dicomlib\ImplementationUID.hpp" />
+    <ClInclude Include="dicomlib\Ndimse.hpp" />
+    <ClInclude Include="dicomlib\pdata.hpp" />
+    <ClInclude Include="dicomlib\PresentationContexts.hpp" />
+    <ClInclude Include="dicomlib\QueryRetrieve.hpp" />
+    <ClInclude Include="dicomlib\Server.hpp" />
+    <ClInclude Include="dicomlib\ServiceBase.hpp" />
+    <ClInclude Include="dicomlib\Tag.hpp" />
+    <ClInclude Include="dicomlib\ThreadSpecificServer.hpp" />
+    <ClInclude Include="dicomlib\TransferSyntax.hpp" />
+    <ClInclude Include="dicomlib\Types.hpp" />
+    <ClInclude Include="dicomlib\UID.hpp" />
+    <ClInclude Include="dicomlib\UIDs.hpp" />
+    <ClInclude Include="dicomlib\Utility.hpp" />
+    <ClInclude Include="dicomlib\Value.hpp" />
+    <ClInclude Include="dicomlib\ValueToStream.hpp" />
+    <ClInclude Include="dicomlib\Version.hpp" />
+    <ClInclude Include="dicomlib\ViewCodeSequence.hpp" />
+    <ClInclude Include="dicomlib\VR.hpp" />
+    <QtMoc Include="NewSeriesForm.h">
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="mainwindow.qrc">
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MRT-Researcher.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="NewSeriesForm.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="aboutdialog.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="dicomViewer.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="selecttypedialog.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="ischemia_percentage.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="NewSeriesFormCombined.ui">
+    </QtUic>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

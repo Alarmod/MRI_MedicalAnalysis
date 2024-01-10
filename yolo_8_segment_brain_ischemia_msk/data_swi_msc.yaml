@@ -1,0 +1,8 @@
+
+train: swi_data/msc/train/images
+val: swi_data/msc/test/images
+test: swi_data/msc/test/images
+
+ch: 3 # input channels
+names: ['MSC']
+    

@@ -1,0 +1,8 @@
+
+train: t2_data/brain/train/images
+val: t2_data/brain/test/images
+test: t2_data/brain/test/images
+
+ch: 3 # input channels
+names: ['Brain']
+    

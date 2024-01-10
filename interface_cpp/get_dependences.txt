@@ -1,0 +1,7 @@
+1. Download irrlicht-1.8.4 from https://downloads.sourceforge.net/irrlicht/irrlicht-1.8.4.zip and put it in current folder
+
+2. Unpack irrlicht with command: 
+start /W /B winrar.exe x -ibck irrlicht-1.8.4.zip
+
+3. Rename folder with command: 
+ren irrlicht-1.8.4 irrlicht

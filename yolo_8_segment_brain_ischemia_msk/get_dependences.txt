@@ -1,0 +1,9 @@
+1. Install libs
+pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip3 install -U ultralytics==8.0.205
+
+2. Unpack runs: 
+start /W /B winrar.exe x -ibck runs.zip
+
+3. Unpack datasets: 
+start /W /B winrar.exe x -ibck datasets.zip

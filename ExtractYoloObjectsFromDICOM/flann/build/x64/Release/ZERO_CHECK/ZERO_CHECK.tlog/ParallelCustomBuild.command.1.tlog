@@ -1,0 +1,10 @@
+^F:\MY PROGRAMS\EXTRACTYOLOOBJECTSFROMDICOM\FLANN\BUILD\CMAKEFILES\4DD85706013D9DCCB2BF7C6DD6BD61C5\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SF:/My programs/ExtractYoloObjectsFromDICOM/flann" "-BF:/My programs/ExtractYoloObjectsFromDICOM/flann/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/flann.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
