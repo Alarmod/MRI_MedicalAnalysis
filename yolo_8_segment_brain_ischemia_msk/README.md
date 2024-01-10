@@ -7,9 +7,9 @@ The yolo_8_segment_brain_ischemia_msk - console application that designed for tr
 # Compilation
 1. Install libs
 
-pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+_pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_
 
-pip3 install -U ultralytics==8.0.205
+_pip3 install -U ultralytics==8.0.205_
 
 2. Load runs.zip from 
 
@@ -21,25 +21,26 @@ https://drive.google.com/file/d/1CCXe6R8FJgIIdjx0RhxEqnEWAvPkyqbh/view?usp=shari
 
 4. Unpack runs with command: 
 
-start /W /B winrar.exe x -ibck runs.zip
+_start /W /B winrar.exe x -ibck runs.zip_
 
 5. Unpack datasets with command: 
 
-start /W /B winrar.exe x -ibck datasets.zip
+_start /W /B winrar.exe x -ibck datasets.zip_
 
 
 # Ways of using
-1. Training: python train.py
+1. Training:
+_python train.py_
 
-2. Testing: 
-  python train.py default_validate
-  (Yolo default validation code)
+3. Testing: 
+_python train.py default_validate_
+(Yolo default validation code)
 
-  python train.py generate_data
-  (validate with saving all data: contours, zones, cognitive visualization)
+_python train.py generate_data_
+(validate with saving all data: contours, zones, cognitive visualization)
 
-  python train.py internal_validate
-  (modicated Yolo validation code that close to prediction format)
+_python train.py internal_validate_
+(modicated Yolo validation code that close to prediction format)
 
 # Used programming languages
 Python
