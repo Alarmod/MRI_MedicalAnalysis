@@ -14,9 +14,9 @@ Project configured for compilation in Visual Studio 2022 with v141 platform tool
 For correct execution You must copy opencv_world310.dll to x64\Release folder
 
 # Ways of using
-1. Run ExtractYoloObjectsFromDICOM.exe with parameter 1, which allows you to replace the original files with masks with expanded ones using dilate morphological operation
+1. Run _ExtractYoloObjectsFromDICOM.exe 1_, which allows you to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG file with binary mask will be replaced.
 
-2. To generate training and testing datasets in Yolo format, run ExtractYoloObjectsFromDICOM.exe with parameter 0
+2. To generate training and testing datasets in Yolo format, run _ExtractYoloObjectsFromDICOM.exe 0_
 
 # Used programming languages
 C++
