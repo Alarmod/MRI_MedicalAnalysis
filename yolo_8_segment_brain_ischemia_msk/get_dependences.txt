@@ -5,11 +5,11 @@ pip3 install -U ultralytics==8.0.205
 2. Load runs.zip from 
 https://drive.google.com/file/d/1CH8bIjGHNiKi572CpZmvh6vhtk6dGN4F/view?usp=sharing
 
-3. Load datasets.zip
+3. Load datasets.zip from 
 https://drive.google.com/file/d/1CCXe6R8FJgIIdjx0RhxEqnEWAvPkyqbh/view?usp=sharing
 
-4. Unpack runs: 
+4. Unpack runs with command: 
 start /W /B winrar.exe x -ibck runs.zip
 
-5. Unpack datasets: 
+5. Unpack datasets with command: 
 start /W /B winrar.exe x -ibck datasets.zip
