@@ -1,8 +1,5 @@
 # ExtractYoloObjectsFromDICOM
-ExtractYoloObjectsFromDICOM - open source console tool for medical researchers intelligent support and high performance MRI-data processing
-
-# Description:
-The ExtractYoloObjectsFromDICOM - windows console application that designed for training and testing datasets convertation from IMA-files (DICOM) and binary masks (PNG) to Yolo format - grayscale images (PNG) and textual labels (TXT).
+ExtractYoloObjectsFromDICOM - open source console tool for medical researchers intelligent support and high performance MRI-data processing. It designed for training and testing datasets convertation from IMA-files (DICOM) and binary masks (PNG) to Yolo format - grayscale images (PNG) and textual labels (TXT).
 
 # Compilation
 Project configured for compilation in Visual Studio 2022 with v141 platform toolset. Application based on 
