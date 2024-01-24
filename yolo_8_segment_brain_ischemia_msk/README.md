@@ -1,10 +1,7 @@
 # yolo_8_segment_brain_ischemia_msk
-yolo_8_segment_brain_ischemia_msk - open source console tool MRI_MedicalAnalysis train process. It use Yolo 8 training code.
+yolo_8_segment_brain_ischemia_msk - open source console application that designed for training and testing artificial neural networks (Yolo 8) on the tasks of identifying a brain region, localizing areas of ischemic damage, searching for clusters of mesenchymal stem cells
 
-# Description:
-The yolo_8_segment_brain_ischemia_msk - console application that designed for training and testing artificial neural networks on the tasks of identifying a brain region, localizing areas of ischemic damage, searching for clusters of mesenchymal stem cells
-
-# Compilation
+# Libs installation and project files downloading
 1. Install libs
 
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_
@@ -34,16 +31,16 @@ _python train.py_
 
 3. Testing: 
 _python train.py default_validate_
-(Yolo default validation code)
+(Yolo 8 default validation code)
 
 _python train.py generate_data_
 (validate with saving all data: contours, zones, cognitive visualization)
 
 _python train.py internal_validate_
-(modicated Yolo validation code that close to prediction format)
+(modificated Yolo 8 validation code that closer to Yolo prediction code)
 
 # Used programming languages
-Python
+Python 3.9 and more new
 
 # System requirements
 Linux / Windows 10-11
