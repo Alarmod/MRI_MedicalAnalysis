@@ -10,6 +10,8 @@ _pip3 install -U ultralytics==8.1.6_
 
 Supported ultralytics 8.0.205 and >= 8.1.6
 
+Scale bug in ultralytics 8.0.206-8.1.5 fixed: https://github.com/ultralytics/ultralytics/commit/1a04cd38e7285969c0e4d827f4fbe52c834798ed
+
 2. Load runs.zip from 
 
 https://drive.google.com/file/d/1CH8bIjGHNiKi572CpZmvh6vhtk6dGN4F/view?usp=sharing
