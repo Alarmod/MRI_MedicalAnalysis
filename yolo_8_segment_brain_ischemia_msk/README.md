@@ -7,6 +7,7 @@ yolo_8_segment_brain_ischemia_msk - open source console application that designe
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_
 
 _pip3 install -U ultralytics==8.1.6_
+
 Supported ultralytics 8.0.205 and >= 8.1.6
 
 2. Load runs.zip from 
