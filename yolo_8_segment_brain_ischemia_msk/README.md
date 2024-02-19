@@ -19,7 +19,7 @@ https://drive.google.com/file/d/1CH8bIjGHNiKi572CpZmvh6vhtk6dGN4F/view?usp=shari
 3. Load datasets.zip from 
 
 https://drive.google.com/file/d/1CCXe6R8FJgIIdjx0RhxEqnEWAvPkyqbh/view?usp=sharing
-or from https://huggingface.co/datasets/alarmod/MRI/tree/main
+or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_data (this files must be stored to datasets folder and unpacked)
 
 4. Unpack runs with command: 
 
