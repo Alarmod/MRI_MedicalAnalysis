@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/googletest"
+		},
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/4dd85706013d9dccb2bf7c6dd6bd61c5/googletest.rule"
+		},
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/16eafba229557e8703e4936504c3c9e8/googletest-complete.rule"
+		},
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/8656ed27f00b62992792a96b67776685/googletest-build.rule"
+		},
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/8656ed27f00b62992792a96b67776685/googletest-configure.rule"
+		},
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/8656ed27f00b62992792a96b67776685/googletest-download.rule"
+		},
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/8656ed27f00b62992792a96b67776685/googletest-install.rule"
+		},
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/8656ed27f00b62992792a96b67776685/googletest-mkdir.rule"
+		},
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/8656ed27f00b62992792a96b67776685/googletest-patch.rule"
+		},
+		{
+			"file" : "F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/CMakeFiles/8656ed27f00b62992792a96b67776685/googletest-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"googletest"
+		],
+		"name" : "googletest"
+	}
+}
