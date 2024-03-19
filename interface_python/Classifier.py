@@ -1,0 +1,272 @@
+from PySide2 import QtCore, QtGui, QtWidgets
+import numpy as np
+import cv2
+
+from Dataset import loadDICOMFile
+
+class MaskType:
+  BRAIN = 1
+  ISCHEMIA = 2
+  MSC = 4
+
+from ultralytics import YOLO
+import math
+
+find_contours_scale=2
+global_iou=0.50
+global_overlap_mask=False
+global_single_cls=True
+global_save_json=False
+global_mask_ratio=1
+global_retina_masks=False
+global_half=False
+global_workers=0
+
+brain_and_ischemia_imgsz=512
+msk_imgsz=1280
+
+def get_results(results, mask, imgsz_val, brain=[], brain_imgsz_val=None, too_many_fragments_warning=300, use_computed_brain_mask_for_prediction_zone_correction=True, erode_level=0, erode_mask_size=5): 
+    brain_data = []
+    brain_data_ok = []
+
+    if len(brain) > 0: 
+       if len(results) > 0: 
+          for i in range(len(brain)):
+              r = brain[i]
+              r_orig_img_shape = r.orig_img.shape[:2]
+
+              img = None
+              img_ready = False
+              h0, w0 = r_orig_img_shape[0], r_orig_img_shape[1]
+
+              h, w = (h0, w0)
+              ratio = brain_imgsz_val / max(h0, w0)  # ratio
+              if r != 1: 
+                 h, w = (min(math.ceil(h0 * ratio), brain_imgsz_val), min(math.ceil(w0 * ratio), brain_imgsz_val))
+
+              en_for_r = enumerate(r)
+              for ci,c in en_for_r: 
+                  b_mask2 = (c.masks.data.cpu().numpy().astype(np.uint8) * 255)
+                  b_mask2 = b_mask2.reshape(b_mask2.shape[1], b_mask2.shape[2])
+                  b_mask2_start_shape = b_mask2.shape
+
+                  h_pad, w_pad = ((int(b_mask2_start_shape[0] - h) // 2), (int(b_mask2_start_shape[1] - w) // 2))
+                  if (b_mask2_start_shape[0] - h - h_pad * 2) > 0: 
+                     h_pad = h_pad + 1
+                  if (b_mask2_start_shape[1] - w - w_pad * 2) > 0: 
+                     w_pad = w_pad + 1
+
+                  b_mask2 = b_mask2[h_pad:h_pad+h, w_pad:w_pad+w]
+                  b_mask = ((cv2.resize(b_mask2, (w * find_contours_scale, h * find_contours_scale), interpolation=cv2.INTER_LINEAR) > 127) * 255).astype(np.uint8) # wokerd
+
+                  if img_ready: 
+                     img = cv2.bitwise_or(b_mask, img, mask=None)
+                  else: 
+                     img = b_mask.copy()
+                     img_ready = True
+
+              brain_contours, _ = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+              sorted_contours = sorted(brain_contours, key=cv2.contourArea, reverse=True)
+              if len(sorted_contours) > 0: 
+                 draw_result = np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8)
+                 img = cv2.drawContours(draw_result, sorted_contours, 0, (255), cv2.FILLED)
+
+              if not img_ready: 
+                 img = np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8)
+                 img.fill(255)
+
+              brain_data.append(img)
+              brain_data_ok.append(img_ready)
+
+    if ((len(brain) > 0 and len(brain_data) == len(results)) or len(brain) == 0): 
+       for i in range(len(results)): 
+           r = results[i]
+           r_orig_img_shape = r.orig_img.shape[:2]
+           h0, w0 = r_orig_img_shape[0], r_orig_img_shape[1]
+
+           h, w = (h0, w0)
+           ratio = imgsz_val / max(h0, w0) # ratio
+           if r != 1:  # if sizes are not equal
+              h, w = (min(math.ceil(h0 * ratio), imgsz_val), min(math.ceil(w0 * ratio), imgsz_val))
+
+           img2 = np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8)
+
+           if len(brain) > 0: 
+              brain_obj = (cv2.resize(brain_data[i], (w * find_contours_scale, h * find_contours_scale), interpolation=cv2.INTER_LINEAR) > 127).astype(np.uint8) * 255
+
+           contours = []
+           en_for_r = enumerate(r)
+           for ci,c in en_for_r: 
+               b_mask2 = (c.masks.data.cpu().numpy().astype(np.uint8) * 255)
+               b_mask2 = b_mask2.reshape(b_mask2.shape[1], b_mask2.shape[2])
+               b_mask2_start_shape = b_mask2.shape
+
+               h_pad, w_pad = ((int(b_mask2_start_shape[0] - h) // 2), (int(b_mask2_start_shape[1] - w) // 2))
+               if (b_mask2_start_shape[0] - h - h_pad * 2) > 0: 
+                  h_pad = h_pad + 1
+               if (b_mask2_start_shape[1] - w - w_pad * 2) > 0: 
+                  w_pad = w_pad + 1
+
+               b_mask2 = b_mask2[h_pad:h_pad+h, w_pad:w_pad+w]
+               res = cv2.resize(b_mask2, (find_contours_scale * b_mask2.shape[1], find_contours_scale * b_mask2.shape[0]), interpolation=cv2.INTER_NEAREST)
+
+               ct, _ = cv2.findContours(res, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+               ct = sorted(ct, key=cv2.contourArea, reverse=True)
+
+               if len(ct) > 0: 
+                  appended_contours = 0
+                  for obj_index in range(len(ct)):
+                      obj = ct[obj_index].astype(np.int32)
+
+                      if len(brain) > 0: 
+                         draw_result = np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8)
+                         draw_result = cv2.drawContours(draw_result, [obj], 0, (255), cv2.FILLED)
+                         
+                         b_sum_1 = (draw_result > 127).sum()
+
+                         if b_sum_1 >= (find_contours_scale * find_contours_scale): 
+                            intersection = cv2.bitwise_and(brain_obj, draw_result, mask=None)
+                            b_sum_0 = (intersection > 127).sum()
+                            if b_sum_0 / b_sum_1 > 0.1: 
+                               contours.append(obj)
+                               appended_contours = appended_contours + 1
+                      else: 
+                         contours.append(obj)
+                         appended_contours = appended_contours + 1
+
+                  if appended_contours >= too_many_fragments_warning: 
+                     print(f"Too many fragments in '{Path(r.path).stem}' ({len(ct)})")
+
+                  if len(brain) == 0: # only detect brain
+                     img2 = cv2.drawContours(np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8), ct, 0, (255), cv2.FILLED)
+                     break
+                  else: 
+                     img2 = cv2.bitwise_or(res, img2, mask=None)
+
+           # erode prediction result
+           if len(brain) > 0 and erode_level > 0: 
+              img2 = cv2.erode(src=img2, kernel=np.ones((5, 5)), iterations=erode_level)
+
+           if use_computed_brain_mask_for_prediction_zone_correction == False: 
+              img2_cpy = img2.copy()
+
+           if len(brain) > 0: 
+              img2 = cv2.bitwise_and(brain_obj, img2, mask=None)
+
+           # Save mask with original resolution
+           img2 = ((cv2.resize(img2, (w0, h0), interpolation=cv2.INTER_AREA) > 127) * 255).astype(np.uint8)
+
+           return img2
+    else: 
+       return None
+
+class Classifier:
+  def __init__(self):
+    self.path_adc_brain = './resources/adc_brain_512.pt'
+    self.path_adc_ischemia = './resources/adc_ischemia_512_augmented.pt'
+    self.adc_brain = YOLO(self.path_adc_brain)
+    self.adc_ischemia = YOLO(self.path_adc_ischemia)
+
+    self.path_swi_brain = './resources/swi_brain_512.pt'
+    self.path_swi_msc = './resources/swi_msc_mod_1280_augmented.pt'
+    self.swi_brain = YOLO(self.path_swi_brain)
+    self.swi_msc = YOLO(self.path_swi_msc)
+        
+    self.path_t2_brain = './resources/t2_brain_512.pt'
+    self.path_t2_ischemia = './resources/t2_ischemia_512_augmented.pt'
+    self.t2_brain = YOLO(self.path_t2_brain)
+    self.t2_ischemia = YOLO(self.path_t2_ischemia)
+
+  def loadSettings(self, settings):
+    settings.beginGroup("Classifier")
+    self.path = settings.value('path_adc_brain', self.path_adc_brain)
+    self.path = settings.value('path_adc_ischemia', self.path_adc_ischemia)
+    self.path = settings.value('path_swi_brain', self.path_swi_brain)
+    self.path = settings.value('path_swi_msc', self.path_swi_msc)
+    self.path = settings.value('path_t2_brain', self.path_t2_brain)
+    self.path = settings.value('path_t2_ischemia', self.path_t2_ischemia)
+    settings.endGroup()
+
+  def saveSettings(self, settings):
+    settings.beginGroup("Classifier")
+    settings.setValue('path_adc_brain', self.path_adc_brain)
+    settings.setValue('path_adc_ischemia', self.path_adc_ischemia)
+    settings.setValue('path_swi_brain', self.path_swi_brain)
+    settings.setValue('path_swi_msc', self.path_swi_msc)
+    settings.setValue('path_t2_brain', self.path_t2_brain)
+    settings.setValue('path_t2_ischemia', self.path_t2_ischemia)
+    settings.endGroup()
+
+  def getMask(self, mask_type, filename):
+    def readMaskFromFile(filename):
+      finfo = QtCore.QFileInfo(filename)
+      if finfo.exists() & finfo.isFile():
+         return cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+      return None
+
+    ds = loadDICOMFile(filename)
+    ds_width = ds.Columns
+    ds_height = ds.Rows
+    arr = ds.pixel_array
+
+    img = np.empty((ds_height, ds_width, 3), dtype=np.uint8)
+    
+    for y in range(ds_height): 
+        for x in range(ds_width): 
+            val_uint16 = arr[y, x]
+
+            if ds.ProtocolName == "ep2d_diff_tra_14b": #ADC
+               if val_uint16 > 855: 
+                 img[y, x, 0] = 255
+               else: 
+                 img[y, x, 0] = np.floor(val_uint16 / 855.0 * 255.0 + 0.5)
+            elif ds.ProtocolName == "swi_tra": #SWI
+               if val_uint16 > 383: 
+                 img[y, x, 0] = 255
+               elif val_uint16 < 25: 
+                 img[y, x, 0] = 0
+               else: 
+                 img[y, x] = np.floor((val_uint16 - 25) / 358.0 * 255.0 + 0.5)
+            elif ds.ProtocolName == "t2_tse_tra_fs": #T2
+               if val_uint16 > 855: 
+                 img[y, x, 0] = 255
+               elif val_uint16 < 25: 
+                 img[y, x, 0] = 0
+               else: 
+                 img[y, x, 0] = np.floor((val_uint16 - 25) / 830.0 * 255.0 + 0.5)
+
+            img[y, x, 1] = img[y, x, 0]
+            img[y, x, 2] = img[y, x, 0]
+
+    if ds.ProtocolName == "ep2d_diff_tra_14b": # ADC
+       adc_brain_data = self.adc_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, boxes=False, show_conf=False, max_det=1)
+    elif ds.ProtocolName == "swi_tra":         # SWI
+       swi_brain_data = self.swi_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, boxes=False, show_conf=False, max_det=1)
+    elif ds.ProtocolName == "t2_tse_tra_fs":   # T2
+       t2_brain_data = self.t2_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, boxes=False, show_conf=False, max_det=1)
+
+    mask = None
+    if mask_type == MaskType.BRAIN: 
+       if ds.ProtocolName == "ep2d_diff_tra_14b": # ADC
+          mask = get_results(adc_brain_data, "_brain", imgsz_val=brain_and_ischemia_imgsz)
+       elif ds.ProtocolName == "swi_tra":         # SWI
+          mask = get_results(swi_brain_data, "_brain", imgsz_val=brain_and_ischemia_imgsz)
+       elif ds.ProtocolName == "t2_tse_tra_fs":   # T2
+          mask = get_results(t2_brain_data, "_brain", imgsz_val=brain_and_ischemia_imgsz)
+    elif mask_type == MaskType.ISCHEMIA: # ADC and #T2
+       if ds.ProtocolName == "ep2d_diff_tra_14b": # ADC
+          adc_ISC_data = self.adc_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_isc", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, boxes=False, show_conf=False)
+          mask = get_results(adc_ISC_data, "_adc_ischemia", brain=adc_brain_data, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=brain_and_ischemia_imgsz)
+       elif ds.ProtocolName == "t2_tse_tra_fs":   # T2
+          t2_ISC_data = self.t2_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_isc", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, boxes=False, show_conf=False)
+          mask = get_results(t2_ISC_data, "_t2_ischemia", brain=t2_brain_data, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=brain_and_ischemia_imgsz)
+    elif mask_type == MaskType.MSC:      # SWI
+       if ds.ProtocolName == "swi_tra": 
+          swi_MSC_data = self.swi_msc.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_swi_msc", batch=0, source=img, imgsz=msk_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, boxes=False, show_conf=False)
+          mask = get_results(swi_MSC_data, "_swi_msc", brain=swi_brain_data, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=msk_imgsz)
+
+    # на случай, если результаты получить не удалось, следует вернуть пустую маску
+    if type(mask) == type(None):
+       return np.zeros(ds.pixel_array.shape, dtype=np.uint8)
+
+    return mask

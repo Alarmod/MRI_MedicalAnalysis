@@ -1,0 +1,9 @@
+PySide2
+vtk
+asyncio
+qasync==0.25.0
+pydicom
+pandas
+opencv-python
+numpy
+pulp
