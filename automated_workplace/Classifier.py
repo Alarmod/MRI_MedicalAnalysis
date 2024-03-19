@@ -94,7 +94,6 @@ def get_results(results, mask, imgsz_val, brain=[], brain_imgsz_val=None, too_ma
            if len(brain) > 0: 
               brain_obj = (cv2.resize(brain_data[i], (w * find_contours_scale, h * find_contours_scale), interpolation=cv2.INTER_LINEAR) > 127).astype(np.uint8) * 255
 
-           contours = []
            en_for_r = enumerate(r)
            for ci,c in en_for_r: 
                b_mask2 = (c.masks.data.cpu().numpy().astype(np.uint8) * 255)
@@ -114,29 +113,6 @@ def get_results(results, mask, imgsz_val, brain=[], brain_imgsz_val=None, too_ma
                ct = sorted(ct, key=cv2.contourArea, reverse=True)
 
                if len(ct) > 0: 
-                  appended_contours = 0
-                  for obj_index in range(len(ct)):
-                      obj = ct[obj_index].astype(np.int32)
-
-                      if len(brain) > 0: 
-                         draw_result = np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8)
-                         draw_result = cv2.drawContours(draw_result, [obj], 0, (255), cv2.FILLED)
-                         
-                         b_sum_1 = (draw_result > 127).sum()
-
-                         if b_sum_1 >= (find_contours_scale * find_contours_scale): 
-                            intersection = cv2.bitwise_and(brain_obj, draw_result, mask=None)
-                            b_sum_0 = (intersection > 127).sum()
-                            if b_sum_0 / b_sum_1 > 0.1: 
-                               contours.append(obj)
-                               appended_contours = appended_contours + 1
-                      else: 
-                         contours.append(obj)
-                         appended_contours = appended_contours + 1
-
-                  if appended_contours >= too_many_fragments_warning: 
-                     print(f"Too many fragments in '{Path(r.path).stem}' ({len(ct)})")
-
                   if len(brain) == 0: # only detect brain
                      img2 = cv2.drawContours(np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8), ct, 0, (255), cv2.FILLED)
                      break
