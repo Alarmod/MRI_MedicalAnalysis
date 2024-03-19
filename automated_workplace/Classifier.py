@@ -25,9 +25,8 @@ global_workers=0
 brain_and_ischemia_imgsz=512
 msk_imgsz=1280
 
-def get_results(results, mask, imgsz_val, brain=[], brain_imgsz_val=None, too_many_fragments_warning=300, use_computed_brain_mask_for_prediction_zone_correction=True, erode_level=0, erode_mask_size=5): 
+def get_results(results, mask, imgsz_val, brain=[], brain_imgsz_val=None, erode_level=0, erode_mask_size=5): 
     brain_data = []
-    brain_data_ok = []
 
     if len(brain) > 0: 
        if len(results) > 0: 
@@ -76,7 +75,6 @@ def get_results(results, mask, imgsz_val, brain=[], brain_imgsz_val=None, too_ma
                  img.fill(255)
 
               brain_data.append(img)
-              brain_data_ok.append(img_ready)
 
     if ((len(brain) > 0 and len(brain_data) == len(results)) or len(brain) == 0): 
        for i in range(len(results)): 
@@ -109,23 +107,20 @@ def get_results(results, mask, imgsz_val, brain=[], brain_imgsz_val=None, too_ma
                b_mask2 = b_mask2[h_pad:h_pad+h, w_pad:w_pad+w]
                res = cv2.resize(b_mask2, (find_contours_scale * b_mask2.shape[1], find_contours_scale * b_mask2.shape[0]), interpolation=cv2.INTER_NEAREST)
 
-               ct, _ = cv2.findContours(res, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-               ct = sorted(ct, key=cv2.contourArea, reverse=True)
+               if len(brain) == 0: # Only detect brain
+                  ct, _ = cv2.findContours(res, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                  ct = sorted(ct, key=cv2.contourArea, reverse=True)
 
-               if len(ct) > 0: 
-                  if len(brain) == 0: # only detect brain
-                     img2 = cv2.drawContours(np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8), ct, 0, (255), cv2.FILLED)
-                     break
-                  else: 
-                     img2 = cv2.bitwise_or(res, img2, mask=None)
+                  img2 = cv2.drawContours(np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8), ct, 0, (255), cv2.FILLED)
+                  break
+               else: 
+                  img2 = cv2.bitwise_or(res, img2, mask=None)
 
-           # erode prediction result
+           # Erode prediction result
            if len(brain) > 0 and erode_level > 0: 
               img2 = cv2.erode(src=img2, kernel=np.ones((5, 5)), iterations=erode_level)
 
-           if use_computed_brain_mask_for_prediction_zone_correction == False: 
-              img2_cpy = img2.copy()
-
+           # Result
            if len(brain) > 0: 
               img2 = cv2.bitwise_and(brain_obj, img2, mask=None)
 
