@@ -51,7 +51,7 @@ class Dataset:
 		key = ["ProtocolName"]
 		protocols_info = []
 		for group_key, group in self.__studies.groupby(key):
-			protocols_info.append([group_key, group.index.to_numpy()])
+			protocols_info.append([*group_key, group.index.to_numpy()])
 		self.__protocols = pd.DataFrame(protocols_info, columns=columns)
 
 	def __getRefStudies(self, target_study_id):
