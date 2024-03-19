@@ -169,12 +169,6 @@ class Classifier:
     settings.endGroup()
 
   def getMask(self, mask_type, filename):
-    def readMaskFromFile(filename):
-      finfo = QtCore.QFileInfo(filename)
-      if finfo.exists() & finfo.isFile():
-         return cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
-      return None
-
     ds = loadDICOMFile(filename)
     ds_width = ds.Columns
     ds_height = ds.Rows
