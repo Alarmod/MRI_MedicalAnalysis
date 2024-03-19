@@ -1,6 +1,7 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 import numpy as np
 import cv2
+from memoization import cached
 
 from Dataset import loadDICOMFile
 
@@ -168,6 +169,10 @@ class Classifier:
     settings.setValue('path_t2_ischemia', self.path_t2_ischemia)
     settings.endGroup()
 
+  def __hash__(self):
+    return hash(str(self))
+
+  @cached(max_size=512)
   def getMask(self, mask_type, filename):
     ds = loadDICOMFile(filename)
     ds_width = ds.Columns
@@ -204,11 +209,11 @@ class Classifier:
             img[y, x, 2] = img[y, x, 0]
 
     if ds.ProtocolName == "ep2d_diff_tra_14b": # ADC
-       adc_brain_data = self.adc_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, boxes=False, show_conf=False, max_det=1)
+       adc_brain_data = self.adc_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
     elif ds.ProtocolName == "swi_tra":         # SWI
-       swi_brain_data = self.swi_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, boxes=False, show_conf=False, max_det=1)
+       swi_brain_data = self.swi_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
     elif ds.ProtocolName == "t2_tse_tra_fs":   # T2
-       t2_brain_data = self.t2_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, boxes=False, show_conf=False, max_det=1)
+       t2_brain_data = self.t2_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
 
     mask = None
     if mask_type == MaskType.BRAIN: 
@@ -220,14 +225,14 @@ class Classifier:
           mask = get_results(t2_brain_data, "_brain", imgsz_val=brain_and_ischemia_imgsz)
     elif mask_type == MaskType.ISCHEMIA: # ADC and #T2
        if ds.ProtocolName == "ep2d_diff_tra_14b": # ADC
-          adc_ISC_data = self.adc_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_isc", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, boxes=False, show_conf=False)
+          adc_ISC_data = self.adc_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_isc", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
           mask = get_results(adc_ISC_data, "_adc_ischemia", brain=adc_brain_data, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=brain_and_ischemia_imgsz)
        elif ds.ProtocolName == "t2_tse_tra_fs":   # T2
-          t2_ISC_data = self.t2_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_isc", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, boxes=False, show_conf=False)
+          t2_ISC_data = self.t2_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_isc", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
           mask = get_results(t2_ISC_data, "_t2_ischemia", brain=t2_brain_data, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=brain_and_ischemia_imgsz)
     elif mask_type == MaskType.MSC:      # SWI
        if ds.ProtocolName == "swi_tra": 
-          swi_MSC_data = self.swi_msc.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_swi_msc", batch=0, source=img, imgsz=msk_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, boxes=False, show_conf=False)
+          swi_MSC_data = self.swi_msc.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_swi_msc", batch=0, source=img, imgsz=msk_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
           mask = get_results(swi_MSC_data, "_swi_msc", brain=swi_brain_data, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=msk_imgsz)
 
     # на случай, если результаты получить не удалось, следует вернуть пустую маску
