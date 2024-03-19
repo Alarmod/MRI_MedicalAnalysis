@@ -205,7 +205,7 @@ class MRIMAProcessor:
 
 	@staticmethod
 	def compute_gradient(min_value, max_value, values_count):
-		step = (max_value - min_value) / (values_count - 1) #включая значение max_value!
+		step = (max_value - min_value) / (values_count - 1)
 		grad = np.arange(0, values_count) * step + min_value
 		return grad
 

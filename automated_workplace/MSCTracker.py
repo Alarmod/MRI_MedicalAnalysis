@@ -2,12 +2,9 @@ import numpy as np
 import cv2
 import pulp as pl
 
-#? много лишних сущностей, можно заменить на обычные функции и tuple
-
 def distance(start, end):
 	return np.sqrt(np.sum(np.square(start - end)))
 
-#координаты вокселей вычисляются как верхний/левый/ближний угол bbox-а, но при отображении - совпадут с центром вокселя т.к. все граничные воксели vtkVolume Визуализируются в масштабе 50% от заданного
 def getXYZ(centroid, slice_number, voxel_size):
 	return np.array([centroid[0], centroid[1], slice_number])*voxel_size
 
@@ -19,7 +16,6 @@ class ConnectedComponent:
 	def __repr__(self):
 		return "<"+str(self.xyz) + ", " + str(self.area) + ">"
 
-#- переделать на выделение скоплений в 3d
 def getConnectedComponents(voxels, voxel_size):
 	components = []
 	for slice_number in range(voxels.shape[0]):

@@ -14,7 +14,6 @@ def files(root_dir, mask):
 def loadDICOMFile(filename):
 	return pydicom.dcmread(filename)
 
-#- Нет абсолютно никаких проверок на корректность аргументов, если задать некорректный id, все сломается
 class Dataset:
 	def __init__(self):
 		self.__slices = None
@@ -26,7 +25,7 @@ class Dataset:
 		slice_info = []
 		for filename in files(path, "*.ima"):
 			ds = loadDICOMFile(filename)
-			slice_info.append([ds.ProtocolName, ds.PatientID, ds.StudyID, ds.StudyDescription, ds.StudyDate, ds.StudyTime, filename, ds.SliceLocation, None]) #slice_name not defined yet
+			slice_info.append([ds.ProtocolName, ds.PatientID, ds.StudyID, ds.StudyDescription, ds.StudyDate, ds.StudyTime, filename, ds.SliceLocation, None])
 
 		self.__slices = pd.DataFrame(slice_info, columns=columns).sort_values("SliceLocation", ascending=True)
 
@@ -41,7 +40,7 @@ class Dataset:
 
 			slice_number = 0
 			for index in indexes:
-				self.__slices.loc[index, "slice_number"] = slice_number #set slice_number
+				self.__slices.loc[index, "slice_number"] = slice_number
 				slice_number = slice_number + 1
 
 		self.__studies = pd.DataFrame(studies_info, columns=columns)

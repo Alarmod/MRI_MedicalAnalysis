@@ -1,6 +1,5 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 
-#- Управляет временем жизни дочерних окон, но сами дочерние окна не являются его частью
 class MainWindow(QtWidgets.QMainWindow):
 	class StatusBarEventFilter(QtCore.QObject):
 		def eventFilter(self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:

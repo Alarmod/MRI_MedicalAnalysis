@@ -4,7 +4,6 @@ import vtk
 from VTKWidgets import VTKInteractiveWidget
 from Entity import Volume
 
-#backgroundColor тоже вынести в настройки?
 class View3DWidget(VTKInteractiveWidget):
 	def __init__(self, parent=None, **kw):
 		VTKInteractiveWidget.__init__(self, parent, **kw)

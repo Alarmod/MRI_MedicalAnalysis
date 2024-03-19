@@ -13,7 +13,6 @@ def clearLayout(layout):
 			else:
 				clearLayout(item.layout())
 
-#? Ячейки грида не фиксированного размера, к размышлению
 class InfoSubWindow(MDIChildSubWindow):
 	def __init__(self, title):
 		super(InfoSubWindow, self).__init__(title)

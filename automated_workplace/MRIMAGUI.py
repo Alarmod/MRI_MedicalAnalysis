@@ -87,10 +87,9 @@ class MRIMAGUI(QtCore.QObject):
 	def processSelectedInput(self, reset_camera):
 		self.__setDisabled(True)
 		self.infoSubWindow.clearContent()
-		#self.viewerSubWindow.clearContent(contextMenu=False) #если очищаем View тут - старое изображение сразу пропадает, но GUI мерцает т.к. делаем 2 перерисовки
 
 		if self.selected_input == None:
-			self.viewerSubWindow.clearContent(contextMenu=False) #а если тут - то мерцания нет, но старая картинка некоторое время может повисеть на экране (проблема актуальна только если будут долгие обработчики)
+			self.viewerSubWindow.clearContent(contextMenu=False)
 			self.viewerSubWindow.switchTo2DView()
 			self.__setDisabled(False)
 			return
@@ -103,14 +102,12 @@ class MRIMAGUI(QtCore.QObject):
 			self.mainWindow.setStatusBarText("Processing study...")
 			self.processStudySignal.emit(self.selected_input, wm, reset_camera)
 
-	#пользователь выбрал в дереве Studies что-то новое
 	@QtCore.Slot(object)
 	def onInputSelected(self, obj):
 		self.selected_input = obj
 		self.viewerSubWindow.updateContextMenu(self.selected_input)
 		self.processSelectedInput(True)
 
-	#пользователь изменил режим отображения
 	@QtCore.Slot(bool, object)
 	def onContextMenuActionTriggered(self, state, obj):
 		self.__updateViewMode(state, obj)
