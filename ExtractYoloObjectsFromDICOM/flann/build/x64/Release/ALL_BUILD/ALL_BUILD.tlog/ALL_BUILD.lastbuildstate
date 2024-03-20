@@ -1,2 +1,0 @@
-#TargetFrameworkVersion=:PlatformToolSet=v141:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native64Bit:WindowsTargetPlatformVersion=10.0.20348.0
-Release|x64|F:\My programs\ExtractYoloObjectsFromDICOM\flann\build\|

@@ -1,5 +1,0 @@
-﻿  Building Custom Rule F:/My programs/ExtractYoloObjectsFromDICOM/flann/src/cpp/CMakeLists.txt
-  flann_cpp.cpp
-  Auto build dll exports
-     Создается библиотека F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/lib/Release/flann_cpp.lib и объект F:/My programs/ExtractYoloObjectsFromDICOM/flann/build/lib/Release/flann_cpp.exp
-  flann_cpp.vcxproj -> F:\My programs\ExtractYoloObjectsFromDICOM\flann\build\lib\Release\flann_cpp.dll
