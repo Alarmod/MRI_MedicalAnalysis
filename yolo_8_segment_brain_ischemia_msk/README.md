@@ -12,18 +12,20 @@ Supported ultralytics 8.0.205 and >= 8.1.6
 
 Scale bug in ultralytics 8.0.206-8.1.5 fixed: https://github.com/ultralytics/ultralytics/commit/1a04cd38e7285969c0e4d827f4fbe52c834798ed
 
-2. Load runs.zip from 
+2. Load MRI_settings.zip and MRI_tests.zip: 
 
-https://drive.google.com/file/d/1CH8bIjGHNiKi572CpZmvh6vhtk6dGN4F/view?usp=sharing
+MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing
+MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
 3. Load datasets.zip from 
 
 https://drive.google.com/file/d/1CCXe6R8FJgIIdjx0RhxEqnEWAvPkyqbh/view?usp=sharing
 or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_data (this files must be stored to datasets folder and unpacked)
 
-4. Unpack runs with command: 
+4. Unpack create runs directory with command: 
 
-_start /W /B winrar.exe x -ibck runs.zip_
+_start /W /B winrar.exe x -ibck MRI_settings.zip_
+_start /W /B winrar.exe x -ibck MRI_tests.zip_
 
 5. Unpack datasets with command: 
 
