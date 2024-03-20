@@ -25,7 +25,10 @@ class Dataset:
 		slice_info = []
 		for filename in files(path, "*.ima"):
 			ds = loadDICOMFile(filename)
-			slice_info.append([ds.ProtocolName, ds.PatientID, ds.StudyID, ds.StudyDescription, ds.StudyDate, ds.StudyTime, filename, ds.SliceLocation, None])
+			protocol_name = ds.ProtocolName
+			if protocol_name == "ep2d_diff_tra_14b_1mm":
+				protocol_name = "ep2d_diff_tra_14b"
+			slice_info.append([protocol_name, ds.PatientID, ds.StudyID, ds.StudyDescription, ds.StudyDate, ds.StudyTime, filename, ds.SliceLocation, None])
 
 		self.__slices = pd.DataFrame(slice_info, columns=columns).sort_values("SliceLocation", ascending=True)
 
