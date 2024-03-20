@@ -134,18 +134,18 @@ def get_results(results, mask, imgsz_val, brain=[], brain_imgsz_val=None, erode_
 
 class Classifier:
   def __init__(self):
-    self.path_adc_brain = './resources/adc_brain_512.pt'
-    self.path_adc_ischemia = './resources/adc_ischemia_512_augmented.pt'
+    self.path_adc_brain = './resources/runs/segment/adc_brain_512/weights/best.pt'
+    self.path_adc_ischemia = './resources/runs/segment/adc_ischemia_512_augmented/weights/best.pt'
     self.adc_brain = YOLO(self.path_adc_brain)
     self.adc_ischemia = YOLO(self.path_adc_ischemia)
 
-    self.path_swi_brain = './resources/swi_brain_512.pt'
-    self.path_swi_msc = './resources/swi_msc_mod_1280_augmented.pt'
+    self.path_swi_brain = './resources/runs/segment/swi_brain_512/weights/best.pt'
+    self.path_swi_msc = './resources/runs/segment/swi_msc_mod_1280_augmented/weights/best.pt'
     self.swi_brain = YOLO(self.path_swi_brain)
     self.swi_msc = YOLO(self.path_swi_msc)
         
-    self.path_t2_brain = './resources/t2_brain_512.pt'
-    self.path_t2_ischemia = './resources/t2_ischemia_512_augmented.pt'
+    self.path_t2_brain = './resources/runs/segment/t2_brain_512/weights/best.pt'
+    self.path_t2_ischemia = './resources/runs/segment/t2_ischemia_512_augmented/weights/best.pt'
     self.t2_brain = YOLO(self.path_t2_brain)
     self.t2_ischemia = YOLO(self.path_t2_ischemia)
 
