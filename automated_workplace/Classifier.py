@@ -226,7 +226,7 @@ class Classifier:
     elif mask_type == MaskType.ISCHEMIA: # ADC and #T2
        if ds.ProtocolName == "ep2d_diff_tra_14b": # ADC
           adc_ISC_data = self.adc_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_isc", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
-          mask = get_results(adc_ISC_data, "_adc_ischemia", brain=adc_brain_data, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=brain_and_ischemia_imgsz)
+          mask = get_results(adc_ISC_data, "_adc_ischemia", brain=adc_brain_data, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=brain_and_ischemia_imgsz, erode_level=2)
        elif ds.ProtocolName == "t2_tse_tra_fs":   # T2
           t2_ISC_data = self.t2_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_isc", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
           mask = get_results(t2_ISC_data, "_t2_ischemia", brain=t2_brain_data, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=brain_and_ischemia_imgsz)
