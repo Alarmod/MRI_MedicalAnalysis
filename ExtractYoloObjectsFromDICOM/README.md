@@ -4,13 +4,17 @@ ExtractYoloObjectsFromDICOM - open source console tool for medical researchers i
 # Compilation
 Project configured for compilation in Visual Studio 2022 with v141 platform toolset. Application based on 
 
--- modificated Flann library 
+-- modificated Flann library: 
+
 _git clone https://github.com/Alarmod/flann_
 
--- original Dicomlib library
+-- original Dicomlib library:
+
 _git clone https://github.com/Alarmod/dicomlib_
 
--- OpenCV library (version: 3.1) https://opencv.org
+-- OpenCV library (version: 3.1):
+
+_https://opencv.org_
 
 For correct execution You must copy opencv_world310.dll to x64\Release folder
 
