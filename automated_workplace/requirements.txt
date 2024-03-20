@@ -3,7 +3,7 @@ vtk
 asyncio
 qasync==0.25.0
 pydicom
-pandas
+pandas==2.0.3
 opencv-python
 numpy
 pulp
