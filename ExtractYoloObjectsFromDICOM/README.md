@@ -19,9 +19,9 @@ _https://opencv.org_
 For correct execution You must copy opencv_world310.dll to x64\Release folder
 
 # Ways of using
-1. Run _ExtractYoloObjectsFromDICOM.exe 1_ on original DICOM-dataset, which allows you to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG file with binary mask will be replaced.
+1. Run _ExtractYoloObjectsFromDICOM.exe 1_ on original DICOM-dataset, which allows you to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG file with binary mask will be replaced (save original folders before).
 
-Example of _ExtractYoloObjectsFromDICOM.exe 1_ can be downloaded here: 
+Example of _ExtractYoloObjectsFromDICOM.exe 1_ execution can be downloaded here: 
 https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=sharing
 
 2. To generate training and testing datasets in Yolo format, run _ExtractYoloObjectsFromDICOM.exe 0_
