@@ -196,7 +196,7 @@ class Classifier:
                elif val_uint16 < 25: 
                  img[y, x, 0] = 0
                else: 
-                 img[y, x] = np.floor((val_uint16 - 25) / 358.0 * 255.0 + 0.5)
+                 img[y, x, 0] = np.floor((val_uint16 - 25) / 358.0 * 255.0 + 0.5)
             elif ds.ProtocolName == "t2_tse_tra_fs": #T2
                if val_uint16 > 855: 
                  img[y, x, 0] = 255
