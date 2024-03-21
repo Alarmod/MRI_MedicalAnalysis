@@ -134,20 +134,13 @@ def get_results(results, mask, imgsz_val, brain=[], brain_imgsz_val=None, erode_
 
 class Classifier:
   def __init__(self):
+    self.__hash = hash(str(self))
     self.path_adc_brain = './resources/runs/segment/adc_brain_512/weights/best.pt'
     self.path_adc_ischemia = './resources/runs/segment/adc_ischemia_512_augmented/weights/best.pt'
-    self.adc_brain = YOLO(self.path_adc_brain)
-    self.adc_ischemia = YOLO(self.path_adc_ischemia)
-
     self.path_swi_brain = './resources/runs/segment/swi_brain_512/weights/best.pt'
     self.path_swi_msc = './resources/runs/segment/swi_msc_mod_1280_augmented/weights/best.pt'
-    self.swi_brain = YOLO(self.path_swi_brain)
-    self.swi_msc = YOLO(self.path_swi_msc)
-        
     self.path_t2_brain = './resources/runs/segment/t2_brain_512/weights/best.pt'
     self.path_t2_ischemia = './resources/runs/segment/t2_ischemia_512_augmented/weights/best.pt'
-    self.t2_brain = YOLO(self.path_t2_brain)
-    self.t2_ischemia = YOLO(self.path_t2_ischemia)
 
   def loadSettings(self, settings):
     settings.beginGroup("Classifier")
@@ -158,6 +151,15 @@ class Classifier:
     self.path = settings.value('path_t2_brain', self.path_t2_brain)
     self.path = settings.value('path_t2_ischemia', self.path_t2_ischemia)
     settings.endGroup()
+
+    self.adc_brain = YOLO(self.path_adc_brain)
+    self.adc_ischemia = YOLO(self.path_adc_ischemia)
+
+    self.swi_brain = YOLO(self.path_swi_brain)
+    self.swi_msc = YOLO(self.path_swi_msc)
+
+    self.t2_brain = YOLO(self.path_t2_brain)
+    self.t2_ischemia = YOLO(self.path_t2_ischemia)
 
   def saveSettings(self, settings):
     settings.beginGroup("Classifier")
@@ -170,14 +172,16 @@ class Classifier:
     settings.endGroup()
 
   def __hash__(self):
-    return hash(str(self))
+    return self.__hash
 
   @cached(max_size=512)
   def getMask(self, mask_type, filename):
     ds = loadDICOMFile(filename)
+    arr = ds.pixel_array
+
+    '''
     ds_width = ds.Columns
     ds_height = ds.Rows
-    arr = ds.pixel_array
 
     img = np.empty((ds_height, ds_width, 3), dtype=np.uint8)
     
@@ -207,6 +211,24 @@ class Classifier:
 
             img[y, x, 1] = img[y, x, 0]
             img[y, x, 2] = img[y, x, 0]
+    '''
+
+    def normalize(slice_data, low_value, high_value):
+        if low_value != 0: slice_data[slice_data < low_value] = low_value
+        slice_data[slice_data > high_value] = high_value
+        return cv2.normalize(slice_data, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+
+    img = None
+    if ds.ProtocolName == "ep2d_diff_tra_14b": #ADC
+        img = normalize(arr, 0, 855)
+    elif ds.ProtocolName == "swi_tra": #SWI
+        img = normalize(arr, 25, 383)
+    elif ds.ProtocolName == "t2_tse_tra_fs": #T2
+        img = normalize(arr, 25, 855)
+
+    img = cv2.merge([img, img, img])
+
+
 
     if ds.ProtocolName == "ep2d_diff_tra_14b": # ADC
        adc_brain_data = self.adc_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
