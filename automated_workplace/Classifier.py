@@ -177,12 +177,14 @@ class Classifier:
   @cached(max_size=512)
   def getMask(self, mask_type, filename):
     ds = loadDICOMFile(filename)
+
+    '''
     arr = ds.pixel_array
+
     ds_width = ds.Columns
     ds_height = ds.Rows
 
     img = np.empty((ds_height, ds_width, 3), dtype=np.uint8)
-    
     for y in range(ds_height): 
         for x in range(ds_width): 
             val_uint16 = arr[y, x]
@@ -193,7 +195,7 @@ class Classifier:
                else: 
                  img[y, x, 0] = np.floor(val_uint16 / 855.0 * 255.0 + 0.5)
             elif ds.ProtocolName == "swi_tra": #SWI
-               if val_uint16 > 383: 
+               if val_uint16 > 383:
                  img[y, x, 0] = 255
                elif val_uint16 < 25: 
                  img[y, x, 0] = 0
@@ -209,6 +211,25 @@ class Classifier:
 
             img[y, x, 1] = img[y, x, 0]
             img[y, x, 2] = img[y, x, 0]
+    '''
+
+    def preprocess(slice_data, low_value, high_value):
+        low = (slice_data < low_value)
+        high = (slice_data > high_value)
+        medium = np.logical_not(np.logical_or(low, high))
+        delta = (high_value - low_value) / 255.0
+        return np.piecewise(slice_data, [low, medium, high], [0, lambda x: np.floor((x - low_value) / delta + 0.5), 255]).astype(np.uint8)
+
+    preprocesed_slice = None
+    if ds.ProtocolName == "ep2d_diff_tra_14b": #ADC
+        preprocesed_slice = preprocess(ds.pixel_array, 0, 855)
+    elif ds.ProtocolName == "swi_tra": #SWI
+        preprocesed_slice = preprocess(ds.pixel_array, 25, 383)
+    elif ds.ProtocolName == "t2_tse_tra_fs": #T2
+        preprocesed_slice = preprocess(ds.pixel_array, 25, 855)
+
+    img = cv2.cvtColor(preprocesed_slice, cv2.COLOR_GRAY2RGB)
+
 
     if ds.ProtocolName == "ep2d_diff_tra_14b": # ADC
        adc_brain_data = self.adc_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=img, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
