@@ -15,7 +15,9 @@ class Counter:
 		self.totalTime += perf_counter() - self.lastStartTime
 
 	def __str__(self):
-		return f"Calls: {self.count}\tTotal time: {self.totalTime:.06f}\tAvg time: {(self.totalTime / self.count):.06f}"
+		if self.count:
+			return f"Calls: {self.count}\tTotal time: {self.totalTime:.06f}\tAvg time: {(self.totalTime / self.count):.06f}"
+		return ""
 
 class Profiler:
 	__instance = None
