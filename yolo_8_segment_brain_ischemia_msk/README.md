@@ -44,8 +44,6 @@ _python train.py generate_data_ (validate with saving all data: contours, zones,
 
 _python train.py internal_validate_ (modificated Yolo 8 validation code that closer to Yolo original prediction code)
 
-# Used programming languages
-Python 3.8 and more new
-
 # System requirements
-Linux / Windows 10-11
+Windows 10-11, Linux
+Python 3.8 and more new
