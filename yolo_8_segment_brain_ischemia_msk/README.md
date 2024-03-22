@@ -15,6 +15,7 @@ Scale bug in ultralytics 8.0.206-8.1.5 fixed: https://github.com/ultralytics/ult
 2. Load MRI_settings.zip and MRI_tests.zip: 
 
 MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing
+
 MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
 3. Unpack full runs directory with commands: 
@@ -25,21 +26,23 @@ _start /W /B winrar.exe x -ibck MRI_tests.zip_
 
 Datasets for training can be loaded also from 
 https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive_link
-or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_data (must be stored to datasets folder and unpacked)
+
+or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_data
+
+(must be stored to datasets folder and unpacked)
 
 # Ways of using
 1. Training:
+
 _python train.py_
 
 2. Testing: 
-_python train.py default_validate_
-(Yolo 8 default validation code)
 
-_python train.py generate_data_
-(validate with saving all data: contours, zones, cognitive visualization)
+_python train.py default_validate_ (Yolo 8 default validation code)
 
-_python train.py internal_validate_
-(modificated Yolo 8 validation code that closer to Yolo original prediction code)
+_python train.py generate_data_ (validate with saving all data: contours, zones, cognitive visualization)
+
+_python train.py internal_validate_ (modificated Yolo 8 validation code that closer to Yolo original prediction code)
 
 # Used programming languages
 Python 3.8 and more new
