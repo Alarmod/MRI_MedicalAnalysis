@@ -1,4 +1,4 @@
-# MRI_MedicalAnalysis Automated Workplace
+# Automated Workplace
 Automated Workplace – open source workplace for medical researchers intelligent support and high performance MRI-data processing. It designed for the increasing equipment of medical researchers.
 
 # Requirements
