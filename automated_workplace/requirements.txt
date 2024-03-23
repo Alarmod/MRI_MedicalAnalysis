@@ -8,6 +8,5 @@ opencv-python
 numpy
 connected-components-3d
 pulp
-ultralytics
-math
+ultralytics>=8.1.6
 memoization
