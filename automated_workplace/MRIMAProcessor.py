@@ -73,7 +73,7 @@ class MRIMAProcessor:
 		self.volume_property = None
 
 	def shutdownThreadPool(self):
-		self.pool.shutdown(wait=False)
+		self.pool.shutdown(wait=True)
 
 	def loadSettings(self, settings):
 		settings.beginGroup("Processor")
