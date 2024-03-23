@@ -3,7 +3,7 @@ import vtk
 
 class VTKWidget(QtWidgets.QWidget):
 	def __init__(self, parent=None, **kw):
-		QtWidgets.QWidget.__init__(self, parent, **kw)
+		super().__init__(parent, **kw)
 
 		self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding))
 		self.setAttribute(QtCore.Qt.WidgetAttribute.WA_OpaquePaintEvent)
@@ -36,7 +36,7 @@ class VTKWidget(QtWidgets.QWidget):
 
 class VTKInteractiveWidget(VTKWidget):
 	def __init__(self, parent=None, **kw):
-		VTKWidget.__init__(self, parent, **kw)
+		super().__init__(parent, **kw)
 
 		self.__interactor = vtk.vtkGenericRenderWindowInteractor()
 		self.__interactor.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())

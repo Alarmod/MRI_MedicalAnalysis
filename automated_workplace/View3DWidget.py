@@ -6,7 +6,7 @@ from Entity import Volume
 
 class View3DWidget(VTKInteractiveWidget):
 	def __init__(self, parent=None, **kw):
-		VTKInteractiveWidget.__init__(self, parent, **kw)
+		super().__init__(parent, **kw)
 
 		self.__renderer = vtk.vtkRenderer()
 		self.__renderer.GetActiveCamera().Azimuth(180)

@@ -1,7 +1,5 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 
-from MDIChildSubWindow import MDIChildSubWindow
-
 from View2DWidget import View2DWidget
 from View3DWidget import View3DWidget
 from ViewerContextMenu import ViewerContextMenu
@@ -9,11 +7,13 @@ from ViewerContextMenu import ViewerContextMenu
 from Dataset import Dataset
 from Entity import Image, Volume
 
-class ViewerSubWindow(MDIChildSubWindow):
+class ViewerSubWindow(QtWidgets.QMdiSubWindow):
 	contextMenuActionTriggeredSignal = QtCore.Signal(bool, object)
 
 	def __init__(self, title):
-		super(ViewerSubWindow, self).__init__(title)
+		super().__init__()
+		self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
+		self.setWindowTitle(title)
 		self.initUI()
 		self.contextMenuDisabled = False
 

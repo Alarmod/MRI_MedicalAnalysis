@@ -1,18 +1,17 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 
-from MDIChildSubWindow import MDIChildSubWindow
 from Dataset import Dataset
 from Entity import Slice, Study
 
 class TreeWidgetItem(QtWidgets.QTreeWidgetItem):
 	def __init__(self, parent, text, obj):
-		super(TreeWidgetItem, self).__init__(parent)
+		super().__init__(parent)
 		self.obj = obj
 		self.setText(0, text)
 
 class TreeWidget(QtWidgets.QTreeWidget):
 	def __init__(self, *args, **kwargs):
-		super(TreeWidget, self).__init__(*args, **kwargs)
+		super().__init__(*args, **kwargs)
 		self.disabled = False
 
 	def keyPressEvent(self, event):
@@ -30,11 +29,13 @@ class TreeWidget(QtWidgets.QTreeWidget):
 	def setDisabled(self, state):
 		self.disabled = state
 
-class DatasetViewSubWindow(MDIChildSubWindow):
+class DatasetViewSubWindow(QtWidgets.QMdiSubWindow):
 	inputSelectedSignal = QtCore.Signal(object)
 
 	def __init__(self, title):
-		super(DatasetViewSubWindow, self).__init__(title)
+		super().__init__()
+		self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
+		self.setWindowTitle(title)
 		self.initUI()
 
 	def initUI(self):

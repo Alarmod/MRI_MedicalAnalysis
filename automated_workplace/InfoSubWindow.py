@@ -1,6 +1,5 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 
-from MDIChildSubWindow import MDIChildSubWindow
 from Entity import Image, Volume
 
 def clearLayout(layout):
@@ -13,9 +12,11 @@ def clearLayout(layout):
 			else:
 				clearLayout(item.layout())
 
-class InfoSubWindow(MDIChildSubWindow):
+class InfoSubWindow(QtWidgets.QMdiSubWindow):
 	def __init__(self, title):
-		super(InfoSubWindow, self).__init__(title)
+		super().__init__()
+		self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
+		self.setWindowTitle(title)
 		self.initUI()
 
 	def initUI(self):

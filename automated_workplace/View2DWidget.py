@@ -3,7 +3,7 @@ from Entity import Image
 
 class View2DWidget(QtWidgets.QLabel):
 	def __init__(self, parent=None):
-		super(View2DWidget, self).__init__(parent=parent)
+		super().__init__(parent=parent)
 		self.setAlignment(QtCore.Qt.AlignCenter)
 		self.currentImage = None
 

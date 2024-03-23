@@ -1,7 +1,7 @@
 PySide2
 vtk
 asyncio
-qasync==0.25.0
+qasync
 pydicom
 pandas>=2.0.3
 opencv-python

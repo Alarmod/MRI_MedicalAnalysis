@@ -45,7 +45,7 @@ class ViewerContextMenu(CheckableActionsMenu):
 	actionTriggeredSignal = QtCore.Signal(bool, object)
 
 	def __init__(self, parent):
-		super().__init__(parent, text=None)
+		super(ViewerContextMenu, self).__init__(parent, text=None)
 
 		self.preprocessing_action = CheckableAction(self, 'Use preprocessed source', (ViewMode.USE_PREPROCESSED_SOURCE, None))
 		self.addAction(self.preprocessing_action)

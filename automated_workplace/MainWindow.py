@@ -11,7 +11,7 @@ class MainWindow(QtWidgets.QMainWindow):
 	beforeExitSignal = QtCore.Signal()
 
 	def __init__(self, title, *args, **kwargs):
-		super(MainWindow, self).__init__(*args, **kwargs)
+		super().__init__(*args, **kwargs)
 		self.setWindowTitle(title)
 		self.initUI()
         
