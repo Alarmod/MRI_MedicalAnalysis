@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import asyncio
 import qasync
+import concurrent.futures
 from datetime import datetime
 
 from Dataset import Dataset, loadDICOMFile
@@ -46,7 +47,8 @@ class Mesh(vtk.vtkActor):
 
 class MRIMAProcessor:
 	def __init__(self):
-		self.pool = qasync.QThreadExecutor(1)
+#		self.pool = qasync.QThreadExecutor(1)
+		self.pool = concurrent.futures.ThreadPoolExecutor(max_workers=1)
 
 		self.gradientMinValue = 100
 		self.gradientMaxValue = 255
@@ -317,8 +319,8 @@ class MRIMAProcessor:
 			if type(brain_mask) == type(None):
 				brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in study.filename_list])
 			referenced_brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in view_mode.ref_msc_study.filename_list])
-			combiner = VolumeCombiner(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_msc_study))
 			referenced_msc_mask = np.stack([self.classifier.getMask(MaskType.MSC, filename) for filename in view_mode.ref_msc_study.filename_list])
+			combiner = VolumeCombiner(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_msc_study))
 			transformed_msc_mask = combiner.transform(referenced_msc_mask)
 			voxels[transformed_msc_mask == 255] = Marker.REFERENCED_MSC
 
@@ -326,11 +328,11 @@ class MRIMAProcessor:
 		if view_mode.flags & ViewMode.TRACK_MSC_FROM:
 			if type(brain_mask) == type(None):
 				brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in study.filename_list])
-			referenced_brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in view_mode.ref_tracking_study.filename_list])
-			combiner = VolumeCombiner(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_tracking_study))
 			if type(msc_mask) == type(None):
 				msc_mask = np.stack([self.classifier.getMask(MaskType.MSC, filename) for filename in study.filename_list])
+			referenced_brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in view_mode.ref_tracking_study.filename_list])
 			referenced_msc_mask = np.stack([self.classifier.getMask(MaskType.MSC, filename) for filename in view_mode.ref_tracking_study.filename_list])
+			combiner = VolumeCombiner(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_tracking_study))
 			transformed_msc_mask = combiner.transform(referenced_msc_mask)
 			voxels[transformed_msc_mask == 255] = Marker.REFERENCED_MSC
 
