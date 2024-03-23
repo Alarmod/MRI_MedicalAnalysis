@@ -1,6 +1,6 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 import numpy as np
-import cv2, math
+import cv2, math, os.path
 from memoization import cached
 
 from Dataset import loadDICOMFile
@@ -11,6 +11,7 @@ class MaskType:
   MSC = 4
 
 from ultralytics import YOLO
+from ultralytics.utils.torch_utils import smart_inference_mode
 
 find_contours_scale=2
 global_iou=0.50
@@ -89,12 +90,15 @@ class Classifier:
     self.path = settings.value('path_t2_ischemia', self.path_t2_ischemia)
     settings.endGroup()
 
-    self.adc_brain = YOLO(self.path_adc_brain)
-    self.adc_ischemia = YOLO(self.path_adc_ischemia)
-    self.swi_brain = YOLO(self.path_swi_brain)
-    self.swi_msc = YOLO(self.path_swi_msc)
-    self.t2_brain = YOLO(self.path_t2_brain)
-    self.t2_ischemia = YOLO(self.path_t2_ischemia)
+    self.adc_brain = YOLO(self.path_adc_brain) if os.path.exists(self.path_adc_brain) else None
+    self.adc_ischemia = YOLO(self.path_adc_ischemia) if os.path.exists(self.path_adc_ischemia) else None
+    self.swi_brain = YOLO(self.path_swi_brain) if os.path.exists(self.path_swi_brain) else None
+    self.swi_msc = YOLO(self.path_swi_msc) if os.path.exists(self.path_swi_msc) else None
+    self.t2_brain = YOLO(self.path_t2_brain) if os.path.exists(self.path_t2_brain) else None
+    self.t2_ischemia = YOLO(self.path_t2_ischemia) if os.path.exists(self.path_t2_ischemia) else None
+
+    if self.adc_brain == None or self.adc_ischemia == None or self.swi_brain == None or self.swi_msc == None or self.t2_brain == None or self.t2_ischemia == None: 
+       print("Not all artificial neural networks are successfully loaded (problem with settings)")
 
   def saveSettings(self, settings):
     settings.beginGroup("Classifier")
@@ -168,37 +172,46 @@ class Classifier:
     return ds.ProtocolName, img
 
   @cached(max_size=512)
+  @smart_inference_mode()
   def getMask(self, mask_type, filename):
     protocolName, yolo_input = self.__preprocessSlice(filename)
 
     mask = None
     if mask_type == MaskType.BRAIN: 
        if protocolName == "ep2d_diff_tra_14b": # ADC
-          yolo_output = self.adc_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_brain", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
-          mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
+          if self.adc_brain != None: 
+             yolo_output = self.adc_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_brain", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
+             mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
        elif protocolName == "swi_tra":         # SWI
-          yolo_output = self.swi_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_swi_brain", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
-          mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
+          if self.swi_brain != None: 
+             yolo_output = self.swi_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_swi_brain", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
+             mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
        elif protocolName == "t2_tse_tra_fs":   # T2
-          yolo_output = self.t2_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
-          mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
+          if self.t2_brain != None: 
+             yolo_output = self.t2_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
+             mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
     elif mask_type == MaskType.ISCHEMIA:
        brain_mask = self.getMask(MaskType.BRAIN, filename)
        if protocolName == "ep2d_diff_tra_14b": # ADC
-          yolo_output = self.adc_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_isc", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
-          mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=2)
+          if self.adc_ischemia != None: 
+             yolo_output = self.adc_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_isc", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
+             mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=2)
        elif protocolName == "t2_tse_tra_fs":   # T2
-          yolo_output = self.t2_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_isc", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
-          mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=0)
-       mask = cv2.bitwise_and(brain_mask, mask)
+          if self.t2_ischemia != None: 
+             yolo_output = self.t2_ischemia.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_isc", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
+             mask = get_zones_data(yolo_output, imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=0)
+       if type(brain_mask) != type(None) and type(mask) != type(None): 
+          mask = cv2.bitwise_and(brain_mask, mask)
     elif mask_type == MaskType.MSC:
        brain_mask = self.getMask(MaskType.BRAIN, filename)
        if protocolName == "swi_tra": # SWI
-          yolo_output = self.swi_msc.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_swi_msc", batch=0, source=yolo_input, imgsz=msk_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
-          mask = get_zones_data(yolo_output, imgsz_val=msk_imgsz, get_brain=False, erode_level=2)
-       mask = cv2.bitwise_and(brain_mask, mask)
+          if self.swi_msc != None: 
+             yolo_output = self.swi_msc.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_swi_msc", batch=0, source=yolo_input, imgsz=msk_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
+             mask = get_zones_data(yolo_output, imgsz_val=msk_imgsz, get_brain=False, erode_level=2)
+       if type(brain_mask) != type(None) and type(mask) != type(None): 
+          mask = cv2.bitwise_and(brain_mask, mask)
 
     if type(mask) == type(None):
-       return np.zeros(ds.pixel_array.shape, dtype=np.uint8)
+       return np.zeros((yolo_input.shape[0], yolo_input.shape[1]), dtype=np.uint8)
 
     return mask
