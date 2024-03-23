@@ -42,3 +42,4 @@ class MRIMAApp(QtWidgets.QApplication):
 	def onBeforeExit(self):
 		self.gui.saveSettings(self.settings)
 		self.processor.saveSettings(self.settings)
+		self.processor.shutdownThreadPool()

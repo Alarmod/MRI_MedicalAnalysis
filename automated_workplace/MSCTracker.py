@@ -1,30 +1,48 @@
 import numpy as np
-import cv2
+#import cv2
+import cc3d
 import pulp as pl
 
 def distance(start, end):
 	return np.sqrt(np.sum(np.square(start - end)))
 
-def getXYZ(centroid, slice_number, voxel_size):
-	return np.array([centroid[0], centroid[1], slice_number])*voxel_size
+def getXYZ(col, row, slice_number, voxel_size):
+	return np.array([col, row, slice_number])*voxel_size
 
 class ConnectedComponent:
-	def __init__(self, xyz, area):
+	def __init__(self, xyz, volume):
 		self.xyz = xyz 
-		self.area = area
+		self.volume = int(volume)
 
 	def __repr__(self):
-		return "<"+str(self.xyz) + ", " + str(self.area) + ">"
+		return "<"+str(self.xyz) + ", " + str(self.volume) + ">"
 
+'''
+#CCL via opencv (2d)
 def getConnectedComponents(voxels, voxel_size):
 	components = []
 	for slice_number in range(voxels.shape[0]):
 		num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(voxels[slice_number], 8, cv2.CV_32S)
 		for label in range(1, num_labels):
-			component = ConnectedComponent(getXYZ(centroids[label], slice_number, voxel_size),
+			component = ConnectedComponent(getXYZ(centroids[label][0], centroids[label][1], slice_number, voxel_size),
 						       stats[label][cv2.CC_STAT_AREA])
 			components.append(component)
 	return components
+'''
+
+#CCL via сс3d (3d)
+def getConnectedComponents(voxels, voxel_size):
+	components = []
+	labels, num_labels = cc3d.connected_components(voxels, connectivity=26, return_N=True)
+	stats = cc3d.statistics(labels)
+	centroids = stats["centroids"]
+	voxel_counts = stats["voxel_counts"]
+	for label in range(1, num_labels+1):
+		component = ConnectedComponent(getXYZ(centroids[label][2], centroids[label][1], centroids[label][0], voxel_size),
+					       voxel_counts[label])
+		components.append(component)
+	return components
+
 
 def solve_closed_tp(supply, demands, cost):
 	supply_count = len(supply)
@@ -55,8 +73,8 @@ def solve_closed_tp(supply, demands, cost):
 	return result
 
 def solve_tp(sources, destinations):
-	supply = [src.area for src in sources]
-	demands = [dst.area for dst in destinations]
+	supply = [src.volume for src in sources]
+	demands = [dst.volume for dst in destinations]
 
 	src_total_amount = np.sum(supply)
 	dst_total_amount = np.sum(demands)

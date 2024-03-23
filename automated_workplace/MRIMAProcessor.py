@@ -72,6 +72,9 @@ class MRIMAProcessor:
 
 		self.volume_property = None
 
+	def shutdownThreadPool(self):
+		self.pool.shutdown(wait=False)
+
 	def loadSettings(self, settings):
 		settings.beginGroup("Processor")
 
@@ -184,6 +187,7 @@ class MRIMAProcessor:
 		return dataset
 
 	async def scanFolder(self, path):
+		#return self.__scanFolderImpl(path)
 		return await run_in_threadpool(self.pool, self.__scanFolderImpl, path)
 
 	'''-----------------------------------------'''

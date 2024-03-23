@@ -3,9 +3,10 @@ vtk
 asyncio
 qasync==0.25.0
 pydicom
-pandas==2.0.3
+pandas>=2.0.3
 opencv-python
 numpy
+connected-components-3d
 pulp
 ultralytics
 math
