@@ -3,7 +3,6 @@ import numpy as np
 import cv2
 import asyncio
 import qasync
-import concurrent.futures
 from datetime import datetime
 
 from Dataset import Dataset, loadDICOMFile
@@ -47,8 +46,7 @@ class Mesh(vtk.vtkActor):
 
 class MRIMAProcessor:
 	def __init__(self):
-#		self.pool = qasync.QThreadExecutor(1)
-		self.pool = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+		self.pool = qasync.QThreadExecutor(1)
 
 		self.gradientMinValue = 100
 		self.gradientMaxValue = 255
@@ -189,7 +187,6 @@ class MRIMAProcessor:
 		return dataset
 
 	async def scanFolder(self, path):
-		#return self.__scanFolderImpl(path)
 		return await run_in_threadpool(self.pool, self.__scanFolderImpl, path)
 
 	'''-----------------------------------------'''
