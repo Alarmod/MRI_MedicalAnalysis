@@ -29,7 +29,7 @@ https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive
 
 or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_data
 
-(must be stored to datasets folder and unpacked)
+(must be stored to _datasets_ folder and unpacked)
 
 # Ways of using
 1. Training:
