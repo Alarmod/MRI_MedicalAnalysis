@@ -73,12 +73,12 @@ def get_zones_data(results, imgsz_val, get_brain=True, erode_level=0, erode_mask
 class Classifier:
   def __init__(self):
     self.__hash = hash(str(self))
-    self.path_adc_brain = './resources/runs/segment/adc_brain_512/weights/best.pt'
-    self.path_adc_ischemia = './resources/runs/segment/adc_ischemia_512_augmented/weights/best.pt'
-    self.path_swi_brain = './resources/runs/segment/swi_brain_512/weights/best.pt'
-    self.path_swi_msc = './resources/runs/segment/swi_msc_mod_1280_augmented/weights/best.pt'
-    self.path_t2_brain = './resources/runs/segment/t2_brain_512/weights/best.pt'
-    self.path_t2_ischemia = './resources/runs/segment/t2_ischemia_512_augmented/weights/best.pt'
+    self.path_adc_brain = './resources/runs/segment/adc_brain_' + str(brain_and_ischemia_imgsz) + '/weights/best.pt'
+    self.path_adc_ischemia = './resources/runs/segment/adc_ischemia_' + str(brain_and_ischemia_imgsz) + '_augmented/weights/best.pt'
+    self.path_swi_brain = './resources/runs/segment/swi_brain_' + str(brain_and_ischemia_imgsz) + '/weights/best.pt'
+    self.path_swi_msc = './resources/runs/segment/swi_msc_mod_' + str(msk_imgsz) + '_augmented/weights/best.pt'
+    self.path_t2_brain = './resources/runs/segment/t2_brain_' + str(brain_and_ischemia_imgsz) + '/weights/best.pt'
+    self.path_t2_ischemia = './resources/runs/segment/t2_ischemia_' + str(brain_and_ischemia_imgsz) + '_augmented/weights/best.pt'
 
   def loadSettings(self, settings):
     settings.beginGroup("Classifier")
