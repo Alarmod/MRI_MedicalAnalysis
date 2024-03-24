@@ -11,13 +11,10 @@ Load MRI_settings.zip:
 
 https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing
 
-and unpack it to resources folder
+and unpack it to resources folder (must be _resources/runs/segment/..._ structure)
 
 # Manual for run: 
 _python main.py_
-
-# Used programming languages
-Python 3.8 and more new
 
 # System requirements
 Windows 10-11, Linux
