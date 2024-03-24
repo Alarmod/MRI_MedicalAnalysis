@@ -46,4 +46,5 @@ _python train.py internal_validate_ (modificated Yolo 8 validation code that clo
 
 # System requirements
 Windows 10-11, Linux
+
 Python 3.8-3.11
