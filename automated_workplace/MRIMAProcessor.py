@@ -1,8 +1,6 @@
 import vtk
 import numpy as np
 import cv2
-import asyncio
-import qasync
 from datetime import datetime
 
 from Dataset import Dataset, loadDICOMFile
@@ -20,9 +18,6 @@ class Marker:
 	ISCHEMIA = 30000
 	MSC = 31000
 	REFERENCED_MSC = 32000
-
-def run_in_threadpool(pool, func, *args, **kw_args):
-	return asyncio.get_running_loop().run_in_executor(pool, func, *args, **kw_args)
 
 class Mesh(vtk.vtkActor):
 	def __init__(self):
@@ -46,8 +41,6 @@ class Mesh(vtk.vtkActor):
 
 class MRIMAProcessor:
 	def __init__(self):
-		self.pool = qasync.QThreadExecutor(1)
-
 		self.gradientMinValue = 100
 		self.gradientMaxValue = 255
 
@@ -71,9 +64,6 @@ class MRIMAProcessor:
 		self.mscTracker = MSCTracker()
 
 		self.volume_property = None
-
-	def shutdownThreadPool(self):
-		self.pool.shutdown(wait=True)
 
 	def loadSettings(self, settings):
 		settings.beginGroup("Processor")
@@ -181,13 +171,10 @@ class MRIMAProcessor:
 
 	'''-----------------------------------------'''
 	@profile
-	def __scanFolderImpl(self, path):
+	def scanFolder(self, path):
 		dataset = Dataset()
 		dataset.scanFolder(path)
 		return dataset
-
-	async def scanFolder(self, path):
-		return await run_in_threadpool(self.pool, self.__scanFolderImpl, path)
 
 	'''-----------------------------------------'''
 	@staticmethod
@@ -225,7 +212,7 @@ class MRIMAProcessor:
 		return result
 
 	@profile
-	def __processSliceImpl(self, slice, view_mode):
+	def processSlice(self, slice, view_mode):
 		source = loadDICOMFile(slice.filename).pixel_array
 		info = dict()
 
@@ -264,9 +251,6 @@ class MRIMAProcessor:
 
 		return Image(rgb_image, info)
 		
-	async def processSlice(self, slice, view_mode):
-		return await run_in_threadpool(self.pool, self.__processSliceImpl, slice, view_mode)
-
 	'''-----------------------------------------'''
 	def daysBetween(self, study, ref_study):
 		a = datetime.strptime(study.date, '%Y%m%d')
@@ -275,7 +259,7 @@ class MRIMAProcessor:
 		return abs(delta.days)
 
 	@profile
-	def __processStudyImpl(self, study, view_mode):
+	def processStudy(self, study, view_mode):
 		source = np.stack([loadDICOMFile(filename).pixel_array for filename in study.filename_list])
 		info = dict()
 
@@ -362,6 +346,4 @@ class MRIMAProcessor:
 					info["Avg MSC speed:"] = "{:.2f}".format(avg_track_length / days_between)
 				
 		return Volume(vtk_volume, vtk_mesh, info)
-		
-	async def processStudy(self, study, view_mode):
-		return await run_in_threadpool(self.pool, self.__processStudyImpl, study, view_mode)
+	
