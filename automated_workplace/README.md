@@ -7,9 +7,11 @@ Pytorch library with CUDA 11+ https://pytorch.org/get-started/locally/
 _pip3 install -r requirements.txt_
 
 # Installation
-Load MRI_settings.zip:
+Load MRI_settings.zip from
 
 https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing
+or
+https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
 
 and unpack it to resources folder (must be _resources/runs/segment/..._ structure)
 
