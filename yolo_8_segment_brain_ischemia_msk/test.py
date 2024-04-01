@@ -28,7 +28,7 @@ global_single_cls=True
 global_save_json=False
 global_mask_ratio=1
 global_retina_masks=False
-global_half=False
+global_half=True
 global_workers=0             # ставить больше лишь при высоком объеме графической памяти
 
 # использовать только rect=True при обучении, в том числе из-за особенностей текущей версии Yolo!!!

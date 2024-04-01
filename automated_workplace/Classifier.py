@@ -20,7 +20,7 @@ global_single_cls=True
 global_save_json=False
 global_mask_ratio=1
 global_retina_masks=False
-global_half=False
+global_half=True
 global_workers=0
 
 brain_and_ischemia_imgsz=512
