@@ -13,8 +13,6 @@ class MRIMAApp:
 	def __init__(self):
 		self.settings = QtCore.QSettings("settings.ini", QtCore.QSettings.IniFormat)
 
-		self.thread_pool = qasync.QThreadExecutor(1)
-
 		self.processor = MRIMAProcessor()
 		self.processor.loadSettings(self.settings)
 
@@ -25,6 +23,8 @@ class MRIMAApp:
 		self.gui.processSliceSignal.connect(self.onProcessSlice)
 		self.gui.processStudySignal.connect(self.onProcessStudy)
 		self.gui.beforeExitSignal.connect(self.onBeforeExit)
+
+		self.thread_pool = qasync.QThreadExecutor(1)
 
 	@qasync.asyncSlot(str)
 	async def onScanFolder(self, path):
@@ -53,14 +53,18 @@ class MRIMAApp:
 if __name__ == '__main__':
 	qtApp = QtWidgets.QApplication(sys.argv)
 
-	app = MRIMAApp()
-	app.showGUI()
-
 	event_loop = qasync.QEventLoop(qtApp)
 	asyncio.set_event_loop(event_loop)
 
 	app_close_event = asyncio.Event()
 	qtApp.aboutToQuit.connect(app_close_event.set)
+
+	try:
+		app = MRIMAApp()
+		app.showGUI()
+	except Exception as ex:
+		print(ex)
+		sys.exit()
 
 	event_loop.run_until_complete(app_close_event.wait())
 	event_loop.close()
