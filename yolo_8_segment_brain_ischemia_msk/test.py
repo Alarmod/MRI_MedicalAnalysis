@@ -720,42 +720,66 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        model_brain = YOLO("./runs/segment/t2_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt")
        source_val = "./datasets/t2_data/brain/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), batch=44, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, show_boxes=big_data, show_conf=big_data, max_det=1)
+          results = model_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+                                        name="predict_t2_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
+                                        batch=44, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
+                                        conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
+                                        show_boxes=big_data, show_conf=big_data, max_det=1)
           save_results(results, "_brain", imgsz_val=brain_and_ischemia_imgsz, thickness_mod=1)
 
        # t2_ischemia
        model = YOLO("./runs/segment/t2_ischemia_" + str(brain_and_ischemia_imgsz) + "_augmented/weights/best.pt")
        source_val = "./datasets/t2_data/ischemia/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_t2_ischemia_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, show_boxes=big_data, show_conf=big_data)
+          results = model.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+                                  name="predict_t2_ischemia_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
+                                  batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
+                                  conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
+                                  show_boxes=big_data, show_conf=big_data)
           save_results(results, "_ischemia", brain=model_brain, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=brain_and_ischemia_imgsz, thickness_mod=1)
 
        # adc_brain
        model_brain = YOLO("./runs/segment/adc_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt")
        source_val = "./datasets/adc_data/brain/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), batch=44, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, show_boxes=big_data, show_conf=big_data, max_det=1)
+          results = model_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+                                  name="predict_adc_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
+                                  batch=44, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
+                                  conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
+                                  show_boxes=big_data, show_conf=big_data, max_det=1)
           save_results(results, "_brain", imgsz_val=brain_and_ischemia_imgsz, brain_color=(255, 0, 255), target_color=(255, 0, 0), thickness_mod=1)
 
        # adc_ischemia with erode dataset info and results
        model = YOLO("./runs/segment/adc_ischemia_" + str(brain_and_ischemia_imgsz) + "_augmented/weights/best.pt")
        source_val = "./datasets/adc_data/ischemia/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_adc_ischemia_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, show_boxes=big_data, show_conf=big_data)
+          results = model.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+                                  name="predict_adc_ischemia_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
+                                  batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
+                                  conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
+                                  show_boxes=big_data, show_conf=big_data)
           save_results(results, "_ischemia", brain=model_brain, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=brain_and_ischemia_imgsz, brain_color=(255, 0, 255), target_color=(255, 0, 0), thickness_mod=1, erode_level=2, erode_mask_size=5)
 
        # swi_brain
        model_brain = YOLO("./runs/segment/swi_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt")
        source_val = "./datasets/swi_data/brain/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model_brain.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_swi_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), batch=44, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, show_boxes=big_data, show_conf=big_data, max_det=1)
+          results = model_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+                                  name="predict_swi_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
+                                  batch=44, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
+                                  conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
+                                  show_boxes=big_data, show_conf=big_data, max_det=1)
           save_results(results, "_brain", imgsz_val=brain_and_ischemia_imgsz, thickness_mod=2)
 
        # swi_msc
        model = YOLO("./runs/segment/swi_msc_mod_" + str(msk_imgsz) + "_augmented/weights/best.pt")
        source_val = "./datasets/swi_data/msc/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model.predict(workers=global_workers, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, verbose=False, name="predict_swi_msc_" + str(msk_imgsz) + "_default" + ("_big" if big_data else ""), batch=6, source=source_val, imgsz=msk_imgsz, save=True, conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
+          results = model.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+                                  name="predict_swi_msc_" + str(msk_imgsz) + "_default" + ("_big" if big_data else ""), 
+                                  batch=6, source=source_val, imgsz=msk_imgsz, save=True, 
+                                  conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=False, 
+                                  show_boxes=False, show_conf=False)
           save_results(results, "_msk", brain=model_brain, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=msk_imgsz, thickness_mod=2)
     else: 
        internal_validate(exp_name="val_t2_brain_" + str(brain_and_ischemia_imgsz) + "_new", big_data=big_data, imgsz_val=brain_and_ischemia_imgsz, model_path="./runs/segment/t2_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt", dataset_info="data_t2_brain.yaml", batch_size=4, visualize_conf_thres=global_visualize_conf_thres, visualize_show_labels=True, iou_val=global_iou, conf_val=0.01, max_det_val=1)
