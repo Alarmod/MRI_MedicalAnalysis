@@ -218,8 +218,7 @@ class MRIMAProcessor:
 
 	@profile
 	def processSlice(self, slice, view_mode):
-		ds = loadDICOMFile(slice.filename)
-		source = ds.pixel_array
+		source = loadDICOMFile(slice.filename).pixel_array
 		info = dict()
 
 		pixels = cv2.normalize(source, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
@@ -229,88 +228,57 @@ class MRIMAProcessor:
 
 		spacing = self.getSpacing(slice)
 		pixel_area = spacing[0]*spacing[1]
+		scale_factor = 512.0 / np.float64(pixels.shape[1])
 
 		rgb_image = cv2.cvtColor(pixels, cv2.COLOR_GRAY2RGB)
 		if self.use_2D_contours == 1:
-			if ds.ProtocolName == "ep2d_diff_tra_14b": 
-				rgb_image = cv2.resize(rgb_image, (0, 0), fx=6.4, fy=6.4, interpolation=cv2.INTER_NEAREST)
-			else:
-				rgb_image = cv2.resize(rgb_image, (0, 0), fx=2, fy=2, interpolation=cv2.INTER_NEAREST)
+			rgb_image = cv2.resize(rgb_image, (0, 0), fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_NEAREST)
 
-		def drawpoly(img, pts, color, thickness=1, gap=5):
-			for p in pts[::gap]:
-				cv2.circle(img, p[0], thickness, color, -1)
+		def draw_contours(rgb_image, data, color, thickness_value, scale_factor_val):
+			data = cv2.resize(data, (0, 0), fx=scale_factor_val, fy=scale_factor_val, interpolation=cv2.INTER_NEAREST)
+			ct_target, hierarchy_target = cv2.findContours(data, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
+			if type(hierarchy_target) != type(None):
+				for idx in range(len(hierarchy_target[0])): 
+					if hierarchy_target[0][idx][3] == -1: 
+						img_contours = cv2.drawContours(np.zeros(data.shape, np.uint8), ct_target, idx, 255, thickness_value)
+						filter_with_ct = (img_contours == 255)
+						rgb_image[filter_with_ct] = color
+					else: 
+						for p in ct_target[idx][::5]: # set gap value
+							cv2.circle(rgb_image, p[0], thickness_value, color, -1)
 
 		brain_pixels_count = 0
 		if view_mode.flags & ViewMode.MARK_BRAIN_AREA:
 			mask = self.classifier.getMask(MaskType.BRAIN, slice.filename)
-			if self.use_2D_contours == 1:
-				if ds.ProtocolName == "ep2d_diff_tra_14b": 
-					mask = cv2.resize(mask, (0, 0), fx=6.4, fy=6.4, interpolation=cv2.INTER_NEAREST)
-				else:
-					mask = cv2.resize(mask, (0, 0), fx=2, fy=2, interpolation=cv2.INTER_NEAREST)
 			filter = (mask == 255)
-			if self.use_2D_contours == 1:
-				if np.sum(filter) > 0: 
-					ct_brain, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-					img_contours = cv2.drawContours(np.zeros(mask.shape, np.uint8), ct_brain, -1, self.brainColorRGB, 2)
-					filter_with_ct = (img_contours == 255)
-					rgb_image[filter_with_ct] = self.brainColorRGB
-				if ds.ProtocolName == "ep2d_diff_tra_14b": 
-					brain_pixels_count = int(np.floor(np.sum(filter) / 6.4 + 0.5))
+			brain_pixels_count = np.sum(filter)
+			if brain_pixels_count > 0:
+				if self.use_2D_contours == 1:
+					draw_contours(rgb_image, mask, self.brainColorRGB, 2, scale_factor)
 				else:
-					brain_pixels_count = int(np.floor(np.sum(filter) / 2.0 + 0.5))
-			else:
-				rgb_image[filter] = self.brainColorRGB
-				brain_pixels_count = np.sum(filter)
+					rgb_image[filter] = self.brainColorRGB
 			info["Brain pixels:"] = str(brain_pixels_count) + " ({:.2f} mm\u00b2)".format(brain_pixels_count*pixel_area)
 
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA:
 			mask = self.classifier.getMask(MaskType.ISCHEMIA, slice.filename)
-			if self.use_2D_contours == 1:
-				if ds.ProtocolName == "ep2d_diff_tra_14b": 
-					mask = cv2.resize(mask, (0, 0), fx=6.4, fy=6.4, interpolation=cv2.INTER_NEAREST)
-				else:
-					mask = cv2.resize(mask, (0, 0), fx=2, fy=2, interpolation=cv2.INTER_NEAREST)
 			filter = (mask == 255)
-			if self.use_2D_contours == 1:
-				ct_target, hierarchy_target = cv2.findContours(mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
-				if type(hierarchy_target) != type(None):
-					for idx in range(len(hierarchy_target[0])): 
-						if hierarchy_target[0][idx][3] == -1: 
-							img_contours = cv2.drawContours(np.zeros(mask.shape, np.uint8), ct_target, idx, 255, 1)
-							filter_with_ct = (img_contours == 255)
-							rgb_image[filter_with_ct] = self.ischemiaColorRGB
-						else: 
-							drawpoly(rgb_image, ct_target[idx], self.ischemiaColorRGB, thickness=1, gap=5)
-				if ds.ProtocolName == "ep2d_diff_tra_14b": 
-					count = int(np.floor(np.sum(filter) / 6.4 + 0.5))
+			count = np.sum(filter)
+			if count > 0:
+				if self.use_2D_contours == 1:
+					draw_contours(rgb_image, mask, self.ischemiaColorRGB, 1, scale_factor)
 				else:
-					count = int(np.floor(np.sum(filter) / 2.0 + 0.5))
-			else:
-				rgb_image[filter] = self.ischemiaColorRGB
-				count = np.sum(filter)
+					rgb_image[filter] = self.ischemiaColorRGB
 			info["Ischemia pixels:"] = str(count) + " ({:.2f} mm\u00b2)".format(count*pixel_area) + MRIMAProcessor.percents_str(brain_pixels_count, count)
 
 		if view_mode.flags & ViewMode.MARK_MSC_AREA:
 			mask = self.classifier.getMask(MaskType.MSC, slice.filename)
-			if self.use_2D_contours == 1:
-				mask = cv2.resize(mask, (0, 0), fx=2, fy=2, interpolation=cv2.INTER_NEAREST)
 			filter = (mask == 255)
-			if self.use_2D_contours == 1:
-				ct_target, hierarchy_target = cv2.findContours(mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
-				if type(hierarchy_target) != type(None):
-					for idx in range(len(hierarchy_target[0])): 
-						if hierarchy_target[0][idx][3] == -1: 
-							img_contours = cv2.drawContours(np.zeros(mask.shape, np.uint8), ct_target, idx, 255, 1)
-							filter_with_ct = (img_contours == 255)
-							rgb_image[filter_with_ct] = self.MSCColorRGB
-						else: 
-							drawpoly(rgb_image, ct_target[idx], self.MSCColorRGB, thickness=1, gap=5)
-				count = int(np.floor(np.sum(filter) / 2.0 + 0.5))
-			else:
-				rgb_image[filter] = self.MSCColorRGB
-				count = np.sum(filter)
+			count = np.sum(filter)
+			if count > 0:
+				if self.use_2D_contours == 1:
+					draw_contours(rgb_image, mask, self.MSCColorRGB, 1, scale_factor)
+				else:
+					rgb_image[filter] = self.MSCColorRGB
 			info["MSC pixels:"] = str(count) + " ({:.2f} mm\u00b2)".format(count*pixel_area) + MRIMAProcessor.percents_str(brain_pixels_count, count)
 
 		return Image(rgb_image, info)
