@@ -254,7 +254,7 @@ def save_results(results, mask, imgsz_val, brain=None, brain_imgsz_val=None, too
 
               en_for_r = enumerate(r)
               for ci,c in en_for_r: 
-                  b_mask2 = (c.masks.data.cpu().numpy().astype(np.uint8) * 255)
+                  b_mask2 = (c.masks.data.detach().cpu().numpy().astype(np.uint8) * 255)
                   b_mask2 = b_mask2.reshape(b_mask2.shape[1], b_mask2.shape[2])
                   b_mask2_start_shape = b_mask2.shape
 
@@ -265,7 +265,7 @@ def save_results(results, mask, imgsz_val, brain=None, brain_imgsz_val=None, too
                      w_pad = w_pad + 1
 
                   b_mask2 = b_mask2[h_pad:h_pad+h, w_pad:w_pad+w]
-                  b_mask = ((cv2.resize(b_mask2, (w * find_contours_scale, h * find_contours_scale), interpolation=cv2.INTER_LINEAR) > 127) * 255).astype(np.uint8) # wokerd
+                  b_mask = cv2.resize(b_mask2, (w * find_contours_scale, h * find_contours_scale), interpolation=cv2.INTER_NEAREST)
 
                   if img_ready: 
                      img = cv2.bitwise_or(b_mask, img, mask=None)
@@ -324,7 +324,7 @@ def save_results(results, mask, imgsz_val, brain=None, brain_imgsz_val=None, too
            contours = []
            en_for_r = enumerate(r)
            for ci,c in en_for_r: 
-               b_mask2 = (c.masks.data.cpu().numpy().astype(np.uint8) * 255)
+               b_mask2 = (c.masks.data.detach().cpu().numpy().astype(np.uint8) * 255)
                b_mask2 = b_mask2.reshape(b_mask2.shape[1], b_mask2.shape[2])
                b_mask2_start_shape = b_mask2.shape
 
@@ -335,9 +335,7 @@ def save_results(results, mask, imgsz_val, brain=None, brain_imgsz_val=None, too
                   w_pad = w_pad + 1
 
                b_mask2 = b_mask2[h_pad:h_pad+h, w_pad:w_pad+w]
-               #print(f"b_mask2.shape: {b_mask2.shape}")
-               res = ((cv2.resize(b_mask2, (find_contours_scale * b_mask2.shape[1], find_contours_scale * b_mask2.shape[0]), interpolation=cv2.INTER_LINEAR) > 127) * 255).astype(np.uint8)
-               #print(f"res.shape: {res.shape}")
+               res = cv2.resize(b_mask2, (find_contours_scale * b_mask2.shape[1], find_contours_scale * b_mask2.shape[0]), interpolation=cv2.INTER_NEAREST)
 
                #cv2.imwrite(r.save_dir + "\\masks\\" + Path(r.path).stem + mask + "_debug2.png", res)
 
