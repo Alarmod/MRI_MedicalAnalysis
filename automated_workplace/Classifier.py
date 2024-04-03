@@ -23,8 +23,6 @@ msk_imgsz=1280
 def get_zone_mask(result, imgsz_val, get_brain=True, erode_level=0, erode_mask_size=5): 
 	r_orig_img_shape = result.orig_img.shape[:2]
 	h0, w0 = r_orig_img_shape[0], r_orig_img_shape[1]
-
-	h, w = (h0, w0)
 	ratio = imgsz_val / max(h0, w0)
 	h, w = min(math.ceil(h0 * ratio), imgsz_val), min(math.ceil(w0 * ratio), imgsz_val)
 
@@ -32,11 +30,11 @@ def get_zone_mask(result, imgsz_val, get_brain=True, erode_level=0, erode_mask_s
 
 	en_for_r = enumerate(result)
 	for ci, c in en_for_r:
-		b_mask = (c.masks.data.detach().cpu().numpy().astype(np.uint8) * 255)
+		b_mask = c.masks.data.detach().cpu().numpy().astype(np.uint8) * 255
 		b_mask = b_mask.reshape(b_mask.shape[1], b_mask.shape[2])
 		b_mask_start_shape = b_mask.shape
 
-		h_pad, w_pad = ((int(b_mask_start_shape[0] - h) // 2), (int(b_mask_start_shape[1] - w) // 2))
+		h_pad, w_pad = int(b_mask_start_shape[0] - h) // 2, int(b_mask_start_shape[1] - w) // 2
 		if (b_mask_start_shape[0] - h - h_pad * 2) > 0:
 			h_pad = h_pad + 1
 		if (b_mask_start_shape[1] - w - w_pad * 2) > 0:
