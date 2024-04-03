@@ -336,7 +336,7 @@ def save_results(results, mask, imgsz_val, brain=None, brain_imgsz_val=None, too
 
                b_mask2 = b_mask2[h_pad:h_pad+h, w_pad:w_pad+w]
                #print(f"b_mask2.shape: {b_mask2.shape}")
-               res = cv2.resize(b_mask2, (find_contours_scale * b_mask2.shape[1], find_contours_scale * b_mask2.shape[0]), interpolation=cv2.INTER_NEAREST)
+               res = ((cv2.resize(b_mask2, (find_contours_scale * b_mask2.shape[1], find_contours_scale * b_mask2.shape[0]), interpolation=cv2.INTER_LINEAR) > 127) * 255).astype(np.uint8)
                #print(f"res.shape: {res.shape}")
 
                #cv2.imwrite(r.save_dir + "\\masks\\" + Path(r.path).stem + mask + "_debug2.png", res)

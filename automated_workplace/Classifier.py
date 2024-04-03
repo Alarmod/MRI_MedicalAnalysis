@@ -43,7 +43,7 @@ def get_zone_mask(result, imgsz_val, get_brain=True, erode_level=0, erode_mask_s
 			w_pad = w_pad + 1
 
 		b_mask = b_mask[h_pad:h_pad+h, w_pad:w_pad+w]
-		res = cv2.resize(b_mask, (find_contours_scale * b_mask.shape[1], find_contours_scale * b_mask.shape[0]), interpolation=cv2.INTER_NEAREST)
+		res = ((cv2.resize(b_mask, (find_contours_scale * b_mask.shape[1], find_contours_scale * b_mask.shape[0]), interpolation=cv2.INTER_LINEAR) > 127) * 255).astype(np.uint8)
 
 		if get_brain:
 			ct, _ = cv2.findContours(res, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)

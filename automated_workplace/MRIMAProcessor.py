@@ -235,7 +235,7 @@ class MRIMAProcessor:
 			rgb_image = cv2.resize(rgb_image, (0, 0), fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_NEAREST)
 
 		def draw_contours(rgb_image, data, color, thickness_value, scale_factor_val):
-			data = cv2.resize(data, (0, 0), fx=scale_factor_val, fy=scale_factor_val, interpolation=cv2.INTER_NEAREST)
+			data = ((cv2.resize(data, (0, 0), fx=scale_factor_val, fy=scale_factor_val, interpolation=cv2.INTER_LINEAR) > 127) * 255).astype(np.uint8)
 			ct_target, hierarchy_target = cv2.findContours(data, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
 			if type(hierarchy_target) != type(None):
 				for idx in range(len(hierarchy_target[0])): 
