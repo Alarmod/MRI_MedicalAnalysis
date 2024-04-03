@@ -491,12 +491,13 @@ def save_results(results, mask, imgsz_val, brain=None, brain_imgsz_val=None, too
 
                  img_contours = cv2.drawContours(new_image_ct, ct_brain, -1, (brain_color[0], brain_color[1], brain_color[2]), 2 * thickness_mod)
 
-                 for idx in range(len(hierarchy_target[0])): 
-                     if hierarchy_target[0][idx][3] == -1: 
-                        img_contours = cv2.drawContours(img_contours, ct_target, idx, (target_color[0], target_color[1], target_color[2]), 2 * thickness_mod)
-                     else: 
-                        drawpoly(img_contours, ct_target[idx], (target_color[0], target_color[1], target_color[2]), thickness=2 * thickness_mod, gap=10)
-                 cv2.imwrite(r.save_dir + "\\masks\\" + Path(r.path).stem + "_visual_ct.png", img_contours, [cv2.IMWRITE_PNG_COMPRESSION, 3])
+                 if type(hierarchy_target) != type(None):
+                    for idx in range(len(hierarchy_target[0])): 
+                        if hierarchy_target[0][idx][3] == -1: 
+                           img_contours = cv2.drawContours(img_contours, ct_target, idx, (target_color[0], target_color[1], target_color[2]), 2 * thickness_mod)
+                        else: 
+                           drawpoly(img_contours, ct_target[idx], (target_color[0], target_color[1], target_color[2]), thickness=2 * thickness_mod, gap=10)
+                    cv2.imwrite(r.save_dir + "\\masks\\" + Path(r.path).stem + "_visual_ct.png", img_contours, [cv2.IMWRITE_PNG_COMPRESSION, 3])
               elif have_brain: 
                  ct_brain, _ = cv2.findContours(brain_obj, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
                  img_contours = cv2.drawContours(new_image_ct, ct_brain, -1, (brain_color[0], brain_color[1], brain_color[2]), 2 * thickness_mod)
@@ -505,11 +506,12 @@ def save_results(results, mask, imgsz_val, brain=None, brain_imgsz_val=None, too
                  _, thresh = cv2.threshold(img2, 127, 255, 0)
                  ct_target, hierarchy_target = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
 
-                 for idx in range(len(hierarchy_target[0])): 
-                     if hierarchy_target[0][idx][3] == -1: 
-                        img_contours = cv2.drawContours(img_contours, ct_target, idx, (target_color[0], target_color[1], target_color[2]), 2 * thickness_mod)
-                     else: 
-                        drawpoly(img_contours, ct_target[idx], (target_color[0], target_color[1], target_color[2]), thickness=2 * thickness_mod, gap=10)
+                 if type(hierarchy_target) != type(None):
+                    for idx in range(len(hierarchy_target[0])): 
+                        if hierarchy_target[0][idx][3] == -1: 
+                           img_contours = cv2.drawContours(img_contours, ct_target, idx, (target_color[0], target_color[1], target_color[2]), 2 * thickness_mod)
+                        else: 
+                           drawpoly(img_contours, ct_target[idx], (target_color[0], target_color[1], target_color[2]), thickness=2 * thickness_mod, gap=10)
 
                  cv2.imwrite(r.save_dir + "\\masks\\" + Path(r.path).stem + "_visual_ct.png", img_contours, [cv2.IMWRITE_PNG_COMPRESSION, 3])
               else:
