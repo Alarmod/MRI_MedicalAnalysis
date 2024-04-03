@@ -155,7 +155,7 @@ class Classifier:
 		elif mask_type == MaskType.MSC:
 			brain_mask = self.getMask(MaskType.BRAIN, filename)
 			if protocolName == "swi_tra": # SWI
-				yolo_output = self.swi_msc.predict(workers=global_workers, , retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_swi_msc", batch=0, source=yolo_input, imgsz=msk_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
+				yolo_output = self.swi_msc.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_swi_msc", batch=0, source=yolo_input, imgsz=msk_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
 				mask = get_zone_mask(yolo_output[0], imgsz_val=msk_imgsz, get_brain=False, erode_level=2)
 			mask = cv2.bitwise_and(brain_mask, mask)
 
