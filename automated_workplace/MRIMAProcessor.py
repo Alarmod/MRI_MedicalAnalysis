@@ -241,8 +241,7 @@ class MRIMAProcessor:
 				for idx in range(len(hierarchy_target[0])): 
 					if hierarchy_target[0][idx][3] == -1: 
 						img_contours = cv2.drawContours(np.zeros(data.shape, np.uint8), ct_target, idx, 255, thickness_value)
-						filter_with_ct = (img_contours == 255)
-						rgb_image[filter_with_ct] = color
+						rgb_image[(img_contours == 255)] = color
 					else: 
 						for p in ct_target[idx][::5]: # set gap value
 							cv2.circle(rgb_image, p[0], thickness_value, color, -1)
