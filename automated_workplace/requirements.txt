@@ -1,7 +1,5 @@
 PySide2
 vtk
-asyncio
-qasync
 pydicom
 pandas>=2.0.3
 opencv-python
@@ -9,4 +7,4 @@ numpy
 connected-components-3d
 pulp
 ultralytics>=8.1.6
-memoization
+cachetools

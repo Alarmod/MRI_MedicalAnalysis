@@ -1,9 +1,13 @@
+from PySide2 import QtCore, QtGui, QtWidgets
 import vtk
 import numpy as np
 import cv2
+import functools
+import concurrent.futures
 from datetime import datetime
 
-from Dataset import Dataset, loadDICOMFile
+from Cache import get_cached_data
+from Dataset import Dataset
 from Entity import *
 from ViewMode import ViewMode
 
@@ -39,8 +43,22 @@ class Mesh(vtk.vtkActor):
 		self.mapper.SetBlockColor(currentBlock+1, color)
 		self.mapper.SetBlockOpacity(currentBlock+1, opacity)
 
-class MRIMAProcessor:
+def _percents_str(total, count):
+	if total == 0 or count == 0:
+		return ""
+	else:
+		return " / {:.2f}%".format(count * 100 / total)
+
+def run_in_threadpool(thread_pool, func, *args, **kwargs):
+	return thread_pool.submit(functools.partial(func, *args, **kwargs))
+
+class MRIMAProcessor(QtCore.QObject):
 	def __init__(self):
+		super().__init__()
+
+		#self.threadPoolSize = 4
+		#self.thread_pool = None
+
 		self.gradientMinValue = 100
 		self.gradientMaxValue = 255
 
@@ -68,6 +86,11 @@ class MRIMAProcessor:
 
 	def loadSettings(self, settings):
 		settings.beginGroup("Processor")
+
+		#self.threadPoolSize = int(settings.value('ThreadPoolSize', self.threadPoolSize))
+		#if self.threadPoolSize < 1 or self.threadPoolSize > 4:
+		#	raise Exception("Incorrect settings, ThreadPoolSize must be in range [1, 4]")
+		#self.thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=self.threadPoolSize)
 
 		self.gradientMinValue = int(settings.value('GradientMinValue', self.gradientMinValue))
 		self.gradientMaxValue = int(settings.value('GradientMaxValue', self.gradientMaxValue))
@@ -97,6 +120,8 @@ class MRIMAProcessor:
 
 	def saveSettings(self, settings):
 		settings.beginGroup("Processor")
+
+		#settings.setValue('ThreadPoolSize', self.threadPoolSize)
 
 		settings.setValue('GradientMinValue', self.gradientMinValue)
 		settings.setValue('GradientMaxValue', self.gradientMaxValue)
@@ -173,7 +198,6 @@ class MRIMAProcessor:
 
 		return volumeProperty
 
-
 	'''-----------------------------------------'''
 	@profile
 	def scanFolder(self, path):
@@ -182,13 +206,6 @@ class MRIMAProcessor:
 		return dataset
 
 	'''-----------------------------------------'''
-	@staticmethod
-	def percents_str(total, count):
-		if total == 0 or count == 0:
-			return ""
-		else:
-			return " / {:.2f}%".format(count * 100 / total)
-
 	def getSpacing(self, entity):
 		if entity.protocol == "ep2d_diff_tra_14b": 
 			return self.volumeSpacingADC
@@ -206,6 +223,8 @@ class MRIMAProcessor:
 
 	@staticmethod
 	def apply_gradient_correction(a, b):
+		'''
+		#old impl - approx 0.120 sec. per image with shape (180, 256)
 		rows, cols = a.shape
 		result = np.zeros((rows, cols), dtype=np.float64)
 		for row in range(rows):
@@ -214,23 +233,73 @@ class MRIMAProcessor:
 					result[row, col] = (b[row] * a[row, col])/127.5
 				else:
 					result[row, col] = b[row] * (255 - a[row, col]) / 127.5 + 2 * a[row, col] - 255
+		'''
+
+		#via numpy - approx 0.017 sec. per image with shape (180, 256)
+		result = np.zeros(a.shape, dtype=np.float64)
+		a = a.astype(np.float64)
+		b = b / 127.5
+
+		low = (a * b[:, np.newaxis])
+		high = (255.0 - a) * b[:, np.newaxis] + 2 * a - 255
+
+		low_mask = (a < 127.5)
+		high_mask = ~low_mask
+		result[low_mask] = low[low_mask]
+		result[high_mask] = high[high_mask]
 		return result
 
 	@profile
+	def __preprocessSliceData(self, source, view_mode):
+		def yield_value(value):
+			yield value
+
+		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA) and type(source.preprocessed) == type(None):
+			self.classifier.preprocess(source)
+
+		#non-parallel impl
+		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA) and type(source.brain_mask) == type(None):
+			self.classifier.getMask(MaskType.BRAIN, yield_value(source))
+		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA and type(source.ischemia_mask) == type(None):
+			self.classifier.getMask(MaskType.ISCHEMIA, yield_value(source))
+			cv2.bitwise_and(source.brain_mask, source.ischemia_mask)
+		if view_mode.flags & ViewMode.MARK_MSC_AREA and type(source.msc_mask) == type(None):
+			self.classifier.getMask(MaskType.MSC, yield_value(source))
+			cv2.bitwise_and(source.brain_mask, source.msc_mask)
+
+		'''
+		#parallel impl (ineffective, suffers from GIL)
+		futures = []
+		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA) and type(source.brain_mask) == type(None):
+			futures.append(run_in_threadpool(self.thread_pool, self.classifier.getMask, MaskType.BRAIN, yield_value(source)))
+		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA and type(source.ischemia_mask) == type(None):
+			futures.append(run_in_threadpool(self.thread_pool, self.classifier.getMask, MaskType.ISCHEMIA, yield_value(source)))
+		if view_mode.flags & ViewMode.MARK_MSC_AREA and type(source.msc_mask) == type(None):
+			futures.append(run_in_threadpool(self.thread_pool, self.classifier.getMask, MaskType.MSC, yield_value(source)))
+		concurrent.futures.wait(futures)
+		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA:
+			cv2.bitwise_and(source.brain_mask, source.ischemia_mask)
+		if view_mode.flags & ViewMode.MARK_MSC_AREA:
+			cv2.bitwise_and(source.brain_mask, source.msc_mask)
+		'''
+
+	@profile
 	def processSlice(self, slice, view_mode):
-		source = loadDICOMFile(slice.filename).pixel_array
+		source = get_cached_data(slice.filename)
 		info = dict()
 
-		pixels = cv2.normalize(source, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+		self.__preprocessSliceData(source, view_mode)
+
+		spacing = self.getSpacing(slice)
+		pixel_area = spacing[0]*spacing[1]
+
+		pixels = cv2.normalize(source.ds.pixel_array, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
 		if view_mode.flags & ViewMode.USE_PREPROCESSED_SOURCE:
 			grad = MRIMAProcessor.compute_gradient(self.gradientMinValue, self.gradientMaxValue, pixels.shape[0])
 			pixels = MRIMAProcessor.apply_gradient_correction(pixels, grad).astype(np.ubyte)
 
-		spacing = self.getSpacing(slice)
-		pixel_area = spacing[0]*spacing[1]
-		scale_factor = 512.0 / np.float64(pixels.shape[1])
-
 		rgb_image = cv2.cvtColor(pixels, cv2.COLOR_GRAY2RGB)
+		scale_factor = 512.0 / np.float64(pixels.shape[1])
 		if self.use_2D_contours == 1:
 			rgb_image = cv2.resize(rgb_image, (0, 0), fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_NEAREST)
 
@@ -248,37 +317,34 @@ class MRIMAProcessor:
 
 		brain_pixels_count = 0
 		if view_mode.flags & ViewMode.MARK_BRAIN_AREA:
-			mask = self.classifier.getMask(MaskType.BRAIN, slice.filename)
-			filter = (mask == 255)
-			brain_pixels_count = np.sum(filter)
+			marked = (source.brain_mask == 255)
+			brain_pixels_count = np.sum(marked)
 			if brain_pixels_count > 0:
 				if self.use_2D_contours == 1:
-					draw_contours(rgb_image, mask, self.brainColorRGB, 2, scale_factor)
+					draw_contours(rgb_image, source.brain_mask, self.brainColorRGB, 2, scale_factor)
 				else:
-					rgb_image[filter] = self.brainColorRGB
+					rgb_image[marked] = self.brainColorRGB
 			info["Brain pixels:"] = str(brain_pixels_count) + " ({:.2f} mm\u00b2)".format(brain_pixels_count*pixel_area)
 
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA:
-			mask = self.classifier.getMask(MaskType.ISCHEMIA, slice.filename)
-			filter = (mask == 255)
-			count = np.sum(filter)
+			marked = (source.ischemia_mask == 255)
+			count = np.sum(marked)
 			if count > 0:
 				if self.use_2D_contours == 1:
-					draw_contours(rgb_image, mask, self.ischemiaColorRGB, 1, scale_factor)
+					draw_contours(rgb_image, source.ischemia_mask, self.ischemiaColorRGB, 1, scale_factor)
 				else:
-					rgb_image[filter] = self.ischemiaColorRGB
-			info["Ischemia pixels:"] = str(count) + " ({:.2f} mm\u00b2)".format(count*pixel_area) + MRIMAProcessor.percents_str(brain_pixels_count, count)
+					rgb_image[marked] = self.ischemiaColorRGB
+			info["Ischemia pixels:"] = str(count) + " ({:.2f} mm\u00b2)".format(count*pixel_area) + _percents_str(brain_pixels_count, count)
 
 		if view_mode.flags & ViewMode.MARK_MSC_AREA:
-			mask = self.classifier.getMask(MaskType.MSC, slice.filename)
-			filter = (mask == 255)
-			count = np.sum(filter)
+			marked = (source.msc_mask == 255)
+			count = np.sum(marked)
 			if count > 0:
 				if self.use_2D_contours == 1:
-					draw_contours(rgb_image, mask, self.MSCColorRGB, 1, scale_factor)
+					draw_contours(rgb_image, source.msc_mask, self.MSCColorRGB, 1, scale_factor)
 				else:
-					rgb_image[filter] = self.MSCColorRGB
-			info["MSC pixels:"] = str(count) + " ({:.2f} mm\u00b2)".format(count*pixel_area) + MRIMAProcessor.percents_str(brain_pixels_count, count)
+					rgb_image[marked] = self.MSCColorRGB
+			info["MSC pixels:"] = str(count) + " ({:.2f} mm\u00b2)".format(count*pixel_area) + _percents_str(brain_pixels_count, count)
 
 		return Image(rgb_image, info)
 		
@@ -289,15 +355,61 @@ class MRIMAProcessor:
 		delta = a - b
 		return abs(delta.days)
 
+
+	@profile
+	def __preprocessStudyData(self, source, referenced, view_mode):
+		def filter(it, func):
+			for value in it:
+				if func(value): yield value
+
+		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA | ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
+			for cached in filter(source, lambda c: type(c.preprocessed) == type(None)):
+				self.classifier.preprocess(cached) 
+		if view_mode.flags & (ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
+			for cached in filter(referenced, lambda c: type(c.preprocessed) == type(None)):
+				self.classifier.preprocess(cached)
+
+		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA | ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
+			self.classifier.getMask(MaskType.BRAIN, filter(source, lambda c: type(c.brain_mask) == type(None)))
+		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA:
+			unprocessed = [*filter(source, lambda c: type(c.ischemia_mask) == type(None))]
+			if len(unprocessed) != 0:
+				self.classifier.getMask(MaskType.ISCHEMIA, filter(source, lambda c: type(c.ischemia_mask) == type(None)))
+				for cached in unprocessed:
+					cv2.bitwise_and(cached.brain_mask, cached.ischemia_mask)
+		if view_mode.flags & (ViewMode.MARK_MSC_AREA):
+			unprocessed = [*filter(source, lambda c: type(c.msc_mask) == type(None))]
+			if len(unprocessed) != 0:
+				self.classifier.getMask(MaskType.MSC, filter(source, lambda c: type(c.msc_mask) == type(None)))
+				for cached in unprocessed:
+					cv2.bitwise_and(cached.brain_mask, cached.msc_mask)
+
+		if view_mode.flags & (ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
+			self.classifier.getMask(MaskType.BRAIN, filter(referenced, lambda c: type(c.brain_mask) == type(None)))
+
+			unprocessed = [*filter(referenced, lambda c: type(c.msc_mask) == type(None))]
+			if len(unprocessed) != 0:
+				self.classifier.getMask(MaskType.MSC, filter(referenced, lambda c: type(c.msc_mask) == type(None)))
+				for cached in unprocessed:
+					cv2.bitwise_and(cached.brain_mask, cached.msc_mask)
+
 	@profile
 	def processStudy(self, study, view_mode):
-		source = np.stack([loadDICOMFile(filename).pixel_array for filename in study.filename_list])
+		source = [get_cached_data(filename) for filename in study.filename_list]
+		referenced = []
+		if view_mode.flags & ViewMode.MARK_MSC_FROM:
+			referenced = [get_cached_data(filename) for filename in view_mode.ref_msc_study.filename_list]
+		if view_mode.flags & ViewMode.TRACK_MSC_FROM:
+			referenced = [get_cached_data(filename) for filename in view_mode.ref_tracking_study.filename_list]
 		info = dict()
+
+		self.__preprocessStudyData(source, referenced, view_mode)
 
 		study_spacing = self.getSpacing(study)
 		voxel_vol = study_spacing[0]*study_spacing[1]*study_spacing[2]
-		
-		voxels = cv2.normalize(source, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_16U)
+
+		voxels = np.stack([s.ds.pixel_array for s in source])
+		voxels = cv2.normalize(voxels, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_16U)
 		if view_mode.flags & ViewMode.USE_PREPROCESSED_SOURCE:
 			grad = MRIMAProcessor.compute_gradient(self.gradientMinValue, self.gradientMaxValue, voxels.shape[1])
 			for i in range(voxels.shape[0]):
@@ -306,32 +418,32 @@ class MRIMAProcessor:
 		brain_mask = None
 		brain_voxels_count = 0
 		if view_mode.flags & ViewMode.MARK_BRAIN_AREA:
-			brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in study.filename_list])
-			filter = (brain_mask == 255)
-			voxels[filter] = Marker.BRAIN
-			brain_voxels_count = np.sum(filter)
+			brain_mask = np.stack([cached.brain_mask for cached in source])
+			marked = (brain_mask == 255)
+			voxels[marked] = Marker.BRAIN
+			brain_voxels_count = np.sum(marked)
 			info["Brain voxels:"] = str(brain_voxels_count) + " ({:.2f} mm\u00b3)".format(brain_voxels_count*voxel_vol)
 
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA:
-			mask = np.stack([self.classifier.getMask(MaskType.ISCHEMIA, filename) for filename in study.filename_list])
-			filter = (mask == 255)
-			voxels[filter] = Marker.ISCHEMIA
-			count = np.sum(filter)
-			info["Ischemia voxels:"] = str(count) + " ({:.2f} mm\u00b3)".format(count*voxel_vol) + MRIMAProcessor.percents_str(brain_voxels_count, count)
+			mask = np.stack([cached.ischemia_mask for cached in source])
+			marked = (mask == 255)
+			voxels[marked] = Marker.ISCHEMIA
+			count = np.sum(marked)
+			info["Ischemia voxels:"] = str(count) + " ({:.2f} mm\u00b3)".format(count*voxel_vol) + _percents_str(brain_voxels_count, count)
 
 		msc_mask = None
 		if view_mode.flags & ViewMode.MARK_MSC_AREA:
-			msc_mask = np.stack([self.classifier.getMask(MaskType.MSC, filename) for filename in study.filename_list])
-			filter = (msc_mask == 255)
-			voxels[filter] = Marker.MSC
-			count = np.sum(filter)
-			info["MSC voxels:"] = str(count) + " ({:.2f} mm\u00b3)".format(count*voxel_vol) + MRIMAProcessor.percents_str(brain_voxels_count, count)
+			msc_mask = np.stack([cached.msc_mask for cached in source])
+			marked = (msc_mask == 255)
+			voxels[marked] = Marker.MSC
+			count = np.sum(marked)
+			info["MSC voxels:"] = str(count) + " ({:.2f} mm\u00b3)".format(count*voxel_vol) + _percents_str(brain_voxels_count, count)
 
 		if view_mode.flags & ViewMode.MARK_MSC_FROM:
 			if type(brain_mask) == type(None):
-				brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in study.filename_list])
-			referenced_brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in view_mode.ref_msc_study.filename_list])
-			referenced_msc_mask = np.stack([self.classifier.getMask(MaskType.MSC, filename) for filename in view_mode.ref_msc_study.filename_list])
+				brain_mask = np.stack([cached.brain_mask for cached in source])
+			referenced_brain_mask = np.stack([cached.brain_mask for cached in referenced])
+			referenced_msc_mask = np.stack([cached.msc_mask for cached in referenced])
 			combiner = VolumeCombiner(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_msc_study))
 			transformed_msc_mask = combiner.transform(referenced_msc_mask)
 			voxels[transformed_msc_mask == 255] = Marker.REFERENCED_MSC
@@ -339,15 +451,14 @@ class MRIMAProcessor:
 		transformed_msc_mask = None
 		if view_mode.flags & ViewMode.TRACK_MSC_FROM:
 			if type(brain_mask) == type(None):
-				brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in study.filename_list])
+				brain_mask = np.stack([cached.brain_mask for cached in source])
 			if type(msc_mask) == type(None):
-				msc_mask = np.stack([self.classifier.getMask(MaskType.MSC, filename) for filename in study.filename_list])
-			referenced_brain_mask = np.stack([self.classifier.getMask(MaskType.BRAIN, filename) for filename in view_mode.ref_tracking_study.filename_list])
-			referenced_msc_mask = np.stack([self.classifier.getMask(MaskType.MSC, filename) for filename in view_mode.ref_tracking_study.filename_list])
+				msc_mask = np.stack([cached.msc_mask for cached in source])
+			referenced_brain_mask = np.stack([cached.brain_mask for cached in referenced])
+			referenced_msc_mask = np.stack([cached.msc_mask for cached in referenced])
 			combiner = VolumeCombiner(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_tracking_study))
 			transformed_msc_mask = combiner.transform(referenced_msc_mask)
 			voxels[transformed_msc_mask == 255] = Marker.REFERENCED_MSC
-
 
 		vtk_volume = MRIMAProcessor.numpy2vtk(voxels, study_spacing)
 		vtk_volume.SetProperty(self.volume_property)
@@ -378,3 +489,31 @@ class MRIMAProcessor:
 				
 		return Volume(vtk_volume, vtk_mesh, info)
 	
+
+class AsyncMRIMAProcessor(MRIMAProcessor):
+	emitContentSignal = QtCore.Signal(object)
+
+	def __init__(self):
+		super().__init__()
+		self.background_thread = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+
+	'''-----------------------------------------'''
+	@QtCore.Slot(str)
+	def scanFolder(self, path):
+		run_in_threadpool(self.background_thread, self.__emitContentSignal, functools.partial(super().scanFolder, path))
+
+	@QtCore.Slot(object, object)
+	def processSlice(self, slice, vm):
+		run_in_threadpool(self.background_thread, self.__emitContentSignal, functools.partial(super().processSlice, slice, vm))
+
+	@QtCore.Slot(object, object)
+	def processStudy(self, study, vm):
+		run_in_threadpool(self.background_thread, self.__emitContentSignal, functools.partial(super().processStudy, study, vm))
+
+	def __emitContentSignal(self, func):
+		try:
+			self.emitContentSignal.emit(func())
+		except Exception as ex:
+			print("Exception:", ex)
+			self.emitContentSignal.emit(ex) #emit exception as result (close app in MRIMAGUI.py)
+

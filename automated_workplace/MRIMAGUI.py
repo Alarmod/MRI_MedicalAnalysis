@@ -12,7 +12,7 @@ from ViewMode import ViewMode
 class MRIMAGUI(QtCore.QObject):
 	scanFolderSignal = QtCore.Signal(str)
 	processSliceSignal = QtCore.Signal(object, object)
-	processStudySignal = QtCore.Signal(object, object, bool)
+	processStudySignal = QtCore.Signal(object, object)
 	beforeExitSignal = QtCore.Signal()
 
 	def __init__(self, *args, **kwargs):
@@ -21,6 +21,7 @@ class MRIMAGUI(QtCore.QObject):
 
 		self.selected_input = None
 		self.selected_view_mode  = ViewMode()
+		self.reset_camera = False
         
 	def initUI(self):
 		self.mainWindow = MainWindow("MRIMA App") 
@@ -84,7 +85,7 @@ class MRIMAGUI(QtCore.QObject):
 		self.viewerSubWindow.switchTo2DView()
 		self.scanFolderSignal.emit(path)
 
-	def processSelectedInput(self, reset_camera):
+	def processSelectedInput(self):
 		self.__setDisabled(True)
 		self.infoSubWindow.clearContent()
 
@@ -100,18 +101,20 @@ class MRIMAGUI(QtCore.QObject):
 			self.processSliceSignal.emit(self.selected_input, wm)
 		elif isinstance(self.selected_input, Study):
 			self.mainWindow.setStatusBarText("Processing study...")
-			self.processStudySignal.emit(self.selected_input, wm, reset_camera)
+			self.processStudySignal.emit(self.selected_input, wm)
 
 	@QtCore.Slot(object)
 	def onInputSelected(self, obj):
 		self.selected_input = obj
 		self.viewerSubWindow.updateContextMenu(self.selected_input)
-		self.processSelectedInput(True)
+		self.reset_camera = True
+		self.processSelectedInput()
 
 	@QtCore.Slot(bool, object)
 	def onContextMenuActionTriggered(self, state, obj):
 		self.__updateViewMode(state, obj)
-		self.processSelectedInput(False)
+		self.reset_camera = False
+		self.processSelectedInput()
 
 	def loadSettings(self, settings):
 		self.mainWindow.loadSettings(settings)
@@ -136,7 +139,8 @@ class MRIMAGUI(QtCore.QObject):
 		if info: self.infoSubWindow.clearContent()
 		self.viewerSubWindow.clearContent(view2d, view3d, contextMenu)
 
-	def setContent(self, content, reset_camera=False):
+	@QtCore.Slot(object)
+	def setContent(self, content):
 		if isinstance(content, Dataset):
 			self.datasetSubWindow.setContent(content)
 			self.viewerSubWindow.setContent(content)
@@ -147,8 +151,10 @@ class MRIMAGUI(QtCore.QObject):
 			self.viewerSubWindow.setContent(content)
 			self.infoSubWindow.setContent(content)
 		elif isinstance(content, Volume):
-			self.viewerSubWindow.setContent(content, reset_camera)
+			self.viewerSubWindow.setContent(content, self.reset_camera)
 			self.infoSubWindow.setContent(content)
+		if isinstance(content, Exception):
+			QtWidgets.QApplication.instance().quit() #exit app without confirmation
 
 		self.mainWindow.setStatusBarText("Ready")
 		self.__setDisabled(False)

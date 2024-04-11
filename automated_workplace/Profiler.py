@@ -1,4 +1,4 @@
-import asyncio
+import threading
 from time import perf_counter
 
 class Counter:
@@ -42,16 +42,17 @@ class Profiler:
 		self.counters.get(tag).stop()
 
 	def print(self):
-		for key, value in self.counters.items():
+		for key, value in sorted(self.counters.items(), key=lambda x: x[1].totalTime, reverse=True):
 			print(value, f" Tag: \"{key}\"")
 
 
 #decorator
 def profile(func):
 	def wrapper(*args, **kwargs):
-		Profiler.getInstance().start(func.__name__)
+		tag = threading.current_thread().name + "/" + func.__name__
+		Profiler.getInstance().start(tag)
 		retval = func(*args, **kwargs)
-		Profiler.getInstance().stop(func.__name__)
+		Profiler.getInstance().stop(tag)
 		return retval
 
 	return wrapper

@@ -1,9 +1,10 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 import numpy as np
-import cv2, math, os.path
-from memoization import cached
+import cv2
+import math
+import threading
 
-from Dataset import loadDICOMFile
+from Profiler import Profiler, profile #debug
 
 class MaskType:
 	BRAIN = 1
@@ -20,6 +21,7 @@ global_workers=0
 brain_and_ischemia_imgsz=512
 msk_imgsz=1280
 
+@profile
 def get_zone_mask(result, imgsz_val, get_brain=True, erode_level=0, erode_mask_size=5): 
 	r_orig_img_shape = result.orig_img.shape[:2]
 	h0, w0 = r_orig_img_shape[0], r_orig_img_shape[1]
@@ -58,9 +60,49 @@ def get_zone_mask(result, imgsz_val, get_brain=True, erode_level=0, erode_mask_s
 
 	return img
 
+class YoloModel:
+	def __init__(self, weights_file):
+		self.weights_file = weights_file
+		self.model = YOLO(self.weights_file) if QtCore.QFileInfo.exists(self.weights_file) else None
+		if self.model == None:
+			raise Exception("Incorrect settings, file \'{}\' not found".format(self.weights_file))
+		self.lock = threading.Lock()
+		#self.warmup()
+
+	'''
+	def warmup(self):
+		with self.lock:
+			self.model.predict(...) #perform model warmup here!
+	'''
+
+	@profile
+	def predict(self, *args, **kwargs):
+		with self.lock:
+			return self.model.predict(*args, **kwargs)
+
+def batched(it, batch_size):
+	batch=[None]*batch_size
+	count = 0
+	for value in it:
+		batch[count] = value
+		count = count + 1
+		if count == batch_size:
+			yield batch
+			batch = [None]*batch_size #comment this line in single thread mode
+			count = 0
+	if count != 0:
+		yield batch[0:count]
+
+'''
+#this one a little faster, but need to unpack generator
+def batched(it, batch_size):
+	iterable = [*it]
+	for i in range(0, len(iterable), batch_size):
+		yield iterable[i:i + batch_size]
+'''
+
 class Classifier:
 	def __init__(self):
-		self.__hash = hash(str(self))
 		self.path_adc_brain = './resources/runs/segment/adc_brain_' + str(brain_and_ischemia_imgsz) + '/weights/best.pt'
 		self.path_adc_ischemia = './resources/runs/segment/adc_ischemia_' + str(brain_and_ischemia_imgsz) + '_augmented/weights/best.pt'
 		self.path_swi_brain = './resources/runs/segment/swi_brain_' + str(brain_and_ischemia_imgsz) + '/weights/best.pt'
@@ -78,15 +120,12 @@ class Classifier:
 		self.path = settings.value('path_t2_ischemia', self.path_t2_ischemia)
 		settings.endGroup()
 
-		self.adc_brain = YOLO(self.path_adc_brain) if os.path.exists(self.path_adc_brain) else None
-		self.adc_ischemia = YOLO(self.path_adc_ischemia) if os.path.exists(self.path_adc_ischemia) else None
-		self.swi_brain = YOLO(self.path_swi_brain) if os.path.exists(self.path_swi_brain) else None
-		self.swi_msc = YOLO(self.path_swi_msc) if os.path.exists(self.path_swi_msc) else None
-		self.t2_brain = YOLO(self.path_t2_brain) if os.path.exists(self.path_t2_brain) else None
-		self.t2_ischemia = YOLO(self.path_t2_ischemia) if os.path.exists(self.path_t2_ischemia) else None
-
-		if self.adc_brain == None or self.adc_ischemia == None or self.swi_brain == None or self.swi_msc == None or self.t2_brain == None or self.t2_ischemia == None: 
-			raise Exception("Not all artificial neural networks are successfully loaded (problem with settings)")
+		self.adc_brain = YoloModel(self.path_adc_brain)
+		self.adc_ischemia = YoloModel(self.path_adc_ischemia)
+		self.swi_brain = YoloModel(self.path_swi_brain)
+		self.swi_msc = YoloModel(self.path_swi_msc)
+		self.t2_brain = YoloModel(self.path_t2_brain)
+		self.t2_ischemia = YoloModel(self.path_t2_ischemia)
 
 		#torch.use_deterministic_algorithms(True)
 
@@ -100,12 +139,9 @@ class Classifier:
 		settings.setValue('path_t2_ischemia', self.path_t2_ischemia)
 		settings.endGroup()
 
-	def __hash__(self):
-		return self.__hash
-
-	@cached(max_size=64)
-	def __preprocessSlice(self, filename):
-		ds = loadDICOMFile(filename)
+	def preprocess(self, cached_data):
+		if type(cached_data.preprocessed) != type(None):
+			return
 
 		def preprocess(slice_data, low_value, high_value):
 			low = (slice_data < low_value)
@@ -115,49 +151,46 @@ class Classifier:
 			return np.piecewise(slice_data, [low, medium, high], [0, lambda x: np.floor((x - low_value) / delta + 0.5), 255]).astype(np.uint8)
 
 		preprocessed_slice = None
-		if ds.ProtocolName == "ep2d_diff_tra_14b": # ADC
-			preprocessed_slice = preprocess(ds.pixel_array, 0, 855)
-		elif ds.ProtocolName == "swi_tra":         # SWI
-			preprocessed_slice = preprocess(ds.pixel_array, 25, 383)
-		elif ds.ProtocolName == "t2_tse_tra_fs":   # T2
-			preprocessed_slice = preprocess(ds.pixel_array, 25, 855)
+		if cached_data.protocol == "ep2d_diff_tra_14b": # ADC
+			preprocessed_slice = preprocess(cached_data.ds.pixel_array, 0, 855)
+		elif cached_data.protocol == "swi_tra":         # SWI
+			preprocessed_slice = preprocess(cached_data.ds.pixel_array, 25, 383)
+		elif cached_data.protocol == "t2_tse_tra_fs":   # T2
+			preprocessed_slice = preprocess(cached_data.ds.pixel_array, 25, 855)
 
-		img = cv2.cvtColor(preprocessed_slice, cv2.COLOR_GRAY2RGB)
+		cached_data.preprocessed = cv2.cvtColor(preprocessed_slice, cv2.COLOR_GRAY2RGB)
 
-		return ds.ProtocolName, img
+	@profile
+	def getMask(self, mask_type, cached_data_gen):
+		batch_size = 4
+		for batch in batched(cached_data_gen, batch_size):
+			yolo_input = [cached_data.preprocessed for cached_data in batch]
+			protocol = batch[0].protocol
 
-	@cached(max_size=512)
-	def getMask(self, mask_type, filename):
-		protocolName, yolo_input = self.__preprocessSlice(filename)
-
-		mask = None
-		if mask_type == MaskType.BRAIN: 
-			if protocolName == "ep2d_diff_tra_14b": # ADC
-				yolo_output = self.adc_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_adc_brain", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
-				mask = get_zone_mask(yolo_output[0], imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
-			elif protocolName == "swi_tra":         # SWI
-				yolo_output = self.swi_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_swi_brain", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
-				mask = get_zone_mask(yolo_output[0], imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
-			elif protocolName == "t2_tse_tra_fs":   # T2
-				yolo_output = self.t2_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_t2_brain", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
-				mask = get_zone_mask(yolo_output[0], imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
-		elif mask_type == MaskType.ISCHEMIA:
-			brain_mask = self.getMask(MaskType.BRAIN, filename)
-			if protocolName == "ep2d_diff_tra_14b": # ADC
-				yolo_output = self.adc_ischemia.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_adc_isc", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
-				mask = get_zone_mask(yolo_output[0], imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=2)
-			elif protocolName == "t2_tse_tra_fs":   # T2
-				yolo_output = self.t2_ischemia.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_t2_isc", batch=0, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
-				mask = get_zone_mask(yolo_output[0], imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=0)
-			mask = cv2.bitwise_and(brain_mask, mask)
-		elif mask_type == MaskType.MSC:
-			brain_mask = self.getMask(MaskType.BRAIN, filename)
-			if protocolName == "swi_tra": # SWI
-				yolo_output = self.swi_msc.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_swi_msc", batch=0, source=yolo_input, imgsz=msk_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
-				mask = get_zone_mask(yolo_output[0], imgsz_val=msk_imgsz, get_brain=False, erode_level=2)
-			mask = cv2.bitwise_and(brain_mask, mask)
-
-		if type(mask) == type(None):
-			return np.zeros((yolo_input.shape[0], yolo_input.shape[1]), dtype=np.uint8)
-
-		return mask
+			if mask_type == MaskType.BRAIN:
+				if protocol == "ep2d_diff_tra_14b": # ADC
+					yolo_output = self.adc_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_adc_brain", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
+					for batch_index in range(len(batch)):
+						batch[batch_index].brain_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
+				elif protocol == "swi_tra":         # SWI
+					yolo_output = self.swi_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_swi_brain", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
+					for batch_index in range(len(batch)):
+						batch[batch_index].brain_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
+				elif protocol == "t2_tse_tra_fs":   # T2
+					yolo_output = self.t2_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_t2_brain", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.15, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False, max_det=1)
+					for batch_index in range(len(batch)):
+						batch[batch_index].brain_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
+			elif mask_type == MaskType.ISCHEMIA:
+				if protocol == "ep2d_diff_tra_14b": # ADC
+					yolo_output = self.adc_ischemia.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_adc_isc", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
+					for batch_index in range(len(batch)):
+						batch[batch_index].ischemia_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=2)
+				elif protocol == "t2_tse_tra_fs":   # T2
+					yolo_output = self.t2_ischemia.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_t2_isc", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
+					for batch_index in range(len(batch)):
+						batch[batch_index].ischemia_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=0)
+			elif mask_type == MaskType.MSC:
+				if protocol == "swi_tra": # SWI
+					yolo_output = self.swi_msc.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, name="predict_swi_msc", batch=batch_size, source=yolo_input, imgsz=msk_imgsz, save=False, conf=0.05, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
+					for batch_index in range(len(batch)):
+						batch[batch_index].msc_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=msk_imgsz, get_brain=False, erode_level=2)
