@@ -262,10 +262,10 @@ class MRIMAProcessor(QtCore.QObject):
 			self.classifier.getMask(MaskType.BRAIN, yield_value(source))
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA and type(source.ischemia_mask) == type(None):
 			self.classifier.getMask(MaskType.ISCHEMIA, yield_value(source))
-			cv2.bitwise_and(source.brain_mask, source.ischemia_mask)
+			source.ischemia_mask = cv2.bitwise_and(source.brain_mask, source.ischemia_mask)
 		if view_mode.flags & ViewMode.MARK_MSC_AREA and type(source.msc_mask) == type(None):
 			self.classifier.getMask(MaskType.MSC, yield_value(source))
-			cv2.bitwise_and(source.brain_mask, source.msc_mask)
+			source.msc_mask = cv2.bitwise_and(source.brain_mask, source.msc_mask)
 
 		'''
 		#parallel impl (ineffective, suffers from GIL)
@@ -278,9 +278,9 @@ class MRIMAProcessor(QtCore.QObject):
 			futures.append(run_in_threadpool(self.thread_pool, self.classifier.getMask, MaskType.MSC, yield_value(source)))
 		concurrent.futures.wait(futures)
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA:
-			cv2.bitwise_and(source.brain_mask, source.ischemia_mask)
+			source.ischemia_mask = cv2.bitwise_and(source.brain_mask, source.ischemia_mask)
 		if view_mode.flags & ViewMode.MARK_MSC_AREA:
-			cv2.bitwise_and(source.brain_mask, source.msc_mask)
+			source.msc_mask = cv2.bitwise_and(source.brain_mask, source.msc_mask)
 		'''
 
 	@profile
@@ -362,6 +362,11 @@ class MRIMAProcessor(QtCore.QObject):
 			for value in it:
 				if func(value): yield value
 
+		def yield_iterable(iterable):
+			for value in iterable:
+				yield value
+
+
 		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA | ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
 			for cached in filter(source, lambda c: type(c.preprocessed) == type(None)):
 				self.classifier.preprocess(cached) 
@@ -374,24 +379,24 @@ class MRIMAProcessor(QtCore.QObject):
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA:
 			unprocessed = [*filter(source, lambda c: type(c.ischemia_mask) == type(None))]
 			if len(unprocessed) != 0:
-				self.classifier.getMask(MaskType.ISCHEMIA, filter(source, lambda c: type(c.ischemia_mask) == type(None)))
+				self.classifier.getMask(MaskType.ISCHEMIA, yield_iterable(unprocessed))
 				for cached in unprocessed:
-					cv2.bitwise_and(cached.brain_mask, cached.ischemia_mask)
-		if view_mode.flags & (ViewMode.MARK_MSC_AREA):
+					cached.ischemia_mask = cv2.bitwise_and(cached.brain_mask, cached.ischemia_mask)
+		if view_mode.flags & (ViewMode.MARK_MSC_AREA | ViewMode.TRACK_MSC_FROM):
 			unprocessed = [*filter(source, lambda c: type(c.msc_mask) == type(None))]
 			if len(unprocessed) != 0:
-				self.classifier.getMask(MaskType.MSC, filter(source, lambda c: type(c.msc_mask) == type(None)))
+				self.classifier.getMask(MaskType.MSC, yield_iterable(unprocessed))
 				for cached in unprocessed:
-					cv2.bitwise_and(cached.brain_mask, cached.msc_mask)
+					cached.msc_mask = cv2.bitwise_and(cached.brain_mask, cached.msc_mask)
 
 		if view_mode.flags & (ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
 			self.classifier.getMask(MaskType.BRAIN, filter(referenced, lambda c: type(c.brain_mask) == type(None)))
 
 			unprocessed = [*filter(referenced, lambda c: type(c.msc_mask) == type(None))]
 			if len(unprocessed) != 0:
-				self.classifier.getMask(MaskType.MSC, filter(referenced, lambda c: type(c.msc_mask) == type(None)))
+				self.classifier.getMask(MaskType.MSC, yield_iterable(unprocessed))
 				for cached in unprocessed:
-					cv2.bitwise_and(cached.brain_mask, cached.msc_mask)
+					cached.msc_mask = cv2.bitwise_and(cached.brain_mask, cached.msc_mask)
 
 	@profile
 	def processStudy(self, study, view_mode):
@@ -514,6 +519,8 @@ class AsyncMRIMAProcessor(MRIMAProcessor):
 		try:
 			self.emitContentSignal.emit(func())
 		except Exception as ex:
-			print("Exception:", ex)
+			import traceback
+			print(traceback.format_exc())
+			#print("Exception:", ex)
 			self.emitContentSignal.emit(ex) #emit exception as result (close app in MRIMAGUI.py)
 
