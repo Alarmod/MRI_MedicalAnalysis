@@ -36,7 +36,9 @@ if __name__ == '__main__':
 		app = MRIMAApp()
 		app.showGUI()
 	except Exception as ex:
-		print("Exception:", ex)
+		import traceback
+		print(traceback.format_exc())
+		#print("Exception:", ex)
 		sys.exit()
 
 	qtApp.exec_()

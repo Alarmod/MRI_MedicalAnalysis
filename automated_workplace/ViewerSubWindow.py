@@ -19,9 +19,9 @@ class ViewerSubWindow(QtWidgets.QMdiSubWindow):
 
 	def initUI(self):
 		self.views = QtWidgets.QStackedWidget()
-		self.view2d_widget = View2DWidget()
+		self.view2d_widget = View2DWidget(self)
 		self.view2d_index = self.views.addWidget(self.view2d_widget)
-		self.view3d_widget = View3DWidget()
+		self.view3d_widget = View3DWidget(self)
 		self.view3d_index = self.views.addWidget(self.view3d_widget)
 		self.setWidget(self.views)
 
