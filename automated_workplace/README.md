@@ -21,4 +21,4 @@ _python main.py_
 # System requirements
 Windows 10-11, Linux
 
-Python 3.8-3.11
+Python 3.8-3.10
