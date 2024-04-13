@@ -13,7 +13,7 @@ class VolumeCombiner:
 		if source_mask.shape == self.target_shape:
 			return source_mask
 
-		return np.stack([resized(source_mask[i], self.output_shape[2], self.output_shape[1]) for i in range(source_mask.shape[0])])
+		return np.stack([resized(source_mask[i], self.target_shape[2], self.target_shape[1]) for i in range(source_mask.shape[0])])
 
 '''
 def get_bbox_points(bbox):
