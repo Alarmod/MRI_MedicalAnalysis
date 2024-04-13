@@ -35,7 +35,7 @@ C++ and Python
 # System requirements
 Windows 10-11, Linux
 
-Python 3.8-3.11
+Python 3.8-3.10
 
 # Place of the work
 Intellectual Management Laboratory at Ailamazyan Program Systems Institute of the Russian Academy of Sciences (https://icontrol.psiras.ru/)
