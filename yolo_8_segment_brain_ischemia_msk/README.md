@@ -42,7 +42,7 @@ _python train.py_
 
 2. Testing: 
 
-_python train.py default_validate_ (Yolo 8 default validation code)
+_python train.py default_validate_ (Yolo 8 default validation code, the results are far from what you get in Yolo predict)
 
 _python train.py generate_data_ (validate with saving all data: contours, zones, cognitive visualization)
 
