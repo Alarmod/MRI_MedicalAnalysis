@@ -2,7 +2,11 @@
 Automated Workplace – open source workplace for medical researchers intelligent support and high performance MRI-data processing. It designed for the increasing equipment of medical researchers.
 
 # Requirements
-Pytorch library with CUDA 11+ https://pytorch.org/get-started/locally/
+For GPU: _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_
+
+For CPU: _pip3 install -U torch torchvision torchaudio_
+
+Supported torch >= 2.2.2
 
 _pip3 install -r requirements.txt_
 
