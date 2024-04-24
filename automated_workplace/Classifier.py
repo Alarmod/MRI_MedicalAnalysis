@@ -112,12 +112,12 @@ class Classifier:
 
 	def loadSettings(self, settings):
 		settings.beginGroup("Classifier")
-		self.path = settings.value('path_adc_brain', self.path_adc_brain)
-		self.path = settings.value('path_adc_ischemia', self.path_adc_ischemia)
-		self.path = settings.value('path_swi_brain', self.path_swi_brain)
-		self.path = settings.value('path_swi_msc', self.path_swi_msc)
-		self.path = settings.value('path_t2_brain', self.path_t2_brain)
-		self.path = settings.value('path_t2_ischemia', self.path_t2_ischemia)
+		self.path_adc_brain = settings.value('path_adc_brain', self.path_adc_brain)
+		self.path_adc_ischemia = settings.value('path_adc_ischemia', self.path_adc_ischemia)
+		self.path_swi_brain = settings.value('path_swi_brain', self.path_swi_brain)
+		self.path_swi_msc = settings.value('path_swi_msc', self.path_swi_msc)
+		self.path_t2_brain = settings.value('path_t2_brain', self.path_t2_brain)
+		self.path_t2_ischemia = settings.value('path_t2_ischemia', self.path_t2_ischemia)
 		settings.endGroup()
 
 		self.adc_brain = YoloModel(self.path_adc_brain)
