@@ -149,11 +149,10 @@ class Classifier:
 				self.inference_threads_count = int(self.inference_threads_count)
 			except:
 				raise Exception(f"Error: inference_threads_count incorrect value")
+			if (not setGlobalThreadPoolSize(self.inference_threads_count)):
+				raise Exception(f"Error: Can't change thread pool size")
 		else:
-			raise Exception(f"Warning: inference_threads_count not set, use default")
-
-		if (not setGlobalThreadPoolSize(self.inference_threads_count)):
-			raise Exception(f"Error: Can't change thread pool size")
+			print(f"Warning: inference_threads_count not set, use default")
 
 		#load models.ini
 		self.models_config_fname = settings.value("models_config", None)
