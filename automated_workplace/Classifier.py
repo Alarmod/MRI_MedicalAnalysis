@@ -15,6 +15,25 @@ class MaskType:
 def setGlobalThreadPoolSize(num_threads):
 	return yolo_inference.setGlobalThreadPoolSize(num_threads)
 
+def positive_integer_or_none(config_value):
+	if config_value == None:
+		return None
+	value = None
+	try:
+		value = int(config_value)
+		if value < 0:
+			return None
+	except:
+		return None
+	return value
+
+def existing_path_or_none(config_value):
+	if config_value == None:
+		return None
+	if not os.path.exists(config_value):
+		return None
+	return config_value
+
 class YoloModel:
 	def __init__(self, name, weights_file, input_width, input_height, useGPU, useFP16, cuda_id):
 		self.name = name
@@ -66,11 +85,8 @@ class ModelDescription:
 				raise Exception("")
 			if short_model_desc[1] == "GPU":
 				self.inference_device = "GPU"
-				try:
-					self.inference_cudaid = int(short_model_desc[2])
-					if self.inference_cudaid < 0:
-						raise Exception("Wrong CUDA device id")
-				except:
+				self.inference_cudaid = positive_integer_or_none(short_model_desc[2])
+				if self.inference_cudaid == None:
 					raise Exception("Wrong CUDA device id")
 			else:
 				raise Exception(f"Unknown inference device {short_model_desc[1]}")
@@ -80,50 +96,32 @@ class ModelDescription:
 	def loadFromConfig(self, name, models_config):
 		groups = models_config.childGroups()
 		if name == None or not (name in groups):
-			raise Exception(f"Referenced \'{name}\' not exists")
+			raise Exception(f"Referenced model \'{name}\' not exists")
 
 		models_config.beginGroup(name)
 
-		self.path = models_config.value("path", None)
+		self.path = existing_path_or_none(models_config.value("path", None))
 		if self.path == None:
-			raise Exception(f"Model path not set")
-		if not os.path.exists(self.path):
-			raise Exception(f"File \'{self.path}\' not exists")
+			raise Exception(f"Incorrect or missing referenced model path value")
 
 		self.format = models_config.value("format", None)
 		if self.format == None:
-			raise Exception(f"Model format not set")
+			raise Exception(f"Missing referenced model format value")
 		if not (self.format in ["FP16", "FP32"]):
-			raise Exception(f"Unsupported model format")
+			raise Exception(f"Incorrect referenced model format value")
 
-		self.input_width = models_config.value("input_width", None)
+		self.input_width = positive_integer_or_none(models_config.value("input_width", None))
 		if self.input_width == None:
-			raise Exception(f"Model input_width not set")
-		else:
-			try:
-				self.input_width = int(self.input_width)
-				if self.input_width < 0:
-					raise Exception("Incorrect input_width value")
-			except:
-				raise Exception("Incorrect input_width value")
+			raise Exception(f"Incorrect or missing referenced model input_width value")
 
-
-		self.input_height = models_config.value("input_height", None)
+		self.input_height = positive_integer_or_none(models_config.value("input_height", None))
 		if self.input_height == None:
-			raise Exception(f"Model input_height not set")
-		else:
-			try:
-				self.input_height = int(self.input_height)
-				if self.input_height < 0:
-					raise Exception("Incorrect input_height value")
-			except:
-				raise Exception("Incorrect input_height value")
+			raise Exception("Incorrect or missing referenced model input_height value")
 
 		models_config.endGroup()
 
 	def createModel(self):
 		return YoloModel(self.name, self.path, self.input_width, self.input_height, self.inference_device == "GPU", self.format == "FP16", self.inference_cudaid)
-			
 
 class Classifier:
 	def __init__(self):
@@ -143,36 +141,27 @@ class Classifier:
 		settings.beginGroup("Classifier")
 
 		#global thread pool
-		self.inference_threads_count = settings.value("inference_threads_count", None)
-		if self.inference_threads_count != None:
-			try:
-				self.inference_threads_count = int(self.inference_threads_count)
-			except:
-				raise Exception(f"Error: inference_threads_count incorrect value")
-			if self.inference_threads_count < 0:
-				raise Exception(f"Error: inference_threads_count incorrect value")
-			if (not setGlobalThreadPoolSize(self.inference_threads_count)):
-				raise Exception(f"Error: Can't change thread pool size")
-		else:
-			print(f"Warning: inference_threads_count not set, use default")
+		self.inference_threads_count = positive_integer_or_none(settings.value("inference_threads_count", None))
+		if self.inference_threads_count == None:
+			raise Exception(f"Error: Incorrect or missing inference_threads_count value")
+		if (not setGlobalThreadPoolSize(self.inference_threads_count)):
+			raise Exception(f"Error: Can't change thread pool size")
 
 		#load models.ini
-		self.models_config_fname = settings.value("models_config", None)
+		self.models_config_fname = existing_path_or_none(settings.value("models_config", None))
 		if self.models_config_fname == None:
-			raise Exception(f"Error: Models description file not set")
-		if not os.path.exists(self.models_config_fname):
-			raise Exception(f"Error: Models description file \'{self.models_config_fname}\' not found")
+			raise Exception(f"Error: Incorrect or missing models_config value")
 		self.models_config = QtCore.QSettings(self.models_config_fname, QtCore.QSettings.IniFormat)
 
 		#load models info
 		for model in self.models.keys():
 			short_model_desc = settings.value(model, None)
 			if short_model_desc == None:
-				raise Exception(f"Error: {model} missing")
+				raise Exception(f"Error: Missing {model} value")
 			try:				
 				self.models[model][0] = ModelDescription(short_model_desc, self.models_config)
 			except Exception as ex:     
-				raise Exception(f"Error: {model} incorrect description. " + str(ex))
+				raise Exception(f"Error: Incorrect {model} value. " + str(ex))
 
 		settings.endGroup()
 
