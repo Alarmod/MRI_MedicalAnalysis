@@ -127,8 +127,6 @@ class ModelDescription:
 
 class Classifier:
 	def __init__(self):
-		self.additional_libs_path = None
-
 		self.models_config_fname = None
 		self.models_config = None
 
@@ -183,8 +181,6 @@ class Classifier:
 
 	def saveSettings(self, settings):
 		settings.beginGroup("Classifier")
-		if self.additional_libs_path != None:
-			settings.setValue('additional_libs_path', self.additional_libs_path)
 
 		if self.models_config_fname != None:
 			settings.setValue('models_config', self.models_config_fname)

@@ -56,9 +56,6 @@ class MRIMAProcessor(QtCore.QObject):
 	def __init__(self):
 		super().__init__()
 
-		#self.threadPoolSize = 4
-		#self.thread_pool = None
-
 		self.gradientMinValue = 100
 		self.gradientMaxValue = 255
 
@@ -86,11 +83,6 @@ class MRIMAProcessor(QtCore.QObject):
 
 	def loadSettings(self, settings):
 		settings.beginGroup("Processor")
-
-		#self.threadPoolSize = int(settings.value('ThreadPoolSize', self.threadPoolSize))
-		#if self.threadPoolSize < 1 or self.threadPoolSize > 4:
-		#	raise Exception("Incorrect settings, ThreadPoolSize must be in range [1, 4]")
-		#self.thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=self.threadPoolSize)
 
 		self.gradientMinValue = int(settings.value('GradientMinValue', self.gradientMinValue))
 		self.gradientMaxValue = int(settings.value('GradientMaxValue', self.gradientMaxValue))
@@ -120,8 +112,6 @@ class MRIMAProcessor(QtCore.QObject):
 
 	def saveSettings(self, settings):
 		settings.beginGroup("Processor")
-
-		#settings.setValue('ThreadPoolSize', self.threadPoolSize)
 
 		settings.setValue('GradientMinValue', self.gradientMinValue)
 		settings.setValue('GradientMaxValue', self.gradientMaxValue)
