@@ -149,6 +149,8 @@ class Classifier:
 				self.inference_threads_count = int(self.inference_threads_count)
 			except:
 				raise Exception(f"Error: inference_threads_count incorrect value")
+			if self.inference_threads_count < 0:
+				raise Exception(f"Error: inference_threads_count incorrect value")
 			if (not setGlobalThreadPoolSize(self.inference_threads_count)):
 				raise Exception(f"Error: Can't change thread pool size")
 		else:
