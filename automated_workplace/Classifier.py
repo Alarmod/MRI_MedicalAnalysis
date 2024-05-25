@@ -1,8 +1,9 @@
 from PySide2 import QtCore, QtGui, QtWidgets
+import os
 import numpy as np
-import cv2
-import math
-import threading
+
+import boot
+from yolo_segment_with_nanobind import yolo_segment_ext as yolo_inference
 
 from Profiler import Profiler, profile #debug
 
@@ -11,132 +12,186 @@ class MaskType:
 	ISCHEMIA = 2
 	MSC = 4
 
-from ultralytics import YOLO
-
-find_contours_scale=2
-global_iou=0.50
-global_retina_masks=False
-global_half=True
-global_workers=0
-brain_and_ischemia_imgsz=512
-msk_imgsz=1280
-
-@profile
-def get_zone_mask(result, imgsz_val, get_brain=True, erode_level=0, erode_mask_size=5): 
-	r_orig_img_shape = result.orig_img.shape[:2]
-	h0, w0 = r_orig_img_shape[0], r_orig_img_shape[1]
-	ratio = imgsz_val / max(h0, w0)
-	h, w = min(math.ceil(h0 * ratio), imgsz_val), min(math.ceil(w0 * ratio), imgsz_val)
-
-	img = np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8)
-
-	en_for_r = enumerate(result)
-	for ci, c in en_for_r:
-		b_mask = c.masks.data.detach().cpu().numpy().astype(np.uint8) * 255
-		b_mask = b_mask.reshape(b_mask.shape[1], b_mask.shape[2])
-		b_mask_start_shape = b_mask.shape
-
-		h_pad, w_pad = int(b_mask_start_shape[0] - h) // 2, int(b_mask_start_shape[1] - w) // 2
-		if (b_mask_start_shape[0] - h - h_pad * 2) > 0:
-			h_pad = h_pad + 1
-		if (b_mask_start_shape[1] - w - w_pad * 2) > 0:
-			w_pad = w_pad + 1
-
-		b_mask = b_mask[h_pad:h_pad+h, w_pad:w_pad+w]
-		res = cv2.resize(b_mask, (find_contours_scale * b_mask.shape[1], find_contours_scale * b_mask.shape[0]), interpolation=cv2.INTER_NEAREST)
-
-		if get_brain:
-			ct, _ = cv2.findContours(res, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-			ct = sorted(ct, key=cv2.contourArea, reverse=True)
-			img = cv2.drawContours(np.zeros((h * find_contours_scale, w * find_contours_scale), np.uint8), ct, 0, (255), cv2.FILLED)
-			break
-		else:
-			img = cv2.bitwise_or(res, img, mask=None)
-
-	if erode_level > 0:
-		img = cv2.erode(src=img, kernel=np.ones((erode_mask_size, erode_mask_size)), iterations=erode_level)
-
-	img = ((cv2.resize(img, (w0, h0), interpolation=cv2.INTER_AREA) > 127) * 255).astype(np.uint8)
-
-	return img
+def setGlobalThreadPoolSize(num_threads):
+	return yolo_inference.setGlobalThreadPoolSize(num_threads)
 
 class YoloModel:
-	def __init__(self, weights_file):
+	def __init__(self, name, weights_file, input_width, input_height, useGPU, useFP16, cuda_id):
+		self.name = name
 		self.weights_file = weights_file
-		self.model = YOLO(self.weights_file) if QtCore.QFileInfo.exists(self.weights_file) else None
-		if self.model == None:
-			raise Exception("Incorrect settings, file \'{}\' not found".format(self.weights_file))
-		self.lock = threading.Lock()
-		#self.warmup()
+		self.input_width = input_width
+		self.input_height = input_height
+		self.useGPU = useGPU
+		self.useFP16 = useFP16
+		self.cuda_id = cuda_id
 
-	'''
+		self.__model = yolo_inference.YOLO(name=self.name, net_path=self.weights_file, use_gpu=self.useGPU, use_fp16=self.useFP16, net_width=self.input_width, net_height=self.input_height, cudaID=self.cuda_id)
+
 	def warmup(self):
-		with self.lock:
-			self.model.predict(...) #perform model warmup here!
-	'''
+		print(f"Warming up model {self.name} (GPU={self.useGPU})")
+		self.__model.warmup()
 
-	@profile
-	def predict(self, *args, **kwargs):
-		with self.lock:
-			return self.model.predict(*args, **kwargs, workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, save=False, iou=global_iou, show_labels=False, show_boxes=False, show_conf=False)
+	def predict(self, input_image, **kwargs):
+		return self.__model.process(input=input_image, **kwargs)
 
-def batched(it, batch_size):
-	batch=[None]*batch_size
-	count = 0
-	for value in it:
-		batch[count] = value
-		count = count + 1
-		if count == batch_size:
-			yield batch
-			batch = [None]*batch_size #comment this line in single thread mode
-			count = 0
-	if count != 0:
-		yield batch[0:count]
 
-'''
-#this one a little faster, but need to unpack generator
-def batched(it, batch_size):
-	iterable = [*it]
-	for i in range(0, len(iterable), batch_size):
-		yield iterable[i:i + batch_size]
-'''
+class ModelDescription:
+	def __init__(self, short_model_desc, models_config):
+		self.name = None
+		self.path = None
+		self.format = None
+		self.input_width = None
+		self.input_height = None
+		self.inference_device = None
+		self.inference_cudaid = None #GPU mode only
+
+		if len(short_model_desc) == 2:
+			self.name = short_model_desc[0]
+			self.loadFromConfig(self.name, models_config)
+			
+			if short_model_desc[1] == "CPU":
+				self.inference_device = "CPU"
+				self.inference_cudaid = 0 #default value (not used)
+			elif short_model_desc[1] == "GPU":
+				self.inference_device = "GPU"
+				self.inference_cudaid = 0 #default value
+			else:
+				raise Exception(f"Unknown inference device {short_model_desc[1]}")
+				
+		elif len(short_model_desc) == 3:
+			self.name = short_model_desc[0]
+			self.loadFromConfig(self.name, models_config)
+
+			if short_model_desc[1] == "CPU":
+				raise Exception("")
+			if short_model_desc[1] == "GPU":
+				self.inference_device = "GPU"
+				try:
+					self.inference_cudaid = int(short_model_desc[2])
+					if self.inference_cudaid < 0:
+						raise Exception("Wrong CUDA device id")
+				except:
+					raise Exception("Wrong CUDA device id")
+			else:
+				raise Exception(f"Unknown inference device {short_model_desc[1]}")
+		else:
+			raise Exception("")
+
+	def loadFromConfig(self, name, models_config):
+		groups = models_config.childGroups()
+		if name == None or not (name in groups):
+			raise Exception(f"Referenced \'{name}\' not exists")
+
+		models_config.beginGroup(name)
+
+		self.path = models_config.value("path", None)
+		if self.path == None:
+			raise Exception(f"Model path not set")
+		if not os.path.exists(self.path):
+			raise Exception(f"File \'{self.path}\' not exists")
+
+		self.format = models_config.value("format", None)
+		if self.format == None:
+			raise Exception(f"Model format not set")
+		if not (self.format in ["FP16", "FP32"]):
+			raise Exception(f"Unsupported model format")
+
+		self.input_width = models_config.value("input_width", None)
+		if self.input_width == None:
+			raise Exception(f"Model input_width not set")
+		else:
+			try:
+				self.input_width = int(self.input_width)
+				if self.input_width < 0:
+					raise Exception("Incorrect input_width value")
+			except:
+				raise Exception("Incorrect input_width value")
+
+
+		self.input_height = models_config.value("input_height", None)
+		if self.input_height == None:
+			raise Exception(f"Model input_height not set")
+		else:
+			try:
+				self.input_height = int(self.input_height)
+				if self.input_height < 0:
+					raise Exception("Incorrect input_height value")
+			except:
+				raise Exception("Incorrect input_height value")
+
+		models_config.endGroup()
+
+	def createModel(self):
+		return YoloModel(self.name, self.path, self.input_width, self.input_height, self.inference_device == "GPU", self.format == "FP16", self.inference_cudaid)
+			
 
 class Classifier:
 	def __init__(self):
-		self.path_adc_brain = './resources/runs/segment/adc_brain_' + str(brain_and_ischemia_imgsz) + '/weights/best.pt'
-		self.path_adc_ischemia = './resources/runs/segment/adc_ischemia_' + str(brain_and_ischemia_imgsz) + '_augmented/weights/best.pt'
-		self.path_swi_brain = './resources/runs/segment/swi_brain_' + str(brain_and_ischemia_imgsz) + '/weights/best.pt'
-		self.path_swi_msc = './resources/runs/segment/swi_msc_mod_' + str(msk_imgsz) + '_augmented/weights/best.pt'
-		self.path_t2_brain = './resources/runs/segment/t2_brain_' + str(brain_and_ischemia_imgsz) + '/weights/best.pt'
-		self.path_t2_ischemia = './resources/runs/segment/t2_ischemia_' + str(brain_and_ischemia_imgsz) + '_augmented/weights/best.pt'
+		self.additional_libs_path = None
+
+		self.models_config_fname = None
+		self.models_config = None
+
+		self.inference_threads_count = None
+
+		self.models = { 'adc_brain_model' : [None, None], \
+                                'adc_ischemia_model' : [None, None], \
+                                'swi_brain_model' : [None, None], \
+                                'swi_msc_model' : [None, None], \
+                                't2_brain_model' : [None, None], \
+                                't2_ischemia_model' : [None, None] }
 
 	def loadSettings(self, settings):
 		settings.beginGroup("Classifier")
-		self.path_adc_brain = settings.value('path_adc_brain', self.path_adc_brain)
-		self.path_adc_ischemia = settings.value('path_adc_ischemia', self.path_adc_ischemia)
-		self.path_swi_brain = settings.value('path_swi_brain', self.path_swi_brain)
-		self.path_swi_msc = settings.value('path_swi_msc', self.path_swi_msc)
-		self.path_t2_brain = settings.value('path_t2_brain', self.path_t2_brain)
-		self.path_t2_ischemia = settings.value('path_t2_ischemia', self.path_t2_ischemia)
+
+		#global thread pool
+		self.inference_threads_count = settings.value("inference_threads_count", None)
+		if self.inference_threads_count != None:
+			try:
+				self.inference_threads_count = int(self.inference_threads_count)
+			except:
+				raise Exception(f"Error: inference_threads_count incorrect value")
+		else:
+			raise Exception(f"Warning: inference_threads_count not set, use default")
+
+		if (not setGlobalThreadPoolSize(self.inference_threads_count)):
+			raise Exception(f"Error: Can't change thread pool size")
+
+		#load models.ini
+		self.models_config_fname = settings.value("models_config", None)
+		if self.models_config_fname == None:
+			raise Exception(f"Error: Models description file not set")
+		if not os.path.exists(self.models_config_fname):
+			raise Exception(f"Error: Models description file \'{self.models_config_fname}\' not found")
+		self.models_config = QtCore.QSettings(self.models_config_fname, QtCore.QSettings.IniFormat)
+
+		#load models info
+		for model in self.models.keys():
+			short_model_desc = settings.value(model, None)
+			if short_model_desc == None:
+				raise Exception(f"Error: {model} missing")
+			try:				
+				self.models[model][0] = ModelDescription(short_model_desc, self.models_config)
+			except Exception as ex:     
+				raise Exception(f"Error: {model} incorrect description. " + str(ex))
+
 		settings.endGroup()
 
-		self.adc_brain = YoloModel(self.path_adc_brain)
-		self.adc_ischemia = YoloModel(self.path_adc_ischemia)
-		self.swi_brain = YoloModel(self.path_swi_brain)
-		self.swi_msc = YoloModel(self.path_swi_msc)
-		self.t2_brain = YoloModel(self.path_t2_brain)
-		self.t2_ischemia = YoloModel(self.path_t2_ischemia)
-
-		#torch.use_deterministic_algorithms(True)
+		for model in self.models.keys():
+			self.models[model][1] = self.models[model][0].createModel()
+			self.models[model][1].warmup()
 
 	def saveSettings(self, settings):
 		settings.beginGroup("Classifier")
-		settings.setValue('path_adc_brain', self.path_adc_brain)
-		settings.setValue('path_adc_ischemia', self.path_adc_ischemia)
-		settings.setValue('path_swi_brain', self.path_swi_brain)
-		settings.setValue('path_swi_msc', self.path_swi_msc)
-		settings.setValue('path_t2_brain', self.path_t2_brain)
-		settings.setValue('path_t2_ischemia', self.path_t2_ischemia)
+		if self.additional_libs_path != None:
+			settings.setValue('additional_libs_path', self.additional_libs_path)
+
+		if self.models_config_fname != None:
+			settings.setValue('models_config', self.models_config_fname)
+
+		if self.inference_threads_count != None:
+			settings.setValue('inference_threads_count', self.inference_threads_count)
+
 		settings.endGroup()
 
 	def preprocess(self, cached_data):
@@ -147,47 +202,31 @@ class Classifier:
 			delta = (high_value - low_value) / 255.0
 			return np.piecewise(slice_data, [low, medium, high], [0, lambda x: np.floor((x - low_value) / delta + 0.5), 255]).astype(np.uint8)
 
-		preprocessed_slice = None
+		cached_data.preprocessed = None
 		if cached_data.protocol == "ep2d_diff_tra_14b": # ADC
-			preprocessed_slice = preprocess(cached_data.ds.pixel_array, 0, 855)
+			cached_data.preprocessed = preprocess(cached_data.ds.pixel_array, 0, 855)
 		elif cached_data.protocol == "swi_tra":         # SWI
-			preprocessed_slice = preprocess(cached_data.ds.pixel_array, 25, 383)
+			cached_data.preprocessed = preprocess(cached_data.ds.pixel_array, 25, 383)
 		elif cached_data.protocol == "t2_tse_tra_fs":   # T2
-			preprocessed_slice = preprocess(cached_data.ds.pixel_array, 25, 855)
-
-		cached_data.preprocessed = cv2.cvtColor(preprocessed_slice, cv2.COLOR_GRAY2RGB)
+			cached_data.preprocessed = preprocess(cached_data.ds.pixel_array, 25, 855)
 
 	@profile
-	def getMask(self, mask_type, cached_data_gen):
-		batch_size = 4
-		for batch in batched(cached_data_gen, batch_size):
-			yolo_input = [cached_data.preprocessed for cached_data in batch]
-			protocol = batch[0].protocol
+	def getMask(self, mask_type, cached_data):
+		yolo_input = cached_data.preprocessed
+		protocol = cached_data.protocol
 
-			if mask_type == MaskType.BRAIN:
-				if protocol == "ep2d_diff_tra_14b": # ADC
-					yolo_output = self.adc_brain.predict(name="predict_adc_brain", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, conf=0.15, max_det=1)
-					for batch_index in range(len(batch)):
-						batch[batch_index].brain_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
-				elif protocol == "swi_tra":         # SWI
-					yolo_output = self.swi_brain.predict(name="predict_swi_brain", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, conf=0.15, max_det=1)
-					for batch_index in range(len(batch)):
-						batch[batch_index].brain_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
-				elif protocol == "t2_tse_tra_fs":   # T2
-					yolo_output = self.t2_brain.predict(name="predict_t2_brain", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, conf=0.15, max_det=1)
-					for batch_index in range(len(batch)):
-						batch[batch_index].brain_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=True, erode_level=0)
-			elif mask_type == MaskType.ISCHEMIA:
-				if protocol == "ep2d_diff_tra_14b": # ADC
-					yolo_output = self.adc_ischemia.predict(name="predict_adc_isc", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, conf=0.05)
-					for batch_index in range(len(batch)):
-						batch[batch_index].ischemia_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=2)
-				elif protocol == "t2_tse_tra_fs":   # T2
-					yolo_output = self.t2_ischemia.predict(name="predict_t2_isc", batch=batch_size, source=yolo_input, imgsz=brain_and_ischemia_imgsz, conf=0.05)
-					for batch_index in range(len(batch)):
-						batch[batch_index].ischemia_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=brain_and_ischemia_imgsz, get_brain=False, erode_level=0)
-			elif mask_type == MaskType.MSC:
-				if protocol == "swi_tra": # SWI
-					yolo_output = self.swi_msc.predict(name="predict_swi_msc", batch=batch_size, source=yolo_input, imgsz=msk_imgsz, conf=0.05)
-					for batch_index in range(len(batch)):
-						batch[batch_index].msc_mask = get_zone_mask(yolo_output[batch_index], imgsz_val=msk_imgsz, get_brain=False, erode_level=2)
+		if mask_type == MaskType.BRAIN:
+			if protocol == "ep2d_diff_tra_14b":
+				cached_data.brain_mask = self.models["adc_brain_model"][1].predict(yolo_input, rec_treshold=0.15, max_results=1, get_brain=True, erode_level=0)
+			elif protocol == "swi_tra":
+				cached_data.brain_mask = self.models["swi_brain_model"][1].predict(yolo_input, rec_treshold=0.15, max_results=1, get_brain=True, erode_level=0)
+			elif protocol == "t2_tse_tra_fs":
+				cached_data.brain_mask = self.models["t2_brain_model"][1].predict(yolo_input, rec_treshold=0.15, max_results=1, get_brain=True, erode_level=0)
+		elif mask_type == MaskType.ISCHEMIA:
+			if protocol == "ep2d_diff_tra_14b":
+				cached_data.ischemia_mask = self.models["adc_ischemia_model"][1].predict(yolo_input, rec_treshold=0.05, max_results=255, get_brain=False, erode_level=2)
+			elif protocol == "t2_tse_tra_fs":
+				cached_data.ischemia_mask = self.models["t2_ischemia_model"][1].predict(yolo_input, rec_treshold=0.05, max_results=255, get_brain=False, erode_level=2)
+		elif mask_type == MaskType.MSC:
+			if protocol == "swi_tra":
+				cached_data.msc_mask = self.models["swi_msc_model"][1].predict(yolo_input, rec_treshold=0.05, max_results=1024, get_brain=False, erode_level=2)

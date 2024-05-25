@@ -223,19 +223,6 @@ class MRIMAProcessor(QtCore.QObject):
 
 	@staticmethod
 	def apply_gradient_correction(a, b):
-		'''
-		#old impl - approx 0.120 sec. per image with shape (180, 256)
-		rows, cols = a.shape
-		result = np.zeros((rows, cols), dtype=np.float64)
-		for row in range(rows):
-			for col in range(cols):
-				if a[row, col] < 127.5:
-					result[row, col] = (b[row] * a[row, col])/127.5
-				else:
-					result[row, col] = b[row] * (255 - a[row, col]) / 127.5 + 2 * a[row, col] - 255
-		'''
-
-		#via numpy - approx 0.017 sec. per image with shape (180, 256)
 		result = np.zeros(a.shape, dtype=np.float64)
 		a = a.astype(np.float64)
 		b = b / 127.5
@@ -251,37 +238,18 @@ class MRIMAProcessor(QtCore.QObject):
 
 	@profile
 	def __preprocessSliceData(self, source, view_mode):
-		def yield_value(value):
-			yield value
-
 		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA) and type(source.preprocessed) == type(None):
 			self.classifier.preprocess(source)
 
-		#non-parallel impl
 		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA) and type(source.brain_mask) == type(None):
-			self.classifier.getMask(MaskType.BRAIN, yield_value(source))
+			self.classifier.getMask(MaskType.BRAIN, source)
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA and type(source.ischemia_mask) == type(None):
-			self.classifier.getMask(MaskType.ISCHEMIA, yield_value(source))
+			self.classifier.getMask(MaskType.ISCHEMIA, source)
 			source.ischemia_mask = cv2.bitwise_and(source.brain_mask, source.ischemia_mask)
 		if view_mode.flags & ViewMode.MARK_MSC_AREA and type(source.msc_mask) == type(None):
-			self.classifier.getMask(MaskType.MSC, yield_value(source))
+			self.classifier.getMask(MaskType.MSC, source)
 			source.msc_mask = cv2.bitwise_and(source.brain_mask, source.msc_mask)
 
-		'''
-		#parallel impl (ineffective, suffers from GIL)
-		futures = []
-		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA) and type(source.brain_mask) == type(None):
-			futures.append(run_in_threadpool(self.thread_pool, self.classifier.getMask, MaskType.BRAIN, yield_value(source)))
-		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA and type(source.ischemia_mask) == type(None):
-			futures.append(run_in_threadpool(self.thread_pool, self.classifier.getMask, MaskType.ISCHEMIA, yield_value(source)))
-		if view_mode.flags & ViewMode.MARK_MSC_AREA and type(source.msc_mask) == type(None):
-			futures.append(run_in_threadpool(self.thread_pool, self.classifier.getMask, MaskType.MSC, yield_value(source)))
-		concurrent.futures.wait(futures)
-		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA:
-			source.ischemia_mask = cv2.bitwise_and(source.brain_mask, source.ischemia_mask)
-		if view_mode.flags & ViewMode.MARK_MSC_AREA:
-			source.msc_mask = cv2.bitwise_and(source.brain_mask, source.msc_mask)
-		'''
 
 	@profile
 	def processSlice(self, slice, view_mode):
@@ -362,41 +330,31 @@ class MRIMAProcessor(QtCore.QObject):
 			for value in it:
 				if func(value): yield value
 
-		def yield_iterable(iterable):
-			for value in iterable:
-				yield value
-
-
 		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA | ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
-			for cached in filter(source, lambda c: type(c.preprocessed) == type(None)):
-				self.classifier.preprocess(cached) 
+			for cached_slice in filter(source, lambda c: type(c.preprocessed) == type(None)):
+				self.classifier.preprocess(cached_slice) 
 		if view_mode.flags & (ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
-			for cached in filter(referenced, lambda c: type(c.preprocessed) == type(None)):
-				self.classifier.preprocess(cached)
+			for cached_slice in filter(referenced, lambda c: type(c.preprocessed) == type(None)):
+				self.classifier.preprocess(cached_slice)
 
 		if view_mode.flags & (ViewMode.MARK_BRAIN_AREA | ViewMode.MARK_ISCHEMIA_AREA | ViewMode.MARK_MSC_AREA | ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
-			self.classifier.getMask(MaskType.BRAIN, filter(source, lambda c: type(c.brain_mask) == type(None)))
+			for cached_slice in filter(source, lambda c: type(c.brain_mask) == type(None)):
+				self.classifier.getMask(MaskType.BRAIN, cached_slice)
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA:
-			unprocessed = [*filter(source, lambda c: type(c.ischemia_mask) == type(None))]
-			if len(unprocessed) != 0:
-				self.classifier.getMask(MaskType.ISCHEMIA, yield_iterable(unprocessed))
-				for cached in unprocessed:
-					cached.ischemia_mask = cv2.bitwise_and(cached.brain_mask, cached.ischemia_mask)
+			for cached_slice in filter(source, lambda c: type(c.ischemia_mask) == type(None)):
+				self.classifier.getMask(MaskType.ISCHEMIA, cached_slice)
+				cached_slice.ischemia_mask = cv2.bitwise_and(cached_slice.brain_mask, cached_slice.ischemia_mask)
 		if view_mode.flags & (ViewMode.MARK_MSC_AREA | ViewMode.TRACK_MSC_FROM):
-			unprocessed = [*filter(source, lambda c: type(c.msc_mask) == type(None))]
-			if len(unprocessed) != 0:
-				self.classifier.getMask(MaskType.MSC, yield_iterable(unprocessed))
-				for cached in unprocessed:
-					cached.msc_mask = cv2.bitwise_and(cached.brain_mask, cached.msc_mask)
+			for cached_slice in filter(source, lambda c: type(c.msc_mask) == type(None)):
+				self.classifier.getMask(MaskType.MSC, cached_slice)
+				cached_slice.msc_mask = cv2.bitwise_and(cached_slice.brain_mask, cached_slice.msc_mask)
 
 		if view_mode.flags & (ViewMode.MARK_MSC_FROM | ViewMode.TRACK_MSC_FROM):
-			self.classifier.getMask(MaskType.BRAIN, filter(referenced, lambda c: type(c.brain_mask) == type(None)))
-
-			unprocessed = [*filter(referenced, lambda c: type(c.msc_mask) == type(None))]
-			if len(unprocessed) != 0:
-				self.classifier.getMask(MaskType.MSC, yield_iterable(unprocessed))
-				for cached in unprocessed:
-					cached.msc_mask = cv2.bitwise_and(cached.brain_mask, cached.msc_mask)
+			for cached_slice in filter(referenced, lambda c: type(c.brain_mask) == type(None)):
+				self.classifier.getMask(MaskType.BRAIN, cached_slice)
+			for cached_slice in filter(referenced, lambda c: type(c.msc_mask) == type(None)):
+				self.classifier.getMask(MaskType.MSC, cached_slice)
+				cached_slice.msc_mask = cv2.bitwise_and(cached_slice.brain_mask, cached_slice.msc_mask)
 
 	@profile
 	def processStudy(self, study, view_mode):

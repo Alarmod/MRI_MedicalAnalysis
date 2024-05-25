@@ -6,5 +6,5 @@ opencv-python
 numpy
 connected-components-3d
 pulp
-ultralytics>=8.1.6
 cachetools
+nanobind
