@@ -49,7 +49,7 @@ _python train.py generate_data_ (validate with saving all data: contours, zones,
 _python train.py internal_validate_ (modificated Yolo 8 validation code that closer to Yolo original prediction code)
 
 # Export settings to ONNX
-To convert the settings of artificial neural networks into the ONNX format, you need to run the script _export.bat_
+To convert the settings of artificial neural networks into the ONNX format, you need run script _export.bat_
 
 Export results can be loaded from
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
@@ -59,6 +59,8 @@ https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 MRI_settings_ONNX.zip can be unpacked with command
 
 _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
+
+Settings in original format will be saved in _orig_settings_ directory.
 
 # System requirements
 Windows 10-11, Linux
