@@ -19,7 +19,7 @@ Scale bug in ultralytics 8.0.206-8.1.5 fixed by authors this project: https://gi
 
 2. Load MRI_settings.zip and MRI_tests.zip: 
 
-MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing
+MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing or  https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
 
 MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
@@ -31,7 +31,6 @@ _start /W /B winrar.exe x -ibck MRI_tests.zip_
 
 Datasets for training can be loaded from 
 https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive_link
-
 or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_data
 
 (must be stored to _datasets_ folder and unpacked)
@@ -54,6 +53,8 @@ To convert the settings of artificial neural networks into the ONNX format, you 
 
 Export results can be loaded from
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
+or
+https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 
 MRI_settings_ONNX.zip can be unpacked with command
 
