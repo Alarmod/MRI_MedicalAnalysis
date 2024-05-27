@@ -2,9 +2,10 @@
 Automated Workplace – open source workplace for medical researchers intelligent support and high performance MRI-data processing. It designed for the increasing equipment of medical researchers.
 
 # Requirements
-Install ONNXRuntime libs for CPU or GPU: 
+1. Install ONNXRuntime libs for CPU or GPU: 
 https://github.com/microsoft/onnxruntime/releases
 
+2. Install python libs:
 _pip3 install -r requirements.txt_
 
 # Installation
