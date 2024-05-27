@@ -17,7 +17,7 @@ The MRI_MedicalAnalysis library with an open software code is designed for the i
 # Quantitative parameters (characteristics, performance performance indicators), determining the execution of the library of their functions:
 - accuracy of the isolation and measurement of the size of zones of interest of about 85%;
 - completeness and accuracy of recognition of the class of highlighted areas of interest – no worse than 90%;
-- time of the full examination cycle of the patient according to MRI – no more than 1 minutes on the Intel Core i3 8300 processor or its analogue (now we are use Nvidia GTX 1080 Ti and Nvidia RTX 3060 to achieve the specified indicators).
+- time of the full examination cycle of the patient according to MRI – no more than 1 minutes on the Intel Core i3 8300 processor or its analogue.
 
 # Output reactions (signals, information data, recommendations, etc.), provided a program library as a result of the performance of its functions:
 - cognitive 2D- and 3D-visualization of the output data;
