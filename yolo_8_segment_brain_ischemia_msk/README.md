@@ -4,17 +4,18 @@ yolo_8_segment_brain_ischemia_msk - open source console application that designe
 # Libs installation and project files downloading
 1. Install libs
 
-For GPU: _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_
+For GPU:
+_pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_
+or
+_pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121_
 
 For CPU: _pip3 install -U torch torchvision torchaudio_
 
-Supported torch >= 2.2.2
-
-_pip3 install -U ultralytics==8.1.6_
+_pip3 install -U ultralytics_
 
 Supported ultralytics 8.0.205 and >= 8.1.6
 
-Scale bug in ultralytics 8.0.206-8.1.5 fixed: https://github.com/ultralytics/ultralytics/commit/1a04cd38e7285969c0e4d827f4fbe52c834798ed
+Scale bug in ultralytics 8.0.206-8.1.5 fixed by authors this project: https://github.com/ultralytics/ultralytics/commit/1a04cd38e7285969c0e4d827f4fbe52c834798ed
 
 2. Load MRI_settings.zip and MRI_tests.zip: 
 
@@ -48,7 +49,19 @@ _python train.py generate_data_ (validate with saving all data: contours, zones,
 
 _python train.py internal_validate_ (modificated Yolo 8 validation code that closer to Yolo original prediction code)
 
+# Export settings to ONNX
+To convert the settings of artificial neural networks into the ONNX format, you need to run the script _export.bat_
+
+Export results can be loaded from
+https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
+
+MRI_settings_ONNX.zip can be unpacked with command
+
+_start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
+
 # System requirements
 Windows 10-11, Linux
 
 Python 3.8-3.10
+
+Pytorch 2.3.0+
