@@ -5,7 +5,21 @@ Automated Workplace – open source workplace for medical researchers intelligen
 1. Install ONNXRuntime libs for CPU or GPU: 
 https://github.com/microsoft/onnxruntime/releases
 
-2. Install python libs:
+2. Confiure and install _yolo_segment_with_nanobind_ plugin:
+
+You must set actual path for ONNXRuntime, OpenCV and runtime version, compatible with your compiler
+_yolo_segment_with_nanobind\build.bat_
+
+3. Configure path for system libs:
+
+- actual path for ONNXRuntime and OpenCV (always required)
+
+- actual path for CUDA and CUDNN (optional)
+
+This settings must be set over
+_boot.py_
+
+4. Install python libs:
 _pip3 install -r requirements.txt_
 
 # Installation
