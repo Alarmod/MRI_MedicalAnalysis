@@ -4,12 +4,11 @@ yolo_8_segment_brain_ischemia_msk - open source console application that designe
 # Libs installation and project files downloading
 1. Install libs
 
-For GPU:
-_pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_
+pip3 install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cu118
 or
-_pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121_
-
-For CPU: _pip3 install -U torch torchvision torchaudio_
+pip3 install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cu121
+or
+pip3 install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cpu
 
 _pip3 install -U ultralytics_
 
@@ -67,4 +66,4 @@ Windows 10-11, Linux
 
 Python 3.8-3.10
 
-Pytorch 2.3.0+
+Pytorch 2.2.2 or 2.3.1+
