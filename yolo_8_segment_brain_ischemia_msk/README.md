@@ -4,13 +4,15 @@ yolo_8_segment_brain_ischemia_msk - open source console application that designe
 # Libs installation and project files downloading
 1. Install libs
 
-_pip3 install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cu118_ or
+_pip3 install -U torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cu118_ or
 
-_pip3 install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cu121_ or
+_pip3 install -U torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cu121_ or
 
-_pip3 install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cpu_
+_pip3 install -U torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cpu_
 
 _pip3 install -U ultralytics_
+
+PyTorch 2.3.0 have bug that affects to Yolo 8 https://github.com/pytorch/pytorch/issues/121834
 
 Supported ultralytics 8.0.205 and >= 8.1.6
 
