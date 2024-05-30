@@ -1,7 +1,6 @@
 #include <iostream>
 #include <algorithm>
 #include <numeric>
-#include <mutex>
 
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
@@ -20,7 +19,6 @@ size_t VectorProduct(const std::vector<T>& v)
 {
   return static_cast<size_t>(std::accumulate(v.begin(), v.end(), 1u, std::multiplies<T>()));
 };
-
 
 struct OutputParams
 {
@@ -90,7 +88,7 @@ public:
 private:
   unsigned int m_threadPoolSize;
   int 	       m_ref_count;
-  Ort::Env*    m_ortEnvPtr = nullptr;
+  Ort::Env* m_ortEnvPtr = nullptr;
 };
 
 //use singleton
@@ -116,8 +114,8 @@ private:
 public:
   YOLO(const std::string& name, const std::string& net_path, const bool use_gpu, const bool use_fp16, const unsigned int net_width, const unsigned int net_height, const unsigned int cudaID = 0)
   {
-    m_name = name; //debug only
-    m_net_path = net_path; //debug only
+    m_name = name;
+    m_net_path = net_path;
 
     m_use_gpu = use_gpu;
     m_use_fp16 = use_fp16;
@@ -129,21 +127,26 @@ public:
     Ort::SessionOptions session_options;
     session_options.DisablePerSessionThreads();
     session_options.SetExecutionMode(ExecutionMode::ORT_SEQUENTIAL);
-    session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+    session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 
     if (m_use_gpu)
     {
-      try {
+      try
+      {
         if (isONNXProviderAvailable("CUDAExecutionProvider"))
         {
           OrtCUDAProviderOptions provider_options;
           provider_options.device_id = cudaID;
+
           session_options.AppendExecutionProvider_CUDA(provider_options);
         }
         else
+        {
           std::cout << "Warning: CUDAExecutionProvider not available" << std::endl;
+        }
       }
-      catch (std::exception& ex) {
+      catch (std::exception& ex)
+      {
         std::cout << "Warning: " << ex.what() << std::endl;
       }
     }
@@ -224,8 +227,6 @@ public:
 
   void warmup()
   {
-    m_mutex.lock();
-
     std::vector<Ort::Value> output_tensors;
 
     if (m_use_fp16)
@@ -242,11 +243,10 @@ public:
       output_tensors = m_session->Run(Ort::RunOptions{ nullptr }, m_inputs_names.data(), &input_tensor, m_inputs_names.size(), m_outputs_names.data(), m_outputs_names.size());
       delete[] temp;
     }
-
-    m_mutex.unlock();
   }
 
-  void GetMask(const cv::Mat& maskProposals, const cv::Mat& maskProtos, OutputParams& output, const MaskParams& maskParams) {
+  void GetMask(const cv::Mat& maskProposals, const cv::Mat& maskProtos, OutputParams& output, const MaskParams& maskParams)
+  {
     int seg_channels = maskProtos.size[1];
     int seg_height = maskProtos.size[2];
     int seg_width = maskProtos.size[3];
@@ -263,13 +263,16 @@ public:
 
     rang_w = MAX(rang_w, 1);
     rang_h = MAX(rang_h, 1);
-    if (rang_x + rang_w > seg_width) {
+    if (rang_x + rang_w > seg_width)
+    {
       if (seg_width - rang_x > 0)
         rang_w = seg_width - rang_x;
       else
         rang_x -= 1;
     }
-    if (rang_y + rang_h > seg_height) {
+
+    if (rang_y + rang_h > seg_height)
+    {
       if (seg_height - rang_y > 0)
         rang_h = seg_height - rang_y;
       else
@@ -317,7 +320,7 @@ public:
     int channels = iImg.channels();
     int imgHeight = iImg.rows;
     int imgWidth = iImg.cols;
-    
+
     int offset[2];
     for (int c = 0; c < channels; c++)
     {
@@ -404,14 +407,12 @@ public:
     BlobFromImage<T>(srcImg, blob);
     Ort::Value input_tensor = Ort::Value::CreateTensor<T>(m_memory_info, blob, m_input_tensor_length, m_input_tensor_shape.data(), m_input_tensor_shape.size());
 
-    m_mutex.lock();
     std::vector<Ort::Value> output_tensors = m_session->Run(Ort::RunOptions{ nullptr }, m_inputs_names.data(), &input_tensor, m_inputs_names.size(), m_outputs_names.data(), m_outputs_names.size());
-    m_mutex.unlock();
 
     delete[] blob;
 
+    //post-process
     {
-      //post-process
       auto& d_val_0 = output_tensors[0];
       auto& d_val_1 = output_tensors[1];
 
@@ -449,7 +450,7 @@ public:
       float* pdata = (float*)output0_32.data;
       cv::Point classIdPoint;
       double max_class_score;
-      float x,y,w,h;
+      float x, y, w, h;
       int left, top;
       for (int r = 0; r < rows; ++r)
       {
@@ -503,7 +504,7 @@ public:
 
       cv::Mat mask_protos = cv::Mat(mask_protos_shape, type, d_val_1.GetTensorMutableData<T>());
 
-      cv::Mat mask_protos_32; 
+      cv::Mat mask_protos_32;
       if (CV_16F == type)
       {
         mask_protos_32 = cv::Mat(mask_protos.size(), CV_32F);
@@ -664,10 +665,7 @@ private:
   std::vector<int64_t> m_output1_tensor_shape;
 
   size_t m_input_tensor_length;
-
-  std::mutex m_mutex;
 };
-
 
 NB_MODULE(yolo_segment_ext, m) {
   m.def("setGlobalThreadPoolSize", &setONNXGlobalThreadPoolSize, nb::arg("threadPoolSize"), nb::call_guard<nb::gil_scoped_release>());
