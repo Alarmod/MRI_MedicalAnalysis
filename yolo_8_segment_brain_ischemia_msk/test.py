@@ -605,6 +605,7 @@ def internal_validate(exp_name, big_data, imgsz_val, model_path, dataset_info, b
       modelxxx = de_parallel(modelxxx)
       validator.init_metrics(modelxxx)
 
+      # based on ultralytics/engine/validator.py and ultralytics/models/yolo/segment/val.py
       bar = TQDM(validator.dataloader, desc=validator.get_desc(), total=len(validator.dataloader))
       dt = ops.Profile(), ops.Profile(), ops.Profile()
       for batch_i, batch_with_data in enumerate(bar): 
@@ -641,6 +642,7 @@ def internal_validate(exp_name, big_data, imgsz_val, model_path, dataset_info, b
                cls, bbox = pbatch.pop("cls"), pbatch.pop("bbox")
                nl = len(cls)
                stat["target_cls"] = cls
+               stat["target_img"] = cls.unique()
                if npr == 0:
                    if nl:
                        for k in validator.stats.keys():
