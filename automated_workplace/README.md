@@ -11,7 +11,7 @@ https://github.com/microsoft/onnxruntime/releases
 
 You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible with your compiler. This directories with _bin_, _lib_ and _include_ subfolders. Settings must be set over _yolo_segment_with_nanobind\build.bat_ file. After configuration, the file or commands inside must be launched (executed).
 
-4. Configure path for system libs (_bin_ folders with dll-files):
+4. Configure path for system libs (_bin_ ot _lib_ folders with dll-files):
 
 - actual path for ONNXRuntime and OpenCV (always required)
 
