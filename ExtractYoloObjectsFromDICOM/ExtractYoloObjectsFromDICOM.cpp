@@ -84,9 +84,9 @@ void validate_points(Mat* cv_arr_local, Mat* mask, std::vector<std::pair<int, in
       int L = main_ptr->operator[](_t).first;
       int P = main_ptr->operator[](_t).second;
 
-      if (cv_arr_local->at<ushort>(L, P) == 0)
+      if (cv_arr_local->at<unsigned short int>(L, P) == 0)
       {
-        mask->at<ushort>(L, P) = label;
+        mask->at<unsigned short int>(L, P) = label;
 
         for (short y = -1; y <= 1; y++)
         {
@@ -108,7 +108,7 @@ void validate_points(Mat* cv_arr_local, Mat* mask, std::vector<std::pair<int, in
 
                 if (res)
                 {
-                  if (cv_arr_local->at<ushort>(L + y, P + x) == 0 && mask->at<ushort>(L + y, P + x) == 0)
+                  if (cv_arr_local->at<unsigned short int>(L + y, P + x) == 0 && mask->at<unsigned short int>(L + y, P + x) == 0)
                   {
                     bool point_exist = false;
 
@@ -128,7 +128,7 @@ void validate_points(Mat* cv_arr_local, Mat* mask, std::vector<std::pair<int, in
 
                     if (point_exist) continue;
 
-                    mask->at<ushort>(p.first, p.second) = label;
+                    mask->at<unsigned short int>(p.first, p.second) = label;
 
                     slave_ptr->push_back(p);
 
@@ -161,7 +161,7 @@ void validate_points(Mat* cv_arr_local, Mat* mask, std::vector<std::pair<int, in
   }
 }
 
-void update_image(Mat& img_out, uchar intense, double x_start, double y_start, int thickness, bool single_class, uchar v_index, uchar single_class_empty_color)
+void update_image(Mat& img_out, unsigned char intense, double x_start, double y_start, int thickness, bool single_class, unsigned char v_index, unsigned char single_class_empty_color)
 {
   for (double y = y_start - thickness; y <= y_start + thickness; y++)
   {
@@ -240,11 +240,11 @@ void update_image(Mat& img_out, uchar intense, double x_start, double y_start, i
   }
 }
 
-void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possible_values_count, const uchar possible_values[], std::string file_without_extension, std::string& out_str, int thickness_value, double step_mod, double scale_factor, int img_mul_value, uchar single_class_empty_color, bool one_object, bool full_connection, bool remove_small_target_objects)
+void process_func(Mat& img, Mat& img_out, bool single_class, const unsigned char possible_values_count, const unsigned char possible_values[], std::string file_without_extension, std::string& out_str, int thickness_value, double step_mod, double scale_factor, int img_mul_value, unsigned char single_class_empty_color, bool one_object, bool full_connection, bool remove_small_target_objects)
 {
   //printf("NEXT\r\n");
 
-  char wname[256];
+  //char wname[256];
 
   srand(777U);
 
@@ -255,8 +255,8 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
 
   bool first_line_printed = false;
 
-  uchar v_max = (single_class) ? 1U : possible_values_count;
-  for (uchar v_index = 0; v_index < v_max; v_index++)
+  unsigned char v_max = (single_class) ? 1U : possible_values_count;
+  for (unsigned char v_index = 0; v_index < v_max; v_index++)
   {
     Mat cv_arr = Mat::zeros(img.rows + 2, img.cols + 2, CV_8U);
 
@@ -266,29 +266,29 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
       {
         for (unsigned short x = 0; x < img.cols; x++)
         {
-          for (uchar v_index2 = 0; v_index2 < possible_values_count; v_index2++)
+          for (unsigned char v_index2 = 0; v_index2 < possible_values_count; v_index2++)
           {
-            uchar m_value = possible_values[v_index2];
-            uchar dist = (uchar)std::abs((int)img.at<uchar>(y, x) - (int)m_value);
+            unsigned char m_value = possible_values[v_index2];
+            unsigned char dist = (unsigned char)std::abs((int)img.at<unsigned char>(y, x) - (int)m_value);
 
             if (dist < 255.0 / ((double)(possible_values_count + 1)))      // пиксель объекта
-              cv_arr.at<uchar>(y + 1, x + 1) = 255U;
+              cv_arr.at<unsigned char>(y + 1, x + 1) = 255U;
           }
         }
       }
     }
     else
     {
-      uchar m_value = possible_values[v_index];
+      unsigned char m_value = possible_values[v_index];
 
       for (unsigned short y = 0; y < img.rows; y++)
       {
         for (unsigned short x = 0; x < img.cols; x++)
         {
-          uchar dist = (uchar)std::abs((int)img.at<uchar>(y, x) - (int)m_value);
+          unsigned char dist = (unsigned char)std::abs((int)img.at<unsigned char>(y, x) - (int)m_value);
 
           if (dist < 255.0 / ((double)(possible_values_count + 1)))      // пиксель объекта
-            cv_arr.at<uchar>(y + 1, x + 1) = 255U;
+            cv_arr.at<unsigned char>(y + 1, x + 1) = 255U;
         }
       }
     }
@@ -325,9 +325,9 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
           int L = main_ptr->operator[](_t).first;
           int P = main_ptr->operator[](_t).second;
 
-          if (cv_arr.at<uchar>(L, P) == 0)
+          if (cv_arr.at<unsigned char>(L, P) == 0)
           {
-            background_mask.at<ushort>(L, P) = 1U;
+            background_mask.at<unsigned short int>(L, P) = 1U;
 
             for (short y = -1; y <= 1; y++)
             {
@@ -349,7 +349,7 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
 
                     if (res)
                     {
-                      if (cv_arr.at<uchar>(L + y, P + x) == 0 && background_mask.at<ushort>(L + y, P + x) == 0)
+                      if (cv_arr.at<unsigned char>(L + y, P + x) == 0 && background_mask.at<unsigned short int>(L + y, P + x) == 0)
                       {
                         bool point_exist = false;
 
@@ -369,7 +369,7 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
 
                         if (point_exist) continue;
 
-                        background_mask.at<ushort>(p.first, p.second) = 1U;
+                        background_mask.at<unsigned short int>(p.first, p.second) = 1U;
 
                         slave_ptr->push_back(p);
 
@@ -407,7 +407,7 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
       {
         for (int P = 0; P < background_mask.cols; P++)
         {
-          if (background_mask.at<ushort>(L, P) == 0 && objects_mask_labeled.at<ushort>(L, P) == 0)
+          if (background_mask.at<unsigned short int>(L, P) == 0 && objects_mask_labeled.at<unsigned short int>(L, P) == 0)
           {
             std::vector<std::pair<int, int>> data_for_check;
             std::pair<int, int> p;
@@ -448,7 +448,7 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
         {
           for (int P = 0; P < objects_mask_labeled.cols; P++)
           {
-            if (objects_mask_labeled.at<ushort>(L, P) == i)
+            if (objects_mask_labeled.at<unsigned short int>(L, P) == i)
             {
               S[i]++;
 
@@ -508,8 +508,8 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
           {
             for (int P = XMin[i] + 1; P < XMax[i]; P++)
             {
-              if (objects_mask_labeled.at<ushort>(L, P) == i)
-                cv_arr_local.at<uchar>(L - YMin[i], P - XMin[i]) = cv_arr.at<uchar>(L, P);
+              if (objects_mask_labeled.at<unsigned short int>(L, P) == i)
+                cv_arr_local.at<unsigned char>(L - YMin[i], P - XMin[i]) = cv_arr.at<unsigned char>(L, P);
             }
           }
 
@@ -524,7 +524,7 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
           {
             for (unsigned short x = 0; x < img_mul_value * width_dcm_local; x++)
             {
-              if (canny_output.at<uchar>(y, x) == 255)
+              if (canny_output.at<unsigned char>(y, x) == 255)
               {
                 ConcavePoint p;
                 p.x = (x + 1) / qreal(img_mul_value) + XMin[i] - 1;
@@ -621,7 +621,7 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const uchar possibl
 
                 // update debug image
                 {
-                  uchar intense = 55 + (uchar)floor(201 * (double)exp_t / (double)local_objects.size());
+                  unsigned char intense = 55 + (unsigned char)floor(201 * (double)exp_t / (double)local_objects.size());
 
                   update_image(img_out, intense, x_data * img_out.cols, y_data * img_out.rows, thickness_value, single_class, v_index, single_class_empty_color);
                 }
@@ -669,7 +669,7 @@ train_test_split_result train_test_split(std::vector<String>& data, double test_
   return result;
 }
 
-void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<String>& input_img_paths, dataset& data, bool single_class, const uchar possible_values_count, const uchar* possible_values, std::string mode, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target, bool only_dilate_and_save_masks, bool blue_mode = false)
+void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<String>& input_img_paths, dataset& data, bool single_class, const unsigned char possible_values_count, const unsigned char* possible_values, std::string mode, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target, bool only_dilate_and_save_masks, bool blue_mode = false)
 {
   UINT16 val_min = 65535U;
   UINT16 val_max = 0U;
@@ -711,7 +711,7 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
       unsigned long int index_of_first_pixel_in_section_0;
       //unsigned long int index_of_first_pixel_in_section_1;
 
-      size_t area = width_dcm * height_dcm;
+      size_t area = (size_t)width_dcm * (size_t)height_dcm;
       size_t num_of_frames = full_pixel_data.size() / area;
 
       index_of_first_pixel_in_section_0 = 0UL;
@@ -736,11 +736,11 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
             if (val_UINT16 < val_min) val_min = val_UINT16;
             if (val_UINT16 > val_max) val_max = val_UINT16;
 
-            uchar val_UCHAR;
-            if (val_UINT16 > normalize_value_end) val_UCHAR = 255U;
-            else if (val_UINT16 < normalize_value_start) val_UCHAR = 0U;
+            unsigned char val_data;
+            if (val_UINT16 > normalize_value_end) val_data = 255U;
+            else if (val_UINT16 < normalize_value_start) val_data = 0U;
             else
-              val_UCHAR = (uchar)floor((val_UINT16 - normalize_value_start) / (double)(normalize_value_end - normalize_value_start) * 255.0 + 0.5);
+              val_data = (unsigned char)floor((val_UINT16 - normalize_value_start) / (double)(normalize_value_end - normalize_value_start) * 255.0 + 0.5);
 
             if (data.have_brain_mask)
             {
@@ -749,12 +749,12 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
               if (blue_mode)
               {
                 pixel_brain[0] = 227;
-                pixel_brain[1] = val_UCHAR;
+                pixel_brain[1] = val_data;
                 pixel_brain[2] = 27;
               }
               else
               {
-                pixel_brain[0] = pixel_brain[1] = pixel_brain[2] = val_UCHAR;
+                pixel_brain[0] = pixel_brain[1] = pixel_brain[2] = val_data;
               }
             }
 
@@ -765,12 +765,12 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
               if (blue_mode)
               {
                 pixel_target[0] = 227;
-                pixel_target[1] = val_UCHAR;
+                pixel_target[1] = val_data;
                 pixel_target[2] = 27;
               }
               else
               {
-                pixel_target[0] = pixel_target[1] = pixel_target[2] = val_UCHAR;
+                pixel_target[0] = pixel_target[1] = pixel_target[2] = val_data;
               }
             }
 
@@ -844,7 +844,7 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
     std::cout << mode << " :: Pixel Data --- min: " + std::to_string(val_min) + ", max: " + std::to_string(val_max) << std::endl;
 }
 
-void dataset_parser(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<dataset>& data, bool single_class, const uchar possible_values_count, const uchar* possible_values, double test_size, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target, bool only_dilate_and_save_masks)
+void dataset_parser(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<dataset>& data, bool single_class, const unsigned char possible_values_count, const unsigned char* possible_values, double test_size, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target, bool only_dilate_and_save_masks)
 {
   std::cout << "Total datasets: " << data.size() << std::endl << std::endl;
 
@@ -887,8 +887,8 @@ int func(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string t
 
   std::cout << std::endl;
 
-  const uchar possible_values[] = { 255 }; // белый объект на чёрном фоне
-  const uchar possible_values_count = sizeof(possible_values) / sizeof(uchar);
+  const unsigned char possible_values[] = { 255 }; // белый объект на чёрном фоне
+  const unsigned char possible_values_count = sizeof(possible_values) / sizeof(unsigned char);
 
   if (only_dilate_and_save_masks == false)
   {
