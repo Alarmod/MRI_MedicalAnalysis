@@ -12,14 +12,18 @@ _git clone https://github.com/Alarmod/flann_
 
 _git clone https://github.com/Alarmod/dicomlib_
 
--- OpenCV library (version: 3.1):
+-- OpenCV library (version 3.1 are used):
 
 _https://opencv.org_
 
 For correct execution You must copy opencv_world310.dll to x64\Release folder
 
+-- BOOST library (version 1.82 are used): 
+
+_https://www.boost.org_
+
 # Ways of using
-1. Run _ExtractYoloObjectsFromDICOM.exe 1_ on original DICOM-dataset, which allows you to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG file with binary mask will be replaced (save original folders before).
+1. Run _ExtractYoloObjectsFromDICOM.exe 1_ on original DICOM-dataset, which allows you to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG files with binary masks will be replaced, save original folders before!
 
 Example of _ExtractYoloObjectsFromDICOM.exe 1_ execution can be downloaded here: 
 https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=sharing
