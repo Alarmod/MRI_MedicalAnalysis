@@ -25,9 +25,9 @@ The MRI_MedicalAnalysis library with an open software code is designed for the i
 - forecast characteristics of the studied processes.
    
 # The library contain the following software-realized modules:
-- preprocessing module: leveling brightness, normalization; selection (purpose) area of the brain; wave algorithm for the allocation of objects from the background; subtraction images and filtering of the result by brightness; highlighting texture features; filtering objects by applying a window of a special shape;
-- module of segmentation and recognition based on [Yolo 8](https://github.com/ultralytics/ultralytics/blob/main/docs/en/models/yolov8.md);
-- visualization module: 2D- and 3D-visualization of the brain; ROI 2D- and 3D-visualization; highlighting the trend of the Bezier curve; tracking of accumulations of Mesenchymal Stem Cells (MSC); cognitive data display; combined visualization of the results.
+- preprocessing module: normalization and highlighting a brain area;
+- segmentation and classification module based on [Yolo 8 neural network architecture](https://github.com/ultralytics/ultralytics/blob/main/docs/en/models/yolov8.md) and [ONNXRuntime](https://onnxruntime.ai/) library;
+- visualization module: 2D- and 3D-visualization of the brain; ROI 2D- and 3D-visualization; highlighting the trend of the Bezier curve; tracking of accumulations of Mesenchymal Stem Cells (MSC); combined visualization of the results.
   
 # Used programming languages
 C++ and Python
