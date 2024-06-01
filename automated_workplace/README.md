@@ -17,9 +17,7 @@ You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible
 
 - actual path for ONNXRuntime and OpenCV (always required)
 
-- actual path for [CUDA](https://developer.nvidia.com/cuda-toolkit) and [CUDNN](https://developer.nvidia.com/cudnn) (optional (if selected ONNXRuntime for GPU), for example, ONNXRuntime 1.18.0 requires presence [CUDA 11.8 or 12.4](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html))
-
-Tested with CUDNN version 8.9.7.29.
+- actual path for [CUDA](https://developer.nvidia.com/cuda-toolkit) and [CUDNN](https://developer.nvidia.com/cudnn); this configuration requared if selected ONNXRuntime for GPU, for example, ONNXRuntime 1.18.0 requires presence [CUDA 11.8 or 12.4](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html) and compatible drivers); tested with CUDNN version 8.9.7.29.
 
 # Loading configuration files for artificial neural networks
 Load MRI_settings_ONNX.zip from
