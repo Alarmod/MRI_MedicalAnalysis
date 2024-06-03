@@ -945,28 +945,151 @@ int func(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string t
   return 0;
 }
 
+inline bool ends_with(std::string const& value, std::string const& ending)
+{
+  if (ending.size() > value.size()) return false;
+  return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
+
 int main(int argc, char* argv[])
 {
-  // Параметры датасета: [путь к папке] [задает область мозга через png] [задает область ишемии или стволовые клетки через png]
-  std::vector<dataset> t2_data = { dataset(".\\t2_brain_ischemia\\", true, true),
-                                   dataset(".\\t2_brain\\", true, false),
-                                   dataset(".\\t2_no_ischemia\\", false, true)
-  };
+  const UINT16 t2_start = 25, t2_end = 855;
+  const UINT16 adc_start = 0, adc_end = 855;
+  const UINT16 swi_start = 25, swi_end = 383;
 
-  std::vector<dataset> adc_data = { dataset(".\\adc_brain_ischemia\\", true, true),
-                                    dataset(".\\adc_no_ischemia\\", false, true)
-  };
+  if (argc == 3 && strcmp(argv[1], "convert") == 0)
+  {
+    const bool blue_mode = false;
+       
+    std::string path = argv[2];
+    if (ends_with(path, "/") == false && ends_with(path, "\\") == false)
+      path += "/";
 
-  std::vector<dataset> swi_data = { dataset(".\\swi_brain_msc\\", true, true) };
+    std::cout << "Convert directory: '" << path << "'" << std::endl;
 
-  std::cout << "Processing T2-data" << std::endl;
-  int ret_t2 = func(25, 855, "t2_data", t2_data, argc, argv, 15.0, 2, 2, 8, 8, "ischemia");
+    if (boost::filesystem::exists(path))
+    {
+      std::vector<String> input_img_paths;
+      glob(path + "*.IMA", input_img_paths, true);
 
-  std::cout << "Processing ADC-data" << std::endl;
-  int ret_adc = func(0, 855, "adc_data", adc_data, argc, argv, 15.0, 2, 2, 8, 8, "ischemia");
+      UINT16 cur_start = 0, cur_end = 0;
+      for (size_t _t = 0; _t < input_img_paths.size(); _t++)
+      {
+        auto& c_path = input_img_paths[_t];
+        //std::cout << "Convert '" << c_path << "'" << std::endl;
 
-  std::cout << "Processing SWI-data" << std::endl;
-  int ret_swi = func(25, 383, "swi_data", swi_data, argc, argv, 15.0, 2, 1, 8, 8, "msc");
+        bool correct_data = false;
+        if (c_path.find("t2") != std::string::npos)
+        {
+          cur_start = t2_start;
+          cur_end = t2_end;
+          correct_data = true;
+        }
+        else if (c_path.find("ADC") != std::string::npos)
+        {
+          cur_start = adc_start;
+          cur_end = adc_end;
+          correct_data = true;
+        }
+        else if (c_path.find("SWI") != std::string::npos)
+        {
+          cur_start = swi_start;
+          cur_end = swi_end;
+          correct_data = true;
+        }
+        else
+        {
+          std::cout << "Can't get type of '" << c_path << "'" << std::endl;
+        }
 
-  return (ret_t2 == -1 || ret_adc == -1 || ret_swi == -1) ? -1 : 0;
+        if (correct_data)
+        {
+          std::string::size_type idx = c_path.rfind('.');
+
+          if (idx != std::string::npos)
+          {
+            std::string output_file = c_path.substr(0, idx) + ".png";
+
+            dicom::DataSet* full_ds = new dicom::DataSet(); // исходный датасет
+            std::wstring full_path = fs::path(c_path.operator std::string()).wstring();
+            dicom::ReadW(full_path, *full_ds);
+            const std::vector<UINT16>& full_pixel_data = full_ds->operator()(dicom::TAG_PIXEL_DATA).Get<std::vector<UINT16> >();
+
+            unsigned short width_dcm = 0U, height_dcm = 0U;
+            if (full_ds->exists(TAG_COLUMNS)) full_ds->operator()(TAG_COLUMNS) >> width_dcm;
+            if (full_ds->exists(TAG_ROWS)) full_ds->operator()(TAG_ROWS) >> height_dcm;
+
+            size_t area = (size_t)width_dcm * (size_t)height_dcm;
+            size_t num_of_frames = full_pixel_data.size() / area;
+
+            if (num_of_frames == 1)
+            {
+              Mat img_out = Mat::zeros(height_dcm, width_dcm, CV_8UC3);
+
+              unsigned long int index_of_first_pixel_in_section_0 = 0UL;
+
+              for (short y = 0; y < height_dcm; y++)
+              {
+                for (short x = 0; x < width_dcm; x++)
+                {
+                  UINT16 val_UINT16 = full_pixel_data[index_of_first_pixel_in_section_0];
+
+                  unsigned char val_data;
+                  if (val_UINT16 > cur_end) val_data = 255U;
+                  else if (val_UINT16 < cur_start) val_data = 0U;
+                  else
+                    val_data = (unsigned char)floor((val_UINT16 - cur_start) / (double)(cur_end - cur_start) * 255.0 + 0.5);
+
+                  cv::Vec3b& pixel_brain = img_out.at<Vec3b>(y, x);
+
+                  if (blue_mode)
+                  {
+                    pixel_brain[0] = 227;
+                    pixel_brain[1] = val_data;
+                    pixel_brain[2] = 27;
+                  }
+                  else
+                  {
+                    pixel_brain[0] = pixel_brain[1] = pixel_brain[2] = val_data;
+                  }
+
+                  index_of_first_pixel_in_section_0++;
+                }
+              }
+
+              imwrite(output_file, img_out);
+              std::cout << "Saved '" << output_file << "'" << std::endl;
+            }
+          }
+        }
+      }
+    }
+
+    return 0;
+  }
+  else
+  {
+    // Параметры датасета: [путь к папке] [задает область мозга через png] [задает область ишемии или стволовые клетки через png]
+    std::vector<dataset> t2_data = { dataset(".\\t2_brain_ischemia\\", true, true),
+                                     dataset(".\\t2_brain\\", true, false),
+                                     dataset(".\\t2_no_ischemia\\", false, true)
+    };
+
+    std::vector<dataset> adc_data = { dataset(".\\adc_brain_ischemia\\", true, true),
+                                      dataset(".\\adc_no_ischemia\\", false, true)
+    };
+
+    std::vector<dataset> swi_data = { dataset(".\\swi_brain_msc\\", true, true) };
+
+    std::cout << "Processing T2-data" << std::endl;
+    int ret_t2 = func(t2_start, t2_end, "t2_data", t2_data, argc, argv, 15.0, 2, 2, 8, 8, "ischemia");
+
+    std::cout << "Processing ADC-data" << std::endl;
+    int ret_adc = func(adc_start, adc_end, "adc_data", adc_data, argc, argv, 15.0, 2, 2, 8, 8, "ischemia");
+
+    std::cout << "Processing SWI-data" << std::endl;
+    int ret_swi = func(swi_start, swi_end, "swi_data", swi_data, argc, argv, 15.0, 2, 1, 8, 8, "msc");
+
+    return (ret_t2 == -1 || ret_adc == -1 || ret_swi == -1) ? -1 : 0;
+  }
 }
