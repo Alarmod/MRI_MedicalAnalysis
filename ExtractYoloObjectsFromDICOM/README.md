@@ -30,6 +30,14 @@ https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=shari
 
 2. To generate training and testing datasets in Yolo format, run _ExtractYoloObjectsFromDICOM.exe 0_
 
+3. Yol have also the ability to directly convert directories with IMA files into YOLO format, with further processing using an artificial neural network: 
+
+_ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
+
+_python convert_dir.py_
+
+Script _convert_dir.py_ use installed [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) plugin.
+
 # Used programming languages
 C++
 
