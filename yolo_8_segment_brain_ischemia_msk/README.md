@@ -43,11 +43,11 @@ _python train.py_
 
 2. Testing: 
 
-_python train.py default_validate_ (Yolo 8 default validation code, the results are far from what you get in Yolo predict)
+_python test.py default_validate_ (Yolo 8 default validation code, the results are far from what you get in Yolo predict)
 
-_python train.py generate_data_ (validate with saving all data: contours, zones, cognitive visualization)
+_python test.py generate_data_ (validate with saving all data: contours, zones, cognitive visualization)
 
-_python train.py internal_validate_ (modificated Yolo 8 validation code that closer to Yolo original prediction code)
+_python test.py internal_validate_ (modificated Yolo 8 validation code that closer to Yolo original prediction code)
 
 # Export settings to ONNX
 To convert the settings of artificial neural networks into the ONNX format, you need run script _export.bat_
