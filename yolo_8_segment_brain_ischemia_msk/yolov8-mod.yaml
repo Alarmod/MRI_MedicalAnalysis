@@ -5,14 +5,14 @@
 nc: 1   # number of classes
 scales: # model compound scaling constants, i.e. 'model=yolov8n-seg.yaml' will call yolov8-seg.yaml with scale 'n'
   # [depth, width, max_channels]
-  n: [1.00, 0.45, 1024]
+  n: [0.90, 0.40, 512]
 
 # YOLOv8.0n backbone
 backbone:
   # [from, repeats, module, args]
-  - [-1, 1, Conv, [384, 3, 2]]  # 0-P1/2, default 64
-  - [-1, 1, Conv, [384, 3, 2]]  # 1-P2/4, default 128
-  - [-1, 3, C2f, [768, True]]   # ch[0], default 128
+  - [-1, 1, Conv, [96, 3, 2]]  # 0-P1/2, default 64
+  - [-1, 1, Conv, [96, 3, 2]]  # 1-P2/4, default 128
+  - [-1, 3, C2f, [192, True]]   # ch[0], default 128
   - [-1, 1, Conv, [256, 3, 2]]  # 3-P3/8
   - [-1, 6, C2f, [256, True]]
   - [-1, 1, Conv, [512, 3, 2]]  # 5-P4/16
@@ -39,4 +39,4 @@ head:
   - [[-1, 9], 1, Concat, [1]]  # cat head P5
   - [-1, 3, C2f, [1024]]       # 21 (P5/32-large)
 
-  - [[15, 18, 21], 1, Segment, [nc, 48, 384]]  # Segment(P3, P4, P5), default [nc, 32, 256]
+  - [[15, 18, 21], 1, Segment, [nc, 36, 288]]  # Segment(P3, P4, P5), default [nc, 32, 256]
