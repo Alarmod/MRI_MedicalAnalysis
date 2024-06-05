@@ -74,7 +74,7 @@ class VTKInteractiveWidget(VTKWidget):
 		if self.__activeButton == QtCore.Qt.LeftButton:
 			self.__setEventInformation(event.x(), event.y())
 			self.__interactor.LeftButtonReleaseEvent()
-			self.__ActiveButton = None
+			self.__activeButton = None
 
 	def wheelEvent(self, event):
 		self.__wheelDelta += event.delta()
