@@ -222,6 +222,7 @@ public:
   ~YOLO()
   {
     delete m_session;
+
     getONNXEnv().release();
   }
 
@@ -314,29 +315,20 @@ public:
   }
 
   template<typename T>
-  void BlobFromImage(const cv::Mat& iImg, T* iBlob)
+  void BlobFromGrayImage(const cv::Mat& iImg, T* iBlob)
   {
-    //TODO: HWC to CHW -> see cv::transposeND
-    int channels = iImg.channels();
-    int imgHeight = iImg.rows;
-    int imgWidth = iImg.cols;
+    unsigned long long im_index;
+    unsigned long long img_size = iImg.rows * iImg.cols;
+    unsigned char* data_ptr = iImg.data;
 
-    int offset[2];
-    for (int c = 0; c < channels; c++)
-    {
-      offset[0] = c * imgWidth * imgHeight;
-      for (int h = 0; h < imgHeight; h++)
-      {
-        offset[1] = offset[0] + h * imgWidth;
-        for (int w = 0; w < imgWidth; w++)
-        {
-          iBlob[offset[1] + w] = typename std::remove_pointer<T>::type((iImg.at<cv::Vec3b>(h, w)[c]) / 255.0f);
-        }
-      }
-    }
+    for (im_index = 0ULL; im_index < img_size; im_index++)
+      iBlob[im_index] = static_cast<T>(data_ptr[im_index] / 255.0F);
+
+    memcpy(&iBlob[img_size], iBlob, img_size * sizeof(T));
+    memcpy(&iBlob[2 * img_size], iBlob, img_size * sizeof(T));
   }
 
-  void LetterBox(const cv::Mat& image, cv::Mat& outImage, cv::Vec4d& params, const cv::Size& newShape, bool autoShape = false, bool scaleFill = false, bool scaleUp = true, int stride = 32, const cv::Scalar& color = cv::Scalar(114, 114, 114))
+  void LetterBox(const cv::Mat& image, cv::Mat& outImage, cv::Vec4d& params, const cv::Size& newShape, bool autoShape = false, bool scaleFill = false, bool scaleUp = true, int stride = 32, const cv::Scalar& color = cv::Scalar(114))
   {
     cv::Size shape = image.size();
     float r = std::min((float)newShape.height / (float)shape.height,
@@ -404,7 +396,7 @@ public:
     }
 
     T* blob = new T[m_input_tensor_length];
-    BlobFromImage<T>(srcImg, blob);
+    BlobFromGrayImage<T>(srcImg, blob);
     Ort::Value input_tensor = Ort::Value::CreateTensor<T>(m_memory_info, blob, m_input_tensor_length, m_input_tensor_shape.data(), m_input_tensor_shape.size());
 
     std::vector<Ort::Value> output_tensors = m_session->Run(Ort::RunOptions{ nullptr }, m_inputs_names.data(), &input_tensor, m_inputs_names.size(), m_outputs_names.data(), m_outputs_names.size());
@@ -464,10 +456,10 @@ public:
           picked_proposals.push_back(temp_proto);
 
           //rect [x,y,w,h]
-          x = (pdata[0] - params[2]) / params[0];  //x
-          y = (pdata[1] - params[3]) / params[1];  //y
-          w = pdata[2] / params[0];  //w
-          h = pdata[3] / params[1];  //h
+          x = (pdata[0] - params[2]) / params[0];
+          y = (pdata[1] - params[3]) / params[1];
+          w = pdata[2] / params[0];
+          h = pdata[3] / params[1];
           left = MAX(int(x - 0.5 * w + 0.5), 0);
           top = MAX(int(y - 0.5 * h + 0.5), 0);
           class_ids.push_back(classIdPoint.x);
@@ -516,7 +508,6 @@ public:
       for (int i = 0; i < temp_mask_proposals.size(); ++i)
         GetMask(cv::Mat(temp_mask_proposals[i]).t(), mask_protos_32, output[i], mask_params);
     }
-
   }
 
   void mask_procesing(cv::Mat& res_mask_big, const bool get_brain, const unsigned int erode_level)
@@ -541,7 +532,6 @@ public:
 
             biggest_area = cur_area;
           }
-
         }
 
         res_mask_big.setTo(0);
@@ -562,14 +552,10 @@ public:
     // Convert ndarray to mat
     const cv::Mat gray = cv::Mat(input.shape(0), input.shape(1), CV_8UC1, (void*)input.data());
 
-    // Convert gray to RGB
-    cv::Mat colored;
-    cv::cvtColor(gray, colored, cv::COLOR_GRAY2RGB);
-
     // LetterBox
     cv::Mat netInputImg;
     cv::Vec4d params;
-    LetterBox(colored, netInputImg, params, cv::Size(m_net_width, m_net_height));
+    LetterBox(gray, netInputImg, params, cv::Size(m_net_width, m_net_height));
 
     // Run detection
     std::vector<OutputParams> result;
