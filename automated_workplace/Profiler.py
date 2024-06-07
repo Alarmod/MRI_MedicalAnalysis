@@ -4,6 +4,7 @@ from time import perf_counter
 class Counter:
 	def __init__(self):
 		self.count = 0
+		self.maxTime = 0
 		self.totalTime = 0
 		self.lastStartTime = 0
 
@@ -11,12 +12,14 @@ class Counter:
 		self.lastStartTime = perf_counter()
 	
 	def stop(self):
+		delta = perf_counter() - self.lastStartTime
 		self.count += 1
-		self.totalTime += perf_counter() - self.lastStartTime
+		self.totalTime += delta
+		self.maxTime = max(self.maxTime, delta)
 
 	def __str__(self):
 		if self.count:
-			return f"Calls: {self.count}\tTotal time: {self.totalTime:.06f}\tAvg time: {(self.totalTime / self.count):.06f}"
+			return f"Calls: {self.count}\tTotal time: {self.totalTime:.06f}\tMax time: {self.maxTime:.03f}\tAvg time: {(self.totalTime / self.count):.03f}"
 		return ""
 
 class Profiler:
@@ -39,7 +42,12 @@ class Profiler:
 		counter.start()
 
 	def stop(self, tag):
-		self.counters.get(tag).stop()
+		counter = self.counters.get(tag)
+		if counter:
+			counter.stop()
+
+	def clear(self):
+		self.counters = {}
 
 	def print(self):
 		for key, value in sorted(self.counters.items(), key=lambda x: x[1].totalTime, reverse=True):
