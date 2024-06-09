@@ -17,7 +17,7 @@ You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible
 
 - actual path for ONNXRuntime and OpenCV (always required)
 
-- actual path for [CUDA](https://developer.nvidia.com/cuda-toolkit) and [CUDNN](https://developer.nvidia.com/cudnn); this configuration requared if selected ONNXRuntime for GPU, for example, ONNXRuntime 1.18.0 requires presence [CUDA 11.8 or 12.4](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html) and compatible drivers); tested with CUDNN version 8.9.7.29.
+- actual path for [CUDA](https://developer.nvidia.com/cuda-toolkit) and [CUDNN](https://developer.nvidia.com/cudnn); this configuration requared if selected ONNXRuntime for GPU, for example, ONNXRuntime 1.18.0 requires presence [CUDA 11.8 or 12.4](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html) and compatible drivers); tested with CUDNN version 8.9.7.29 and Nvidia driver version 528.24/555.85.
 
 # Loading configuration files for artificial neural networks
 Load MRI_settings_ONNX.zip from
@@ -28,8 +28,15 @@ https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 
 and unpack it to resources folder (must be _resources/runs/segment/..._ structure)
 
-# Manual for run: 
+# Manual for GUI run: 
+Configure [Classifier] section in _settings.ini_ file and run command
+
 _python main.py_
+
+# Manual for speed test run: 
+Configure [Classifier] section in _settings.ini_ file and run command 
+
+_python test_processing_speed.py_
 
 # System requirements
 Windows 10-11, Linux
