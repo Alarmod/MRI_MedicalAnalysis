@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-
+'''
 class VolumeCombiner:
 	def __init__(self, target_mask, target_spacing, source_mask, source_spacing):
 		self.target_shape = target_mask.shape
@@ -14,34 +14,30 @@ class VolumeCombiner:
 			return source_mask
 
 		return np.stack([resized(source_mask[i], self.target_shape[2], self.target_shape[1]) for i in range(source_mask.shape[0])])
-
 '''
-def get_bbox_points(bbox):
-	return np.array([[bbox[0], bbox[1], 1], #top-left
-			[bbox[0]+bbox[2], bbox[1], 1], #top-right
-			[bbox[0]+bbox[2], bbox[1]+bbox[3], 1], #bottom-right
-			[bbox[0], bbox[1]+bbox[3], 1]]) #bottom-left
 
-def get_bbox_similarity_matrix_transform(target, source):
-	target_points = get_bbox_points(cv2.boundingRect(target))
-	source_points = get_bbox_points(cv2.boundingRect(source))
-	M, residuals, rank, s = np.linalg.lstsq(source_points, target_points, rcond=None)
-	return M.T
-
-#warp by brain area bboxes
+#warp by brain area bboxes (top-center alignment)
 class VolumeCombiner:
 	def __init__(self, target_mask, target_spacing, source_mask, source_spacing):
 		self.target_shape = target_mask.shape
 
 		slice_count = self.target_shape[0]
 		self.transformations = [None]*slice_count
+
+		scale = [source_spacing[0] / target_spacing[0], source_spacing[1] / target_spacing[1]] # [xs,ys]
+
 		for i in range(slice_count):
-			self.transformations[i] = get_bbox_similarity_matrix_transform(target_mask[i], source_mask[i])
+			target_bbox = cv2.boundingRect(target_mask[i]) #x,y,w,h
+			source_bbox = cv2.boundingRect(source_mask[i]) #x,y,w,h
+			source_bbox = np.multiply(source_bbox, [scale[0], scale[1], scale[0], scale[1]]) #scale bbox
+			t_anchor_x = target_bbox[0] + target_bbox[2]/2
+			s_anchor_x = source_bbox[0] + source_bbox[2]/2
+			self.transformations[i] = np.array([[scale[0], 0 , round(t_anchor_x-s_anchor_x)], 
+							    [0, scale[1], -(source_bbox[1]-target_bbox[1])]]).astype(np.float32)
 
 	def transform(self, source_mask):
 		def transformed(mask, transformation, w, h):
-			mask = cv2.warpPerspective(mask, transformation, (w, h))
+			mask = cv2.warpAffine(mask, transformation, (w, h))
 			return cv2.inRange(mask, 127, 255)
 
 		return np.stack([transformed(source_mask[i], self.transformations[i], self.target_shape[2], self.target_shape[1]) for i in range(source_mask.shape[0])])
-'''
