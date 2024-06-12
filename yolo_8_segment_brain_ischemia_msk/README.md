@@ -39,7 +39,7 @@ or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_dat
 (must be stored to _datasets_ folder and unpacked)
 
 # Ways of using
-If Your GPU FP16 speed slow, change _half_global = True_ to _half_global = False_
+If Your GPU FP16 speed slow, change _global_half = True_ to _global_half = False_ in train.py and test.py.
 
 1. Training:
 
