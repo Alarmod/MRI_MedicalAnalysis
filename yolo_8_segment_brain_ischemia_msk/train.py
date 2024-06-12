@@ -5,7 +5,7 @@ from ultralytics import YOLO
 
 import torch
 
-half_global = True
+global_half = True
 
 def func(model, name_val, data_val, imgsz_val, batch_val, lr0_val, epochs_val, patience_val, mod): 
    results = model.train(
@@ -17,7 +17,7 @@ def func(model, name_val, data_val, imgsz_val, batch_val, lr0_val, epochs_val, p
              lrf=0.001, 
              mask_ratio=1, 
              overlap_mask=False, 
-             half=half_global, 
+             half=global_half, 
              optimizer="AdamW", 
              single_cls=True, 
              cos_lr=True, 
