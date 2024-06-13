@@ -59,7 +59,7 @@ class MRIMAProcessor(QtCore.QObject):
 		self.gradientMinValue = 100
 		self.gradientMaxValue = 255
 
-		self.volumeSpacingADC = [0.40000000596046, 0.40000000596046, 1.05] #row col slice
+		self.volumeSpacingADC = [0.40000000596046, 0.40000000596046, 1.05] #col row slice
 		self.volumeSpacingSWI = [0.1171875, 0.1171875, 0.5]
 		self.volumeSpacingT2 = [0.1171875, 0.1171875, 0.805]
 
@@ -133,7 +133,7 @@ class MRIMAProcessor(QtCore.QObject):
 		self.classifier.saveSettings(settings)
 
 	#voxels - [slices, rows, cols]
-	#spacing - [x, y, z]
+	#spacing - (x, y, z) as (col, row, slice)
 	@staticmethod
 	def numpy2vtk(voxels, spacing):
 		data = voxels.tobytes()

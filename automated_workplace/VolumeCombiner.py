@@ -24,7 +24,7 @@ class VolumeCombiner:
 		slice_count = self.target_shape[0]
 		self.transformations = [None]*slice_count
 
-		scale = [source_spacing[1] / target_spacing[1], source_spacing[0] / target_spacing[0]] # [xs,ys]
+		scale = [source_spacing[0] / target_spacing[0], source_spacing[1] / target_spacing[1]] # [xs,ys]
 
 		for i in range(slice_count):
 			target_bbox = cv2.boundingRect(target_mask[i]) #x,y,w,h
