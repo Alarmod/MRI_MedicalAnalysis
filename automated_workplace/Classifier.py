@@ -5,6 +5,7 @@ import numpy as np
 import boot
 from yolo_segment_with_nanobind import yolo_segment_ext as yolo_inference
 
+from Protocol import Protocol
 from Profiler import Profiler, profile #debug
 
 class MaskType:
@@ -189,11 +190,11 @@ class Classifier:
 			return np.piecewise(slice_data, [low, medium, high], [0, lambda x: np.floor((x - low_value) / delta + 0.5), 255]).astype(np.uint8)
 
 		cached_data.preprocessed = None
-		if cached_data.protocol == "ep2d_diff_tra_14b": # ADC
+		if cached_data.protocol == Protocol.ADC:
 			cached_data.preprocessed = preprocess(cached_data.ds.pixel_array, 0, 855)
-		elif cached_data.protocol == "swi_tra":         # SWI
+		elif cached_data.protocol == Protocol.SWI:
 			cached_data.preprocessed = preprocess(cached_data.ds.pixel_array, 25, 383)
-		elif cached_data.protocol == "t2_tse_tra_fs":   # T2
+		elif cached_data.protocol == Protocol.T2:
 			cached_data.preprocessed = preprocess(cached_data.ds.pixel_array, 25, 855)
 
 	@profile
@@ -202,17 +203,17 @@ class Classifier:
 		protocol = cached_data.protocol
 
 		if mask_type == MaskType.BRAIN:
-			if protocol == "ep2d_diff_tra_14b":
+			if protocol == Protocol.ADC:
 				cached_data.brain_mask = self.models["adc_brain_model"][1].predict(yolo_input, rec_treshold=0.15, max_results=1, get_brain=True, erode_level=0)
-			elif protocol == "swi_tra":
+			elif protocol == Protocol.SWI:
 				cached_data.brain_mask = self.models["swi_brain_model"][1].predict(yolo_input, rec_treshold=0.15, max_results=1, get_brain=True, erode_level=0)
-			elif protocol == "t2_tse_tra_fs":
+			elif protocol == Protocol.T2:
 				cached_data.brain_mask = self.models["t2_brain_model"][1].predict(yolo_input, rec_treshold=0.15, max_results=1, get_brain=True, erode_level=0)
 		elif mask_type == MaskType.ISCHEMIA:
-			if protocol == "ep2d_diff_tra_14b":
+			if protocol == Protocol.ADC:
 				cached_data.ischemia_mask = self.models["adc_ischemia_model"][1].predict(yolo_input, rec_treshold=0.05, max_results=255, get_brain=False, erode_level=2)
-			elif protocol == "t2_tse_tra_fs":
+			elif protocol == Protocol.T2:
 				cached_data.ischemia_mask = self.models["t2_ischemia_model"][1].predict(yolo_input, rec_treshold=0.05, max_results=255, get_brain=False, erode_level=2)
 		elif mask_type == MaskType.MSC:
-			if protocol == "swi_tra":
+			if protocol == Protocol.SWI:
 				cached_data.msc_mask = self.models["swi_msc_model"][1].predict(yolo_input, rec_treshold=0.05, max_results=1024, get_brain=False, erode_level=2)

@@ -2,6 +2,8 @@ import threading
 import cachetools
 import pydicom
 
+from Protocol import get_protocol_id
+
 class CachedData:
 	def __init__(self, filename):
 		self.filename = filename
@@ -16,7 +18,5 @@ class CachedData:
 def get_cached_data(filename):
 	cached_data = CachedData(filename)
 	cached_data.ds = pydicom.dcmread(filename)
-	cached_data.protocol = cached_data.ds.ProtocolName
-	if cached_data.protocol == "ep2d_diff_tra_14b_1mm":
-		cached_data.protocol = "ep2d_diff_tra_14b"
+	cached_data.protocol = get_protocol_id(cached_data.ds.ProtocolName)
 	return cached_data

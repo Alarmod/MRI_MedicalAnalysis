@@ -1,12 +1,12 @@
 class Slice:
-	def __init__(self, id, protocol, filename):
-		self.id = id
+	def __init__(self, index, protocol, filename):
+		self.index = index
 		self.protocol = protocol
 		self.filename = filename
 
 class Study:
-	def __init__(self, id, protocol, filename_list, ref_studies_list, date):
-		self.id = id
+	def __init__(self, index, protocol, filename_list, ref_studies_list, date):
+		self.index = index
 		self.protocol = protocol
 		self.filename_list = filename_list
 		self.ref_studies_list = ref_studies_list

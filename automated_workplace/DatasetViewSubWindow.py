@@ -1,5 +1,6 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 
+from Protocol import Protocol
 from Dataset import Dataset
 from Entity import Slice, Study
 
@@ -65,12 +66,12 @@ class DatasetViewSubWindow(QtWidgets.QMdiSubWindow):
 		self.tree.setDisabled(state)
 
 	def setContent(self, dataset):
-		for protocol_id in dataset.protocols():
-			protocol_node = TreeWidgetItem(self.tree, dataset.getProtocolName(protocol_id), None)
-			for study_id in dataset.studiesWithProtocolID(protocol_id):
-				study_node = TreeWidgetItem(protocol_node, dataset.getStudyName(study_id), dataset.getStudy(study_id))
-				for slice_id in dataset.slicesWithStudyID(study_id):
-					slice_node = TreeWidgetItem(study_node, dataset.getSliceName(slice_id), dataset.getSlice(slice_id))
+		for protocol_index in dataset.protocols():
+			protocol_node = TreeWidgetItem(self.tree, dataset.getProtocolName(protocol_index), None)
+			for study_index in dataset.studiesWithProtocolIndex(protocol_index):
+				study_node = TreeWidgetItem(protocol_node, dataset.getStudyName(study_index), dataset.getStudy(study_index))
+				for slice_index in dataset.slicesWithStudyIndex(study_index):
+					slice_node = TreeWidgetItem(study_node, dataset.getSliceName(slice_index), dataset.getSlice(slice_index))
 
 	def clearContent(self):
 		self.tree.clear()

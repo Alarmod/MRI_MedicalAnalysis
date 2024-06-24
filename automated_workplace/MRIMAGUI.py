@@ -5,6 +5,7 @@ from DatasetViewSubWindow import DatasetViewSubWindow
 from ViewerSubWindow import ViewerSubWindow
 from InfoSubWindow import InfoSubWindow
 
+from Protocol import Protocol
 from Dataset import Dataset
 from Entity import *
 from ViewMode import ViewMode
@@ -61,16 +62,16 @@ class MRIMAGUI(QtCore.QObject):
 		if view_mode.flags & ViewMode.MARK_BRAIN_AREA:
 			vm.setFlag(ViewMode.MARK_BRAIN_AREA)
 
-		isSWI = (input_data.protocol == "swi_tra")
+		isSWI = (input_data.protocol == Protocol.SWI)
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA and not isSWI:
 			vm.setFlag(ViewMode.MARK_ISCHEMIA_AREA)
 		if view_mode.flags & ViewMode.MARK_MSC_AREA and isSWI:
 			vm.setFlag(ViewMode.MARK_MSC_AREA)
 
 		if isinstance(input_data, Study):
-			if view_mode.flags & ViewMode.MARK_MSC_FROM and not isSWI and view_mode.ref_msc_study.id in input_data.ref_studies_list:
+			if view_mode.flags & ViewMode.MARK_MSC_FROM and not isSWI and view_mode.ref_msc_study.index in input_data.ref_studies_list:
 				vm.setFlag(ViewMode.MARK_MSC_FROM, view_mode.ref_msc_study)
-			if view_mode.flags & ViewMode.TRACK_MSC_FROM and isSWI and view_mode.ref_tracking_study.id in input_data.ref_studies_list:
+			if view_mode.flags & ViewMode.TRACK_MSC_FROM and isSWI and view_mode.ref_tracking_study.index in input_data.ref_studies_list:
 				vm.setFlag(ViewMode.TRACK_MSC_FROM, view_mode.ref_tracking_study)
 
 		return vm

@@ -1,5 +1,6 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 
+from Protocol import Protocol
 from Dataset import Dataset
 from Entity import Slice, Study
 from ViewMode import ViewMode
@@ -75,9 +76,14 @@ class ViewerContextMenu(CheckableActionsMenu):
 
 	def setContent(self, dataset):
 		self.clearContent()
-		for study_id in dataset.studiesWithProtocolName("swi_tra"):
-			study_name = dataset.getStudyName(study_id)
-			study = dataset.getStudy(study_id)
+
+		swi_protocol_index = dataset.getProtocolIndex(Protocol.SWI)
+		if swi_protocol_index == None:
+			return
+
+		for study_index in dataset.studiesWithProtocolIndex(swi_protocol_index):
+			study_name = dataset.getStudyName(study_index)
+			study = dataset.getStudy(study_index)
 
 			ref_msc_action = CheckableAction(self.ref_msc_submenu, study_name, (ViewMode.MARK_MSC_FROM, study))
 			self.ref_msc_submenu.addAction(ref_msc_action)
@@ -92,7 +98,7 @@ class ViewerContextMenu(CheckableActionsMenu):
 			self.ref_msc_submenu.menuAction().setVisible(False)
 			self.ref_tracking_submenu.menuAction().setVisible(False)
 		else:
-			isSWI = (selected_input.protocol == "swi_tra")
+			isSWI = (selected_input.protocol == Protocol.SWI)
 
 			if isinstance(selected_input, Study):
 				self.mark_ischemia_action.setVisible(not isSWI)
@@ -107,11 +113,11 @@ class ViewerContextMenu(CheckableActionsMenu):
 					if isSWI:
 						for action in self.ref_tracking_submenu.actions():
 							_, study = action.obj
-							action.setVisible(study.id in selected_input.ref_studies_list)
+							action.setVisible(study.index in selected_input.ref_studies_list)
 					else:
 						for action in self.ref_msc_submenu.actions():
 							_, study = action.obj
-							action.setVisible(study.id in selected_input.ref_studies_list)
+							action.setVisible(study.index in selected_input.ref_studies_list)
 
 			elif isinstance(selected_input, Slice):
 				self.mark_ischemia_action.setVisible(not isSWI)

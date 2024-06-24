@@ -6,10 +6,11 @@ import functools
 import concurrent.futures
 from datetime import datetime
 
-from Cache import get_cached_data
+from Protocol import Protocol
 from Dataset import Dataset
 from Entity import *
 from ViewMode import ViewMode
+from Cache import get_cached_data
 
 from Classifier import Classifier, MaskType
 from VolumeCombiner import transform_volume
@@ -196,11 +197,11 @@ class MRIMAProcessor(QtCore.QObject):
 
 	'''-----------------------------------------'''
 	def getSpacing(self, entity):
-		if entity.protocol == "ep2d_diff_tra_14b": 
+		if entity.protocol == Protocol.ADC: 
 			return self.volumeSpacingADC
-		if entity.protocol == "swi_tra":
+		if entity.protocol == Protocol.SWI:
 			return self.volumeSpacingSWI
-		if entity.protocol == "t2_tse_tra_fs":
+		if entity.protocol == Protocol.T2:
 			return self.volumeSpacingT2
 		return [1,1,1]
 
