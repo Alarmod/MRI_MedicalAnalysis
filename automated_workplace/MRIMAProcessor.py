@@ -12,8 +12,8 @@ from Entity import *
 from ViewMode import ViewMode
 
 from Classifier import Classifier, MaskType
-from VolumeCombiner import VolumeCombiner
-from MSCTracker import MSCTracker, distance
+from VolumeCombiner import transform_volume
+from MSCTracker import track_msc, distance
 
 from Profiler import profile #debug
 
@@ -77,7 +77,6 @@ class MRIMAProcessor(QtCore.QObject):
 		self.use_2D_contours = 1
 
 		self.classifier = Classifier()
-		self.mscTracker = MSCTracker()
 
 		self.volume_property = None
 
@@ -133,7 +132,7 @@ class MRIMAProcessor(QtCore.QObject):
 		self.classifier.saveSettings(settings)
 
 	#voxels - [slices, rows, cols]
-	#spacing - (x, y, z) as (col, row, slice)
+	#spacing - [x, y, z] as [col, row, slice]
 	@staticmethod
 	def numpy2vtk(voxels, spacing):
 		data = voxels.tobytes()
@@ -397,8 +396,7 @@ class MRIMAProcessor(QtCore.QObject):
 				brain_mask = np.stack([cached.brain_mask for cached in source])
 			referenced_brain_mask = np.stack([cached.brain_mask for cached in referenced])
 			referenced_msc_mask = np.stack([cached.msc_mask for cached in referenced])
-			combiner = VolumeCombiner(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_msc_study))
-			transformed_msc_mask = combiner.transform(referenced_msc_mask)
+			transformed_msc_mask = transform_volume(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_msc_study), referenced_msc_mask)
 			voxels[transformed_msc_mask == 255] = Marker.REFERENCED_MSC
 
 		transformed_msc_mask = None
@@ -409,8 +407,7 @@ class MRIMAProcessor(QtCore.QObject):
 				msc_mask = np.stack([cached.msc_mask for cached in source])
 			referenced_brain_mask = np.stack([cached.brain_mask for cached in referenced])
 			referenced_msc_mask = np.stack([cached.msc_mask for cached in referenced])
-			combiner = VolumeCombiner(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_tracking_study))
-			transformed_msc_mask = combiner.transform(referenced_msc_mask)
+			transformed_msc_mask = transform_volume(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_tracking_study), referenced_msc_mask)
 			voxels[transformed_msc_mask == 255] = Marker.REFERENCED_MSC
 
 		vtk_volume = MRIMAProcessor.numpy2vtk(voxels, study_spacing)
@@ -423,9 +420,8 @@ class MRIMAProcessor(QtCore.QObject):
 		vtk_mesh.addLine(0, 0, bounds[4],   0, 0, bounds[5],   (1,1,1), 1.0) #z -> slices
 
 		if view_mode.flags & ViewMode.TRACK_MSC_FROM:
-			tracks = self.mscTracker.track(transformed_msc_mask, msc_mask, study_spacing)
-			tracks_count = len(tracks)
-			if tracks_count != 0:
+			tracks = track_msc(transformed_msc_mask, msc_mask, study_spacing)
+			if len(tracks) != 0:
 				avg_track_length = 0
 				for track in tracks:
 					vtk_mesh.addLine(track.start[0], track.start[1], track.start[2],

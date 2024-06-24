@@ -115,19 +115,15 @@ class Track:
 	def __repr__(self):
 		return "<"+str(self.start) + ", " + str(self.end) + ", " + str(self.amount) + ">"
 
-class MSCTracker:
-	def __init__(self):
-		pass
+def track_msc(src_mask, dst_mask, voxel_size):
+	src_components = getConnectedComponents(src_mask, voxel_size)
+	dst_components = getConnectedComponents(dst_mask, voxel_size)
 
-	def track(self, src_mask, dst_mask, voxel_size):
-		src_components = getConnectedComponents(src_mask, voxel_size)
-		dst_components = getConnectedComponents(dst_mask, voxel_size)
+	result = solve_tp(src_components, dst_components)
+	tracks = []
 
-		result = solve_tp(src_components, dst_components)
-		tracks = []
-
-		for src_index in range(len(src_components)):
-			for dst_index in range(len(dst_components)):
-				if result[src_index][dst_index] != 0:
-					tracks.append(Track(src_components[src_index].xyz, dst_components[dst_index].xyz, result[src_index][dst_index]))
-		return tracks
+	for src_index in range(len(src_components)):
+		for dst_index in range(len(dst_components)):
+			if result[src_index][dst_index] != 0:
+				tracks.append(Track(src_components[src_index].xyz, dst_components[dst_index].xyz, result[src_index][dst_index]))
+	return tracks
