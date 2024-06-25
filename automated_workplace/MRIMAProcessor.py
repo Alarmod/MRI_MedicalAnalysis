@@ -146,8 +146,6 @@ class MRIMAProcessor(QtCore.QObject):
 		importer.SetWholeExtent(0, voxels.shape[2]-1, 0, voxels.shape[1]-1, 0, voxels.shape[0]-1)
 		importer.SetDataSpacing(spacing[0], spacing[1], spacing[2])
 	                                 
-		#warning
-		#https://discourse.vtk.org/t/render-single-slice-of-a-volume-with-vtkvolume-shows-no-result/12069
 		volumeMapper = vtk.vtkGPUVolumeRayCastMapper() 
 		volumeMapper.AutoAdjustSampleDistancesOff()
 		volumeMapper.LockSampleDistanceToInputSpacingOn()
@@ -411,6 +409,14 @@ class MRIMAProcessor(QtCore.QObject):
 			transformed_msc_mask = transform_volume(brain_mask, study_spacing, referenced_brain_mask, self.getSpacing(view_mode.ref_tracking_study), referenced_msc_mask)
 			voxels[transformed_msc_mask == 255] = Marker.REFERENCED_MSC
 
+		'''---------------------'''
+		#ugly solution for vtk issue
+		#https://discourse.vtk.org/t/render-single-slice-of-a-volume-with-vtkvolume-shows-no-result/12069
+		voxels = np.pad(voxels, 1, 'constant', constant_values=0)
+		transformed_msc_mask = np.pad(transformed_msc_mask, 1, 'constant', constant_values=0)
+		msc_mask = np.pad(msc_mask, 1, 'constant', constant_values=0)
+		'''---------------------'''
+
 		vtk_volume = MRIMAProcessor.numpy2vtk(voxels, study_spacing)
 		vtk_volume.SetProperty(self.volume_property)
 
@@ -435,7 +441,7 @@ class MRIMAProcessor(QtCore.QObject):
 				info["Avg track length:"] = "{:.2f} mm".format(avg_track_length)
 				info["Days between:"] = "{}".format(days_between)
 				if days_between != 0:
-					info["Avg MSC speed:"] = "{:.2f}".format(avg_track_length / days_between)
+					info["Avg MSC speed:"] = "{:.2f} mm/day".format(avg_track_length / days_between)
 				
 		return Volume(vtk_volume, vtk_mesh, info)
 	

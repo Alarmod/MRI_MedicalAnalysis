@@ -1,6 +1,6 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 
-from Protocol import Protocol
+from Protocol import *
 from Dataset import Dataset
 from Entity import Slice, Study
 
@@ -67,7 +67,7 @@ class DatasetViewSubWindow(QtWidgets.QMdiSubWindow):
 
 	def setContent(self, dataset):
 		for protocol_index in dataset.protocols():
-			protocol_node = TreeWidgetItem(self.tree, dataset.getProtocolName(protocol_index), None)
+			protocol_node = TreeWidgetItem(self.tree, dataset.getProtocolName(protocol_index), None) 
 			for study_index in dataset.studiesWithProtocolIndex(protocol_index):
 				study_node = TreeWidgetItem(protocol_node, dataset.getStudyName(study_index), dataset.getStudy(study_index))
 				for slice_index in dataset.slicesWithStudyIndex(study_index):

@@ -13,9 +13,10 @@ def test(test_message, processor, dataset, protocol_id, view_mode):
 	Profiler.getInstance().clear()
 	get_cached_data.cache_clear()
 
-	for study_index in dataset.studiesWithProtocolIndex(dataset.getProtocolIndex(protocol_id)):
-		study = dataset.getStudy(study_index)
-		_ = processor.processStudy(study, view_mode)
+	for protocol_index in dataset.getProtocolIndexes(protocol_id):
+		for study_index in dataset.studiesWithProtocolIndex(protocol_index):
+			study = dataset.getStudy(study_index)
+			_ = processor.processStudy(study, view_mode)
 
 	Profiler.getInstance().print()
 

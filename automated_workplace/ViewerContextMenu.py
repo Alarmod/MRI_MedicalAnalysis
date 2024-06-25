@@ -77,19 +77,20 @@ class ViewerContextMenu(CheckableActionsMenu):
 	def setContent(self, dataset):
 		self.clearContent()
 
-		swi_protocol_index = dataset.getProtocolIndex(Protocol.SWI)
-		if swi_protocol_index == None:
+		swi_protocols = [*dataset.getProtocolIndexes(Protocol.SWI)]
+		if len(swi_protocols) == 0:
 			return
 
-		for study_index in dataset.studiesWithProtocolIndex(swi_protocol_index):
-			study_name = dataset.getStudyName(study_index)
-			study = dataset.getStudy(study_index)
+		for swi_protocol_index in swi_protocols:
+			for study_index in dataset.studiesWithProtocolIndex(swi_protocol_index):
+				study_name = dataset.getStudyName(study_index)
+				study = dataset.getStudy(study_index)
 
-			ref_msc_action = CheckableAction(self.ref_msc_submenu, study_name, (ViewMode.MARK_MSC_FROM, study))
-			self.ref_msc_submenu.addAction(ref_msc_action)
+				ref_msc_action = CheckableAction(self.ref_msc_submenu, study_name, (ViewMode.MARK_MSC_FROM, study))
+				self.ref_msc_submenu.addAction(ref_msc_action)
 
-			ref_tracking_action = CheckableAction(self.ref_tracking_submenu, study_name, (ViewMode.TRACK_MSC_FROM, study))
-			self.ref_tracking_submenu.addAction(ref_tracking_action)
+				ref_tracking_action = CheckableAction(self.ref_tracking_submenu, study_name, (ViewMode.TRACK_MSC_FROM, study))
+				self.ref_tracking_submenu.addAction(ref_tracking_action)
 		
 	def updateContextMenu(self, selected_input):
 		if selected_input == None:

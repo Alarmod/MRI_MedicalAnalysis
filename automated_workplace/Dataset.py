@@ -1,7 +1,7 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 import pandas as pd
 
-from Protocol import Protocol, get_protocol_name
+from Protocol import Protocol, get_protocol_id
 from Cache import get_cached_data
 from Entity import Slice, Study
 
@@ -19,18 +19,18 @@ class Dataset:
 		self.__protocols = None 
 
 	def __getSlices(self, path):
-		columns = ["protocol_id","PatientID","StudyID","StudyDescription","StudyDate","StudyTime","Filename","SliceLocation", "slice_number"]
+		columns = ["ProtocolName","PatientID","StudyID","StudyDescription","StudyDate","StudyTime","Filename","SliceLocation", "slice_number"]
 		slice_info = []
 
 		for filename in files(path, "*.ima"):
 			cached_data = get_cached_data(filename)
-			slice_info.append([cached_data.protocol, cached_data.ds.PatientID, cached_data.ds.StudyID, cached_data.ds.StudyDescription, cached_data.ds.StudyDate, cached_data.ds.StudyTime, filename, cached_data.ds.SliceLocation, None])
+			slice_info.append([cached_data.ds.ProtocolName, cached_data.ds.PatientID, cached_data.ds.StudyID, cached_data.ds.StudyDescription, cached_data.ds.StudyDate, cached_data.ds.StudyTime, filename, cached_data.ds.SliceLocation, None])
 
 		self.__slices = pd.DataFrame(slice_info, columns=columns).sort_values("SliceLocation", ascending=True)
 
 	def __getStudies(self):
-		columns = ["protocol_id","PatientID","StudyID","StudyDescription","StudyDate","StudyTime","slices_idx_list", "ref_studies_list"]
-		key = ["protocol_id","PatientID","StudyID","StudyDescription","StudyDate","StudyTime"]
+		columns = ["ProtocolName","PatientID","StudyID","StudyDescription","StudyDate","StudyTime","slices_idx_list", "ref_studies_list"]
+		key = ["ProtocolName","PatientID","StudyID","StudyDescription","StudyDate","StudyTime"]
 		studies_info = []
 		for group_key, group in self.__slices.groupby(key):
 			unique = group.drop_duplicates("SliceLocation", keep='last')
@@ -45,25 +45,26 @@ class Dataset:
 		self.__studies = pd.DataFrame(studies_info, columns=columns)
 
 	def __getProtocols(self):
-		columns = ["protocol_id","studies_idx_list"]
-		key = ["protocol_id"]
+		columns = ["ProtocolName","studies_idx_list"]
+		key = ["ProtocolName"]
 		protocols_info = []
 		for group_key, group in self.__studies.groupby(key):
 			protocols_info.append([*group_key, group.index.to_numpy()])
 		self.__protocols = pd.DataFrame(protocols_info, columns=columns)
 
 	def __getRefStudies(self, study_index):
-		swi_protocol_index = self.getProtocolIndex(Protocol.SWI)
-		if swi_protocol_index == None:
+		swi_protocols = [*self.getProtocolIndexes(Protocol.SWI)]
+		if len(swi_protocols) == 0:
 			return []
 
 		study_slice_count = len(self.__studies.loc[study_index]["slices_idx_list"])
 
-		for ref_study_index in self.__protocols.loc[swi_protocol_index]["studies_idx_list"]:
-			if study_index == ref_study_index:
-				continue
-			if len(self.__studies.loc[ref_study_index]["slices_idx_list"]) == study_slice_count:
-				yield ref_study_index
+		for swi_protocol_index in swi_protocols:
+			for ref_study_index in self.__protocols.loc[swi_protocol_index]["studies_idx_list"]:
+				if study_index == ref_study_index:
+					continue
+				if len(self.__studies.loc[ref_study_index]["slices_idx_list"]) == study_slice_count:
+					yield ref_study_index
 
 	def scanFolder(self, path):
 		self.__getSlices(path)
@@ -85,14 +86,13 @@ class Dataset:
 		for index in range(len(self.__slices)):
 			yield index
 
-	def getProtocolIndex(self, protocol_id):
+	def getProtocolIndexes(self, protocol_id):
 		for index, protocol in self.__protocols.iterrows():
-			if protocol["protocol_id"] == protocol_id:
-				return index
-		return None
+			if get_protocol_id(protocol["ProtocolName"]) == protocol_id:
+				yield index
 
 	def getProtocolName(self, protocol_index):
-		return get_protocol_name(self.__protocols.loc[protocol_index]["protocol_id"])
+		return self.__protocols.loc[protocol_index]["ProtocolName"]
 
 	def getStudyName(self, study_index):
 		study = self.__studies.loc[study_index]
@@ -109,13 +109,10 @@ class Dataset:
 		for slice_index in self.__studies.loc[study_index]["slices_idx_list"]:
 			yield slice_index
 
-	def refStudies(self, study_index):
-		return self.__studies.loc[study_index]["ref_studies_list"]
-
 	def getStudy(self, study_index):
 		study_info = self.__studies.loc[study_index]
-		return Study(study_index, study_info["protocol_id"], [self.__slices.loc[slice_index]["Filename"] for slice_index in study_info["slices_idx_list"]], study_info["ref_studies_list"], study_info["StudyDate"])
+		return Study(study_index, get_protocol_id(study_info["ProtocolName"]), [self.__slices.loc[slice_index]["Filename"] for slice_index in study_info["slices_idx_list"]], study_info["ref_studies_list"], study_info["StudyDate"])
 
 	def getSlice(self, slice_index):
 		slice_info = self.__slices.loc[slice_index]
-		return Slice(slice_index, slice_info["protocol_id"], slice_info["Filename"])
+		return Slice(slice_index, get_protocol_id(slice_info["ProtocolName"]), slice_info["Filename"])
