@@ -59,9 +59,11 @@ class MRIMAGUI(QtCore.QObject):
 
 		if view_mode.flags & ViewMode.USE_PREPROCESSED_SOURCE:
 			vm.setFlag(ViewMode.USE_PREPROCESSED_SOURCE)
+		if input_data.protocol == None:
+			return vm
+
 		if view_mode.flags & ViewMode.MARK_BRAIN_AREA:
 			vm.setFlag(ViewMode.MARK_BRAIN_AREA)
-
 		isSWI = (input_data.protocol == Protocol.SWI)
 		if view_mode.flags & ViewMode.MARK_ISCHEMIA_AREA and not isSWI:
 			vm.setFlag(ViewMode.MARK_ISCHEMIA_AREA)
@@ -96,13 +98,13 @@ class MRIMAGUI(QtCore.QObject):
 			self.__setDisabled(False)
 			return
 
-		wm = self.__getViewModeForInput(self.selected_view_mode, self.selected_input)
+		vm = self.__getViewModeForInput(self.selected_view_mode, self.selected_input)
 		if isinstance(self.selected_input, Slice):
 			self.mainWindow.setStatusBarText("Processing slice...")
-			self.processSliceSignal.emit(self.selected_input, wm)
+			self.processSliceSignal.emit(self.selected_input, vm)
 		elif isinstance(self.selected_input, Study):
 			self.mainWindow.setStatusBarText("Processing study...")
-			self.processStudySignal.emit(self.selected_input, wm)
+			self.processStudySignal.emit(self.selected_input, vm)
 
 	@QtCore.Slot(object)
 	def onInputSelected(self, obj):

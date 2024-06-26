@@ -52,12 +52,15 @@ class ViewerContextMenu(CheckableActionsMenu):
 		self.addAction(self.preprocessing_action)
 
 		self.mark_brain_action = CheckableAction(self, 'Mark brain', (ViewMode.MARK_BRAIN_AREA, None))
+		self.mark_brain_action.setVisible(False)
 		self.addAction(self.mark_brain_action)
 
 		self.mark_ischemia_action = CheckableAction(self, 'Mark ischemia', (ViewMode.MARK_ISCHEMIA_AREA, None))
+		self.mark_ischemia_action.setVisible(False)
 		self.addAction(self.mark_ischemia_action)
 
 		self.mark_msc_action = CheckableAction(self, 'Mark MSC', (ViewMode.MARK_MSC_AREA, None))
+		self.mark_msc_action.setVisible(False)
 		self.addAction(self.mark_msc_action)
 
 		self.ref_msc_submenu = CheckableActionsMenu(self, "Mark MSC from", QtWidgets.QActionGroup.ExclusionPolicy.ExclusiveOptional)
@@ -93,18 +96,19 @@ class ViewerContextMenu(CheckableActionsMenu):
 				self.ref_tracking_submenu.addAction(ref_tracking_action)
 		
 	def updateContextMenu(self, selected_input):
-		if selected_input == None:
-			self.mark_ischemia_action.setVisible(True)
-			self.mark_msc_action.setVisible(True)
+		if selected_input == None or selected_input.protocol == None:
+			self.mark_brain_action.setVisible(False)
+			self.mark_ischemia_action.setVisible(False)
+			self.mark_msc_action.setVisible(False)
 			self.ref_msc_submenu.menuAction().setVisible(False)
 			self.ref_tracking_submenu.menuAction().setVisible(False)
 		else:
 			isSWI = (selected_input.protocol == Protocol.SWI)
+			self.mark_brain_action.setVisible(True)
+			self.mark_ischemia_action.setVisible(not isSWI)
+			self.mark_msc_action.setVisible(isSWI)
 
 			if isinstance(selected_input, Study):
-				self.mark_ischemia_action.setVisible(not isSWI)
-				self.mark_msc_action.setVisible(isSWI)
-
 				if len(selected_input.ref_studies_list) == 0:
 					self.ref_msc_submenu.menuAction().setVisible(False)
 					self.ref_tracking_submenu.menuAction().setVisible(False)
@@ -121,8 +125,6 @@ class ViewerContextMenu(CheckableActionsMenu):
 							action.setVisible(study.index in selected_input.ref_studies_list)
 
 			elif isinstance(selected_input, Slice):
-				self.mark_ischemia_action.setVisible(not isSWI)
-				self.mark_msc_action.setVisible(isSWI)
 				self.ref_msc_submenu.menuAction().setVisible(False)
 				self.ref_tracking_submenu.menuAction().setVisible(False)
 
