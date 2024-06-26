@@ -86,7 +86,7 @@ class MRIMAGUI(QtCore.QObject):
 		self.viewerSubWindow.switchTo2DView()
 		self.scanFolderSignal.emit(path)
 
-	def processSelectedInput(self):
+	def __processSelectedInput(self):
 		self.__setDisabled(True)
 		self.infoSubWindow.clearContent()
 
@@ -109,13 +109,13 @@ class MRIMAGUI(QtCore.QObject):
 		self.selected_input = obj
 		self.viewerSubWindow.updateContextMenu(self.selected_input)
 		self.reset_camera = True
-		self.processSelectedInput()
+		self.__processSelectedInput()
 
 	@QtCore.Slot(bool, object)
 	def onContextMenuActionTriggered(self, state, obj):
 		self.__updateViewMode(state, obj)
 		self.reset_camera = False
-		self.processSelectedInput()
+		self.__processSelectedInput()
 
 	def loadSettings(self, settings):
 		self.mainWindow.loadSettings(settings)

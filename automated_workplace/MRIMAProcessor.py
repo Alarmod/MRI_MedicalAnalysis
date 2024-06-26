@@ -50,13 +50,17 @@ def _percents_str(total, count):
 	else:
 		return " / {:.2f}%".format(count * 100 / total)
 
+def _daysBetween(d1, d2):
+	a = datetime.strptime(d1, '%Y%m%d')
+	b = datetime.strptime(d2, '%Y%m%d')
+	delta = a - b
+	return abs(delta.days)
+
 def run_in_threadpool(thread_pool, func, *args, **kwargs):
 	return thread_pool.submit(functools.partial(func, *args, **kwargs))
 
-class MRIMAProcessor(QtCore.QObject):
+class MRIMAProcessor:
 	def __init__(self):
-		super().__init__()
-
 		self.gradientMinValue = 100
 		self.gradientMaxValue = 255
 
@@ -135,7 +139,7 @@ class MRIMAProcessor(QtCore.QObject):
 	#voxels - [slices, rows, cols]
 	#spacing - [x, y, z] as [col, row, slice]
 	@staticmethod
-	def numpy2vtk(voxels, spacing):
+	def __numpy2vtk(voxels, spacing):
 		data = voxels.tobytes()
 
 		importer = vtk.vtkImageImport()
@@ -305,13 +309,6 @@ class MRIMAProcessor(QtCore.QObject):
 		return Image(rgb_image, info)
 		
 	'''-----------------------------------------'''
-	def daysBetween(self, study, ref_study):
-		a = datetime.strptime(study.date, '%Y%m%d')
-		b = datetime.strptime(ref_study.date, '%Y%m%d')
-		delta = a - b
-		return abs(delta.days)
-
-
 	@profile
 	def __preprocessStudyData(self, source, referenced, view_mode):
 		def filter(it, func):
@@ -417,7 +414,7 @@ class MRIMAProcessor(QtCore.QObject):
 		msc_mask = np.pad(msc_mask, 1, 'constant', constant_values=0)
 		'''---------------------'''
 
-		vtk_volume = MRIMAProcessor.numpy2vtk(voxels, study_spacing)
+		vtk_volume = MRIMAProcessor.__numpy2vtk(voxels, study_spacing)
 		vtk_volume.SetProperty(self.volume_property)
 
 		vtk_mesh = Mesh()
@@ -437,7 +434,7 @@ class MRIMAProcessor(QtCore.QObject):
 							 self.trackColorRGBA[3])
 					avg_track_length = avg_track_length + distance(track.start, track.end)
 				avg_track_length = avg_track_length / len(tracks)
-				days_between = self.daysBetween(study, view_mode.ref_tracking_study)
+				days_between = _daysBetween(study.date, view_mode.ref_tracking_study.date)
 				info["Avg track length:"] = "{:.2f} mm".format(avg_track_length)
 				info["Days between:"] = "{}".format(days_between)
 				if days_between != 0:
@@ -446,27 +443,33 @@ class MRIMAProcessor(QtCore.QObject):
 		return Volume(vtk_volume, vtk_mesh, info)
 	
 
-class AsyncMRIMAProcessor(MRIMAProcessor):
+class AsyncMRIMAProcessor(QtCore.QObject):
 	emitContentSignal = QtCore.Signal(object)
 
 	def __init__(self):
 		super().__init__()
-		self.background_thread = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+		self.__processor = MRIMAProcessor()
+		self.__background_thread = concurrent.futures.ThreadPoolExecutor(max_workers=1)
 
-	'''-----------------------------------------'''
+	def loadSettings(self, settings):
+		self.__processor.loadSettings(settings)
+
+	def saveSettings(self, settings):
+		self.__processor.saveSettings(settings)
+
 	@QtCore.Slot(str)
 	def scanFolder(self, path):
-		run_in_threadpool(self.background_thread, self.__emitContentSignal, functools.partial(super().scanFolder, path))
+		run_in_threadpool(self.__background_thread, self.__emitContent, functools.partial(self.__processor.scanFolder, path))
 
 	@QtCore.Slot(object, object)
 	def processSlice(self, slice, vm):
-		run_in_threadpool(self.background_thread, self.__emitContentSignal, functools.partial(super().processSlice, slice, vm))
+		run_in_threadpool(self.__background_thread, self.__emitContent, functools.partial(self.__processor.processSlice, slice, vm))
 
 	@QtCore.Slot(object, object)
 	def processStudy(self, study, vm):
-		run_in_threadpool(self.background_thread, self.__emitContentSignal, functools.partial(super().processStudy, study, vm))
+		run_in_threadpool(self.__background_thread, self.__emitContent, functools.partial(self.__processor.processStudy, study, vm))
 
-	def __emitContentSignal(self, func):
+	def __emitContent(self, func):
 		try:
 			self.emitContentSignal.emit(func())
 		except Exception as ex:
