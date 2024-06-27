@@ -19,6 +19,7 @@ from MSCTracker import track_msc, distance
 from Profiler import profile #debug
 
 class Marker:
+	DUMMY = 28000
 	BRAIN = 29000
 	ISCHEMIA = 30000
 	MSC = 31000
@@ -164,16 +165,18 @@ class MRIMAProcessor:
 		colorFunc = vtk.vtkColorTransferFunction()
 		colorFunc.AddRGBPoint(0, 0.0, 0.0, 0.0)
 		colorFunc.AddRGBPoint(255, 1.0, 1.0, 1.0)
+		colorFunc.AddRGBPoint(Marker.DUMMY, 0.0, 0.0, 0.0)
 		colorFunc.AddRGBPoint(Marker.BRAIN, self.brainColorRGBA[0], self.brainColorRGBA[1], self.brainColorRGBA[2])
 		colorFunc.AddRGBPoint(Marker.ISCHEMIA, self.ischemiaColorRGBA[0], self.ischemiaColorRGBA[1], self.ischemiaColorRGBA[2])
 		colorFunc.AddRGBPoint(Marker.MSC, self.MSCColorRGBA[0], self.MSCColorRGBA[1], self.MSCColorRGBA[2])
 		colorFunc.AddRGBPoint(Marker.REFERENCED_MSC, self.RefMSCColorRGBA[0], self.RefMSCColorRGBA[1], self.RefMSCColorRGBA[2])
 
 		alphaFunc = vtk.vtkPiecewiseFunction()
-		alphaFunc.AddPoint(0, 0.00)
+		alphaFunc.AddPoint(0, 0.0)
 		alphaFunc.AddPoint(16, 0.05)
 		alphaFunc.AddPoint(128, 0.3)
 		alphaFunc.AddPoint(255, 0.6)
+		alphaFunc.AddPoint(Marker.DUMMY, 0.0)
 		alphaFunc.AddPoint(Marker.BRAIN, self.brainColorRGBA[3])
 		alphaFunc.AddPoint(Marker.ISCHEMIA, self.ischemiaColorRGBA[3])
 		alphaFunc.AddPoint(Marker.MSC, self.MSCColorRGBA[3])
@@ -409,9 +412,8 @@ class MRIMAProcessor:
 		'''---------------------'''
 		#ugly solution for vtk issue
 		#https://discourse.vtk.org/t/render-single-slice-of-a-volume-with-vtkvolume-shows-no-result/12069
-		voxels = np.pad(voxels, 1, 'constant', constant_values=0)
-		transformed_msc_mask = np.pad(transformed_msc_mask, 1, 'constant', constant_values=0)
-		msc_mask = np.pad(msc_mask, 1, 'constant', constant_values=0)
+		voxels = np.pad(voxels, 1, 'constant', constant_values=Marker.DUMMY)
+		track_shift = np.array(study_spacing)
 		'''---------------------'''
 
 		vtk_volume = MRIMAProcessor.__numpy2vtk(voxels, study_spacing)
@@ -428,6 +430,8 @@ class MRIMAProcessor:
 			if len(tracks) != 0:
 				avg_track_length = 0
 				for track in tracks:
+					track.start = track.start + track_shift
+					track.end = track.end + track_shift
 					vtk_mesh.addLine(track.start[0], track.start[1], track.start[2],
 							 track.end[0], track.end[1], track.end[2],
 							 self.trackColorRGBA[0:3], 
