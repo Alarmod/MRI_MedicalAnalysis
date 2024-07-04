@@ -40,6 +40,3 @@ Script _convert_dir.py_ use installed [yolo_segment_with_nanobind](https://githu
 
 # Used programming languages
 C++
-
-# System requirements
-Windows 10-11
