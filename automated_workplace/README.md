@@ -11,11 +11,11 @@ https://github.com/microsoft/onnxruntime/releases (version 1.18.0+)
 
 4. Confiure, build and install _yolo_segment_with_nanobind_ plugin:
 
-You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible with your compiler. This directories with _bin_, _lib_ and _include_ subfolders. Settings must be set over _yolo_segment_with_nanobind\build.bat_ file. After configuration, the file or commands inside _build.bat_ must be launched (executed).
+You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible with your compiler. This directories with _bin_, _lib_ and _include_ subfolders. Settings must be set over _yolo_segment_with_nanobind/build.bat_ file. After configuration, the file or commands inside _build.bat_ must be launched (executed).
 
-5. Configure path for system libs (_bin_ or _lib_ folders with dll/so-files) over _boot.py_ file:
+5. Configure path for system libs (_bin_ or _lib_ folders) over _boot.py_ file:
 
-- actual path for ONNXRuntime and OpenCV (always required)
+- actual path for ONNXRuntime and OpenCV (always required);
 
 - actual path for [CUDA](https://developer.nvidia.com/cuda-toolkit) and [CUDNN](https://developer.nvidia.com/cudnn); this configuration requared if selected ONNXRuntime for GPU, for example, ONNXRuntime 1.18.0 requires presence [CUDA 11.8 or 12.4](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html) and compatible drivers); tested with CUDNN version 8.9.7.29 and Nvidia driver version 528.24/555.85.
 
@@ -39,6 +39,4 @@ Configure [Classifier] section in _settings.ini_ file and run command
 _python test_processing_speed.py_
 
 # System requirements
-Windows 10-11, Linux
-
 Python 3.8-3.10
