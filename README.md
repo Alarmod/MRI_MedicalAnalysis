@@ -33,8 +33,6 @@ The MRI_MedicalAnalysis library with an open software code is designed for the i
 C++ and Python
 
 # System requirements
-Windows 10-11, Linux
-
 Python 3.8-3.10
 
 # Place of the work
