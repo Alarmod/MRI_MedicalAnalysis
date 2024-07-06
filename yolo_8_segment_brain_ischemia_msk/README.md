@@ -14,11 +14,17 @@ _pip3 install -U torch torchvision torchaudio --index-url https://download.pytor
 
 PyTorch 2.3.0 have bug that affects to Yolo 8 https://github.com/pytorch/pytorch/issues/121834
 
-b) Ultralytics 8.0.205 and >= 8.1.6:
+b) Ultralytics 8.0.205 and >= 8.1.6 and <= 8.2.42:
 
-_pip3 install -U ultralytics_
+_pip3 install -U ultralytics==8.0.205_ or
+
+_pip3 install -U ultralytics==8.1.6_ or
+
+_pip3 install -U ultralytics==8.2.42_
 
 Scale bug in ultralytics 8.0.206-8.1.5 fixed by authors this project: https://github.com/ultralytics/ultralytics/commit/1a04cd38e7285969c0e4d827f4fbe52c834798ed
+
+In version 8.2.43 of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library, therefore it is recommended to either retrain artificial neural networks, or use for tests library with version <=8.2.42.
 
 2. Load MRI_settings.zip and MRI_tests.zip: 
 
