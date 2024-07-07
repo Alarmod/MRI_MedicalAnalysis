@@ -2,7 +2,7 @@
 MRI_MedicalAnalysis – open source library for medical researchers intelligent support based on cognitive graphics, artificial neural networks and high performance MRI-data processing
 
 # Description of the final product:
-The MRI_MedicalAnalysis library with an open software code is designed for the increasing equipment of medical researchers at the expense of a number of built-in software and instrumental modules and data processing means of Magnetic Resonance Imaging (MRI), providing intellectual support for making decisions of medical researchers. This library include adapted data preliminary processing algorithms, original algorithms deep processing and visualization of data, configured artificial neural networks, software implementation of research modules. The library provide
+The MRI_MedicalAnalysis library with an open software code is designed for the increasing equipment of medical researchers at the expense of a number of built-in software and instrumental modules and data processing means of Magnetic Resonance Imaging (MRI), providing intellectual support for making decisions of medical researchers. This library include adapted data preliminary processing algorithms, original algorithms deep processing and visualization of data, configured artificial neural networks, high speed software implementation of research modules. The library provide
 - functional completeness – the presence of methods, algorithms and methods that provide the sufficiency of the functional support of the complex in solving the problems of processing and cognitive visualization of multidimensional biomedical data;
 - parallel processing – ensuring the mode of work close to real time, for the account of proposed methods of automated processing acceleration in the presence relevant hardware resources (CPU and GPU).
 
@@ -26,7 +26,8 @@ The MRI_MedicalAnalysis library with an open software code is designed for the i
    
 # The library contain the following software-realized modules:
 - preprocessing module: normalization and highlighting a brain area;
-- high speed segmentation and classification module based on [Yolo 8 neural network architecture](https://github.com/ultralytics/ultralytics/blob/main/docs/en/models/yolov8.md) and [ONNXRuntime](https://onnxruntime.ai/) library (CPU and GPU supported);
+- Python-module for training and testing artificial neural networks with [Yolo 8](https://github.com/ultralytics/ultralytics/blob/main/docs/en/models/yolov8.md) architecture;
+- C++-module for high speed segmentation and classification module, based on [Yolo 8](https://github.com/ultralytics/ultralytics/blob/main/docs/en/models/yolov8.md) architecture and [ONNXRuntime](https://onnxruntime.ai/) library (CPU and GPU supported);
 - visualization module: 2D- and 3D-visualization of the brain; ROI 2D- and 3D-visualization; tracking of accumulations of Mesenchymal Stem Cells (MSC); combined visualization of the results.
   
 # Used programming languages
