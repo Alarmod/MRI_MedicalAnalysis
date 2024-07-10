@@ -20,6 +20,8 @@ size_t VectorProduct(const std::vector<T>& v)
   return static_cast<size_t>(std::accumulate(v.begin(), v.end(), 1u, std::multiplies<T>()));
 };
 
+#define USE_SIGMOID_FUNC true
+
 struct OutputParams
 {
   int id;
@@ -290,18 +292,23 @@ public:
     cv::Mat temp_mask_protos = maskProtos(roi_rangs).clone();
     cv::Mat protos = temp_mask_protos.reshape(0, { seg_channels, rang_w * rang_h });
     cv::Mat matmul_res = (maskProposals * protos).t();
-    cv::Mat masks_feature = matmul_res.reshape(1, { rang_h, rang_w });
-    cv::Mat dest, mask;
 
-    // Sigmoid
+#if USE_SIGMOID_FUNC
+    cv::Mat masks_feature = matmul_res.reshape(1, { rang_h, rang_w });
+
+    cv::Mat dest;
     cv::exp(-masks_feature, dest);
     dest = 1.0 / (1.0 + dest);
+#else 
+    cv::Mat dest = matmul_res.reshape(1, { rang_h, rang_w });
+#endif
 
     int left = floor((m_net_width / seg_width * rang_x - params[2]) / params[0]);
     int top = floor((m_net_height / seg_height * rang_y - params[3]) / params[1]);
     int width = ceil(m_net_width / seg_width * rang_w / params[0]);
     int height = ceil(m_net_height / seg_height * rang_h / params[1]);
 
+    cv::Mat mask;
     cv::resize(dest, mask, cv::Size(width, height), cv::INTER_NEAREST);
 
     cv::Rect mask_rect = temp_rect - cv::Point(left, top);
@@ -636,7 +643,12 @@ private:
   unsigned int m_net_height;
 
   const float _nmsThreshold = 0.70F;
+
+#if USE_SIGMOID_FUNC
   const float _maskThreshold = 0.50F;
+#else 
+  const float _maskThreshold = 0.00F;
+#endif
 
   // ONNXRUNTIME
   Ort::Session* m_session = nullptr;
