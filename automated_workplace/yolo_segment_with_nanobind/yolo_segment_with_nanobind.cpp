@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <algorithm>
 #include <numeric>
 
@@ -303,10 +303,13 @@ public:
     cv::Mat dest = matmul_res.reshape(1, { rang_h, rang_w });
 #endif
 
-    int left = floor((m_net_width / seg_width * rang_x - params[2]) / params[0]);
-    int top = floor((m_net_height / seg_height * rang_y - params[3]) / params[1]);
-    int width = ceil(m_net_width / seg_width * rang_w / params[0]);
-    int height = ceil(m_net_height / seg_height * rang_h / params[1]);
+    float t1_val = float(m_net_width) / float(seg_width);
+    float t2_val = float(m_net_height) / float(seg_height);
+
+    int left = floor((rang_x * t1_val - params[2]) / params[0]);
+    int top = floor((rang_y * t2_val - params[3]) / params[1]);
+    int width = ceil(rang_w * t1_val / params[0]);
+    int height = ceil(rang_h * t2_val / params[1]);
 
     cv::Mat mask;
     cv::resize(dest, mask, cv::Size(width, height), cv::INTER_NEAREST);
