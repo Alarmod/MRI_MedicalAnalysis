@@ -1,3 +1,6 @@
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
@@ -62,4 +65,4 @@ if __name__ == '__main__':
    func(model, "swi_brain_" + str(brain_and_ischemia_imgsz), "data_swi_brain.yaml", brain_and_ischemia_imgsz, 12, 0.0001, 2100, 100 // reinit_data, True)
 
    model = YOLO(model="yolov8-mod.yaml", task="segment")#.load(".\\runs\\segment\\swi_msc_mod_" + str(msk_imgsz) + "_augmented_trans\\weights\\best.pt")
-   func(model, "swi_msc_mod_" + str(msk_imgsz) + "_augmented", "data_swi_msc.yaml", msk_imgsz, 3, 0.0001, 2100, 100 // reinit_data, True)
+   func(model, "swi_msc_mod_" + str(msk_imgsz) + "_augmented", "data_swi_msc.yaml", msk_imgsz, 8, 0.0001, 2100, 100 // reinit_data, True)

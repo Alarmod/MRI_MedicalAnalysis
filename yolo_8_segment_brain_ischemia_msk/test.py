@@ -1,3 +1,6 @@
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 import cv2, os, sys, shutil, math, contextlib
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
