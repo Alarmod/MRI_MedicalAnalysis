@@ -8,7 +8,18 @@ from ultralytics import YOLO
 
 import torch
 
-global_half = True
+global_half=True
+
+# NaN tensor values problem for GTX16xx users (no problem on other devices)
+# https://github.com/ultralytics/yolov5/issues/7908
+# При использовании видеокарт Nvidia GTX 16xx с активированной опцией global_half=True необходимо отключить поддержку CUDNN в PyTorch, установив torch.backends.cudnn.enabled=False 
+if global_half:
+   if torch.cuda.is_available():
+      if torch.cuda.device_count() > 0: 
+         dev_name = torch.cuda.get_device_name(torch.cuda.current_device())
+         if 'GeForce GTX 16' in dev_name:
+            print("Activated NaN fix (see https://github.com/ultralytics/yolov5/issues/7908)")
+            torch.backends.cudnn.enabled=False
 
 def func(model, name_val, data_val, imgsz_val, batch_val, lr0_val, epochs_val, patience_val, mod): 
    results = model.train(

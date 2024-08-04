@@ -31,8 +31,21 @@ global_single_cls=True
 global_save_json=False
 global_mask_ratio=1
 global_retina_masks=False
-global_half=True
+
 global_workers=0             # ставить больше лишь при высоком объеме графической памяти
+
+global_half=True             # обучение выполнялось с global_half=True, поэтому результаты тестирования с global_half=False будут несколько отличаться
+
+# NaN tensor values problem for GTX16xx users (no problem on other devices)
+# https://github.com/ultralytics/yolov5/issues/7908
+# При использовании видеокарт Nvidia GTX 16xx с активированной опцией global_half=True необходимо отключить поддержку CUDNN в PyTorch, установив torch.backends.cudnn.enabled=False 
+if global_half:
+   if torch.cuda.is_available():
+      if torch.cuda.device_count() > 0: 
+         dev_name = torch.cuda.get_device_name(torch.cuda.current_device())
+         if 'GeForce GTX 16' in dev_name:
+            print("Activated NaN fix (see https://github.com/ultralytics/yolov5/issues/7908)")
+            torch.backends.cudnn.enabled=False
 
 # использовать только rect=True при обучении, в том числе из-за особенностей текущей версии Yolo!!!
 # другие режимы не поддерживаются в настоящий момент
@@ -727,7 +740,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        if os.path.exists(source_val) and os.listdir(source_val): 
           results = model_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                         name="predict_t2_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
-                                        batch=44, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
+                                        batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
                                         conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
                                         show_boxes=big_data, show_conf=big_data, max_det=1)
           save_results(results, "_brain", imgsz_val=brain_and_ischemia_imgsz, thickness_mod=1)
@@ -749,7 +762,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        if os.path.exists(source_val) and os.listdir(source_val): 
           results = model_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                   name="predict_adc_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
-                                  batch=44, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
+                                  batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
                                   conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
                                   show_boxes=big_data, show_conf=big_data, max_det=1)
           save_results(results, "_brain", imgsz_val=brain_and_ischemia_imgsz, brain_color=(255, 0, 255), target_color=(255, 0, 0), thickness_mod=1)
@@ -771,7 +784,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        if os.path.exists(source_val) and os.listdir(source_val): 
           results = model_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                   name="predict_swi_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
-                                  batch=44, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
+                                  batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
                                   conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
                                   show_boxes=big_data, show_conf=big_data, max_det=1)
           save_results(results, "_brain", imgsz_val=brain_and_ischemia_imgsz, thickness_mod=2)
@@ -782,7 +795,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        if os.path.exists(source_val) and os.listdir(source_val): 
           results = model.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                   name="predict_swi_msc_" + str(msk_imgsz) + "_default" + ("_big" if big_data else ""), 
-                                  batch=6, source=source_val, imgsz=msk_imgsz, save=True, 
+                                  batch=4, source=source_val, imgsz=msk_imgsz, save=True, 
                                   conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=False, 
                                   show_boxes=False, show_conf=False)
           save_results(results, "_msk", brain=model_brain, brain_imgsz_val=brain_and_ischemia_imgsz, imgsz_val=msk_imgsz, thickness_mod=2)
