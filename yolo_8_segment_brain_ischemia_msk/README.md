@@ -46,6 +46,14 @@ or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_dat
 
 (must be stored to _datasets_ folder and unpacked)
 
+4. Configure settings.yaml (internal settings file of the _ultralytics_ library)
+```
+datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk\datasets_]
+weights_dir: weights
+runs_dir: runs
+```
+For example, this file can be found here: _C:\Users\%USERNAME%\AppData\Roaming\Ultralytics\settings.yaml_ (for Windows)
+
 # Ways of using
 If Your GPU FP16 speed slow, change _global_half = True_ to _global_half = False_ in train.py and test.py.
 
