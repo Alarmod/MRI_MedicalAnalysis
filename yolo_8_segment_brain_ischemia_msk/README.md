@@ -10,6 +10,8 @@ _pip3 install -U torch torchvision torchaudio --index-url https://download.pytor
 
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121_ or
 
+_pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124_ or
+
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu_
 
 PyTorch 2.3.0 have bug that affects to Yolo 8 https://github.com/pytorch/pytorch/issues/121834
@@ -26,7 +28,7 @@ _pip3 install -U ultralytics==8.2.42_
 
 Scale bug in ultralytics 8.0.206-8.1.5 fixed by authors this project: https://github.com/ultralytics/ultralytics/commit/1a04cd38e7285969c0e4d827f4fbe52c834798ed
 
-In version 8.2.43 of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library, therefore it is recommended to either retrain artificial neural networks, or use for tests library with version <8.2.43.
+In version 8.2.43 and more new of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library, therefore it is recommended to either retrain our artificial neural networks, or use for tests Ultralytics library with version <8.2.43.
 
 2. Load MRI_settings.zip and MRI_tests.zip: 
 
@@ -68,6 +70,8 @@ _python test.py default_validate_ (Yolo 8 default validation code, the results a
 _python test.py generate_data_ (validate with saving all data: contours, zones, cognitive visualization)
 
 _python test.py internal_validate_ (modificated Yolo 8 validation code that closer to Yolo original prediction code)
+
+Train and test on Nvidia RTX 16xx in FP16 may be slow (see https://github.com/ultralytics/yolov5/issues/7908)
 
 # Export settings to ONNX
 To convert the settings of artificial neural networks into the ONNX format, you need run script _export.bat_
