@@ -48,9 +48,9 @@ or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_dat
 
 (must be stored to _datasets_ folder and unpacked)
 
-4. Configure settings.yaml (internal settings file of the _ultralytics_ library)
+4. Configure settings.yaml (internal settings file of the _ultralytics_ library) if You already use Ultralytics in other projects
 ```
-datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk\datasets_]
+datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk\datasets_ folder]
 weights_dir: weights
 runs_dir: runs
 ```
@@ -71,7 +71,7 @@ _python test.py generate_data_ (validate with saving all data: contours, zones, 
 
 _python test.py internal_validate_ (modificated Yolo 8 validation code that closer to Yolo original prediction code)
 
-Train and test on Nvidia RTX 16xx in FP16 may be slow (see https://github.com/ultralytics/yolov5/issues/7908)
+Train and test on Nvidia RTX 16xx in FP16 mode may be slow (see https://github.com/ultralytics/yolov5/issues/7908)
 
 # Export settings to ONNX
 To convert the settings of artificial neural networks into the ONNX format, you need run script _export.bat_
