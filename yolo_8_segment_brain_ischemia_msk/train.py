@@ -12,7 +12,8 @@ global_half=True
 
 # NaN tensor values problem for GTX16xx users (no problem on other devices)
 # https://github.com/ultralytics/yolov5/issues/7908
-# При использовании видеокарт Nvidia GTX 16xx с активированной опцией global_half=True необходимо отключить поддержку CUDNN в PyTorch, установив torch.backends.cudnn.enabled=False 
+# При использовании видеокарт Nvidia GTX 16xx с активированной опцией global_half=True необходимо отключить поддержку CUDNN в PyTorch, установив torch.backends.cudnn.enabled=False, 
+# запуск CUDNN в режиме бенчмарка с помощью опции torch.backends.cudnn.benchmark=True не гарантирует корректной работы
 if global_half:
    if torch.cuda.is_available():
       if torch.cuda.device_count() > 0: 
