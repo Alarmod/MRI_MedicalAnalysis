@@ -23,14 +23,14 @@ For correct execution You must copy opencv_world310.dll to x64\Release folder
 _https://www.boost.org_
 
 # Ways of using
-1. Run _ExtractYoloObjectsFromDICOM.exe 1_ on original DICOM-dataset, which allows you to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG files with binary masks will be replaced, save original folders before!
+1. Run _ExtractYoloObjectsFromDICOM.exe 1_ on original DICOM-dataset, that allows You to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG-files with binary masks will be replaced, save original folders before!
 
 Example of _ExtractYoloObjectsFromDICOM.exe 1_ execution can be downloaded here: 
 https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=sharing
 
 2. To generate training and testing datasets in Yolo format, run _ExtractYoloObjectsFromDICOM.exe 0_
 
-3. Yol have also the ability to directly convert directories with IMA files into YOLO format, with further processing using an artificial neural network: 
+3. You have also the ability to directly convert directories with IMA-files into YOLO format, with further processing using an artificial neural network: 
 
 _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
