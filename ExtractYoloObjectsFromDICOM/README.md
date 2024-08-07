@@ -40,3 +40,48 @@ Script _convert_dir.py_ use installed [yolo_segment_with_nanobind](https://githu
 
 # Used programming languages
 C++
+
+# ///////////////////////////////////////////////
+
+# ExtractYoloObjectsFromDICOM
+ExtractYoloObjectsFromDICOM - консольная программа с открытым исходным кодом для интеллектуальной поддержки врачей-исследователей и высокопроизводительной обработки данных МРТ. Она предназначена для обучения и тестирования преобразования наборов данных из файлов IMA (DICOM) и бинарных масок (PNG) в формат Yolo - изображения в оттенках серого (PNG) и текстовые метки (TXT).
+
+# Компиляция
+Проект настроен для компиляции в Visual Studio 2022 с набором инструментов платформы v141. Приложение основано на
+
+-- модифицированной библиотеке Flann:
+
+_git clone https://github.com/Alarmod/flann_
+
+-- оригинальной библиотеке Dicomlib:
+
+_git clone https://github.com/Alarmod/dicomlib_
+
+-- Библиотеке OpenCV (используется версия 3.1):
+
+_https://opencv.org_
+
+Для корректного выполнения необходимо скопировать opencv_world310.dll в папку x64\Release
+
+-- Библиотеке BOOST (используется версия 1.82):
+
+_https://www.boost.org_
+
+# Способы использования
+1. Запустите _ExtractYoloObjectsFromDICOM.exe 1_ на оригинальном наборе данных DICOM, что позволит заменить исходные файлы с масками на расширенные с помощью морфологической операции расширения. Исходные PNG-файлы с бинарными масками будут заменены, предварительно сохраните исходные папки!
+
+Пример выполнения _ExtractYoloObjectsFromDICOM.exe 1_ можно скачать здесь:
+https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=sharing
+
+2. Для генерации обучающих и тестовых наборов данных в формате Yolo запустите _ExtractYoloObjectsFromDICOM.exe 0_
+
+3. Также у вас есть возможность напрямую конвертировать каталоги с IMA-файлами в формат YOLO, с дальнейшей обработкой с помощью искусственной нейронной сети:
+
+_ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
+
+_python convert_dir.py_
+
+Скрипт _convert_dir.py_ использует установленный [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) плагин.
+
+# Используемые языки программирования
+C++
