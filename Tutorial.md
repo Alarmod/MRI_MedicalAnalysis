@@ -1,4 +1,4 @@
-# Information on preliminary preparation for installation of the ExtractYoloObjectsFromDICOM utility
+# Information on preliminary preparation for installation and using of the ExtractYoloObjectsFromDICOM utility
 Project configured for compilation in Visual Studio 2022 with v141 platform toolset. Application based on 
 
 -- modificated Flann library: 
@@ -36,7 +36,7 @@ _python convert_dir.py_
 
 Script _convert_dir.py_ use installed [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) plugin.
 
-# Information on preliminary preparation for installation of the "Automated Workplace" application
+# Information on preliminary preparation for installation and using of the "Automated Workplace" application
 System requirements: Python 3.8-3.10
 
 1. Install python libs with command _pip3 install -r requirements.txt_
@@ -80,7 +80,7 @@ Configure [Classifier] section in _settings.ini_ file and run command
 
 _python test_processing_speed.py_
 
-# Information on preliminary preparation for installation of the "yolo_8_segment_brain_ischemia_msk" application
+# Information on preliminary preparation for installation and using of the "yolo_8_segment_brain_ischemia_msk" application
 System requirements: Python 3.8-3.10; Pytorch 2.2.2 or 2.3.1+
 
 Libs installation and project files downloading:
@@ -173,7 +173,7 @@ Settings in original format will be saved in _orig_settings_ directory.
 
 # ///////////////////////////////////////////////
 
-# Информация о предварительной подготовке к установке утилиты ExtractYoloObjectsFromDICOM
+# Информация о предварительной подготовке к установке и использованию утилиты ExtractYoloObjectsFromDICOM
 Проект настроен для компиляции в Visual Studio 2022 с набором инструментов платформы v141. Приложение основано на
 
 -- модифицированной библиотеке Flann:
@@ -211,7 +211,7 @@ _python convert_dir.py_
 
 Скрипт _convert_dir.py_ использует установленный Плагин [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace).
 
-# Информация о предварительной подготовке к установке приложения «Automated Workplace»
+# Информация о предварительной подготовке к установке и использованию приложения "Automated Workplace"
 Системные требования: Python 3.8-3.10
 
 1. Установите библиотеки python командой _pip3 install -r requirements.txt_
@@ -255,7 +255,7 @@ _python main.py_
 
 _python test_processing_speed.py_
 
-# Информация о предварительной подготовке к установке приложения "yolo_8_segment_brain_ischemia_msk"
+# Информация о предварительной подготовке к установке и использованию приложения "yolo_8_segment_brain_ischemia_msk"
 Системные требования: Python 3.8-3.10; Pytorch 2.2.2 или 2.3.1+
 
 Установка библиотек и загрузка файлов проекта:
