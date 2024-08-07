@@ -42,8 +42,44 @@ Main potential consumers:
 # Used programming languages
 C++ and Python
 
-# System requirements
-Python 3.8-3.10
+# Requirements
+Minimum hardware requirements for the library:
+
+1) a computer with an Intel Core i3 8300 CPU (according to the Technical Specifications) and at least 16 GB of RAM;
+2) for training the neural network: an Nvidia GPU with at least 11 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1080 Ti, Nvidia RTX 3060, or Nvidia RTX 4070.
+3) for using the trained neural network (when using a GPU to accelerate computations): an Nvidia GPU with at least 4 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1650.
+
+Minimum operating system requirements: Windows 10 (x64).
+
+General requirements for pre-installed software for compiling and running the developed library:
+
+1) Visual Studio 2022 compiler with platform toolset version 14.1 installed;
+2) modified Flann library (https://github.com/Alarmod/flann) (C++);
+3) Dicomlib library (https://github.com/Alarmod/dicomlib) (C++);
+4) OpenCV library (versions 3.1 and 4.9.0+) (C++);
+5) Boost library (version 1.82) (C++);
+6) python interpreter 3.8-3.10;
+7) pytorch 2.2.2 or 2.3.1+ (Python);
+8) ultralytics versions 8.0.205 or (>8.1.5 and <8.2.43) (Python);
+9) ONNXRuntime library (version 1.18.0+) (C++);
+10) CUDA library versions 11.8 or 12.4;
+11) CUDDN library (version 8.9.7.29+).
+12) PySide2 (Python);
+13) vtk (Python);
+14) pydicom (Python);
+15) pandas (version >=2.0.3) (Python);
+16) opencv-python (Python);
+17) numpy (Python);
+18) connected-components-3d (Python);
+19) pulp (Python);
+20) cachetools (Python);
+21) nanobind (Python).
+    
+To use GPU resources in the ANN training process, it is recommended to install libraries in the following order: pytorch, ultralytics. 
+
+The “yolo_segment_with_nanobind” module must be configured and compiled. 
+
+The “boot.py” file must specify the paths to the bin and lib directories containing the dll files of the ONNXRuntime and OpenCV libraries, and optionally, the paths to the files for the CUDA and CUDNN libraries.
 
 # Place of the work
 Intellectual Management Laboratory at Ailamazyan Program Systems Institute of the Russian Academy of Sciences (https://icontrol.psiras.ru/)
@@ -97,8 +133,42 @@ MRI_MedicalAnalysis – библиотека с открытым исходны�
 # Используемые языки программирования
 C++ и Python
 
-# Системные требования
-Python 3.8-3.10
+# Требования
+Минимальные требования по аппаратному обеспечению библиотеки: 
+
+1) компьютер с процессором Intel Core i3 8300 (согласно Техническому заданию) и объемом оперативной памяти не менее 16 гигабайт; 
+2) для обучения нейронной сети: видеокарта Nvidia с объемом памяти не менее 11 гигабайт и с поддержкой CUDA 11.8, например, Nvidia GTX 1080 Ti, Nvidia RTX 3060 или Nvidia RTX 4070.
+3) для использования обученной нейронной сети (при применении GPU для ускорения вычислений): видеокарта Nvidia с объемом памяти не менее 4 гигабайт и с поддержкой CUDA 11.8, например, видеокарта Nvidia GTX 1650.
+
+Минимальные требования к операционному обеспечению: Windows 10 (x64).
+
+Общие требования к предустановленному программному обеспечению для компиляции и запуска разработанной библиотеки:
+
+1) компилятор Visual Studio 2022 с установленным набором инструментов платформы версии 14.1;
+2) модифицированная библиотеку Flann (https://github.com/Alarmod/flann) (C++);
+3) библиотека Dicomlib (https://github.com/Alarmod/dicomlib) (C++);  
+4) библиотека OpenCV (версии 3.1 и 4.9.0+) (C++);
+5) библиотека Boost (версия 1.82) (C++);
+6) интерпретатор python 3.8-3.10;
+7) pytorch 2.2.2 или 2.3.1+ (Python);
+8) ultralytics версий 8.0.205 или (>8.1.5 и <8.2.43) (Python);
+9) библиотека ONNXRuntime (версия 1.18.0+) (C++);
+10) библиотека CUDA версий 11.8 или 12.4;
+11) библиотека CUDDN (версия 8.9.7.29+). 
+12) PySide2 (Python);
+13) vtk (Python);
+14) pydicom (Python);
+15) pandas (версия >=2.0.3) (Python);
+16) opencv-python (Python);
+17) numpy (Python);
+18) connected-components-3d (Python);
+19) pulp (Python);
+20) cachetools (Python);
+21) nanobind (Python).
+
+Для использования ресурсов GPU в процессе обучения ИНС рекомендуется устанавливать библиотеки в следующем порядке: pytorch, ultralytics.
+
+Должен быть сконфигурирован и скомпилирован модуль “yolo_segment_with_nanobind”. Через файл “boot.py” должны быть прописаны пути к bin- и lib-директориям, содержащим dll-файлы библиотек ONNXRuntime и OpenCV, опционально – пути к файлам для библиотек CUDA и CUDNN. 
 
 # Место работы
 Лаборатория интеллектуального управления Института программных систем им. А.К. Айламазяна РАН (https://icontrol.psiras.ru/)
