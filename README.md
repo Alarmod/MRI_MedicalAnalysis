@@ -51,7 +51,7 @@ Intellectual Management Laboratory at Ailamazyan Program Systems Institute of th
 # Acknowledgments 
 This project got fund from the [Foundation for Assistance to Small Innovative Enterprises (FASIE)](https://fasie.ru)
 
-//
+# ///////////////////////////////////////////////
 
 # MRI_MedicalAnalysis
 MRI_MedicalAnalysis – библиотека с открытым исходным кодом для интеллектуальной поддержки врачей-исследователей на основе когнитивной графики, искусственных нейронных сетей и высокопроизводительной обработки МРТ-данных
