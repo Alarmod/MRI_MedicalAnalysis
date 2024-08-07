@@ -60,7 +60,7 @@ print(f"ADC ischemia shape: {img.shape}\n")
 
 directory = "./datasets/swi_data/brain/train/images/"
 img = cv2.imread(directory + os.listdir(directory)[0], cv2.IMREAD_GRAYSCALE)
-img = LetterBoxInfo(img, new_shape=msk_imgsz, auto=True)
+img = LetterBoxInfo(img, new_shape=brain_and_ischemia_imgsz, auto=True)
 print(f"SWI brain shape: {img.shape}")
 
 directory = "./datasets/swi_data/msc/train/images/"
