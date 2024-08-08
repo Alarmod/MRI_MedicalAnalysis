@@ -35,35 +35,45 @@ def LetterBoxInfo(img, new_shape=(640,640), auto=False, scaleFill=False, scaleup
 
         return img
 
+# Масштабирующие коээфициенты для формирования внутренного входа ИНС
 brain_and_ischemia_imgsz = 512
 msk_imgsz=1280
 
+print(f"Results will be printed in format (net_height, net_width), use it in script \"export.bat\" as imgsz=net_height,net_width")
+print(f"and as parameters in Yolo class constructor (see description of the \"yolo_segment_with_nanobind\" module)\n")
+
 directory = "./datasets/t2_data/brain/train/images/"
-img = cv2.imread(directory + os.listdir(directory)[0], cv2.IMREAD_GRAYSCALE)
+png_files = [f for f in os.listdir(directory) if f.endswith('.png')]
+img = cv2.imread(directory + png_files[0], cv2.IMREAD_GRAYSCALE)
 img = LetterBoxInfo(img, new_shape=brain_and_ischemia_imgsz, auto=True)
 print(f"T2 brain shape: {img.shape}")
 
 directory = "./datasets/t2_data/ischemia/train/images/"
-img = cv2.imread(directory + os.listdir(directory)[0], cv2.IMREAD_GRAYSCALE)
+png_files = [f for f in os.listdir(directory) if f.endswith('.png')]
+img = cv2.imread(directory + png_files[0], cv2.IMREAD_GRAYSCALE)
 img = LetterBoxInfo(img, new_shape=brain_and_ischemia_imgsz, auto=True)
 print(f"T2 ischemia shape: {img.shape}\n")
 
 directory = "./datasets/adc_data/brain/train/images/"
-img = cv2.imread(directory + os.listdir(directory)[0], cv2.IMREAD_GRAYSCALE)
+png_files = [f for f in os.listdir(directory) if f.endswith('.png')]
+img = cv2.imread(directory + png_files[0], cv2.IMREAD_GRAYSCALE)
 img = LetterBoxInfo(img, new_shape=brain_and_ischemia_imgsz, auto=True)
 print(f"ADC brain shape: {img.shape}")
 
 directory = "./datasets/adc_data/ischemia/train/images/"
-img = cv2.imread(directory + os.listdir(directory)[0], cv2.IMREAD_GRAYSCALE)
+png_files = [f for f in os.listdir(directory) if f.endswith('.png')]
+img = cv2.imread(directory + png_files[0], cv2.IMREAD_GRAYSCALE)
 img = LetterBoxInfo(img, new_shape=brain_and_ischemia_imgsz, auto=True)
 print(f"ADC ischemia shape: {img.shape}\n")
 
 directory = "./datasets/swi_data/brain/train/images/"
-img = cv2.imread(directory + os.listdir(directory)[0], cv2.IMREAD_GRAYSCALE)
+png_files = [f for f in os.listdir(directory) if f.endswith('.png')]
+img = cv2.imread(directory + png_files[0], cv2.IMREAD_GRAYSCALE)
 img = LetterBoxInfo(img, new_shape=brain_and_ischemia_imgsz, auto=True)
 print(f"SWI brain shape: {img.shape}")
 
 directory = "./datasets/swi_data/msc/train/images/"
-img = cv2.imread(directory + os.listdir(directory)[0], cv2.IMREAD_GRAYSCALE)
+png_files = [f for f in os.listdir(directory) if f.endswith('.png')]
+img = cv2.imread(directory + png_files[0], cv2.IMREAD_GRAYSCALE)
 img = LetterBoxInfo(img, new_shape=msk_imgsz, auto=True)
 print(f"SWI MSC shape: {img.shape}\n")
