@@ -1,4 +1,4 @@
-# ExtractYoloObjectsFromDICOM
+года# ExtractYoloObjectsFromDICOM
 ExtractYoloObjectsFromDICOM - open source console tool for medical researchers intelligent support and high performance MRI-data processing. It designed for training and testing datasets convertation from IMA-files (DICOM) and binary masks (PNG) to Yolo format - grayscale images (PNG) and textual labels (TXT).
 
 # Compilation
@@ -70,7 +70,7 @@ _https://www.boost.org_
 # Способы использования
 1. Запустите _ExtractYoloObjectsFromDICOM.exe 1_ на оригинальном наборе данных DICOM, что позволит заменить исходные файлы с масками на расширенные с помощью морфологической операции расширения. Исходные PNG-файлы с бинарными масками будут заменены, предварительно сохраните исходные папки!
 
-Пример выполнения _ExtractYoloObjectsFromDICOM.exe 1_ можно скачать здесь:
+Пример результата выполнения _ExtractYoloObjectsFromDICOM.exe 1_ можно скачать здесь:
 https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=sharing
 
 2. Для генерации обучающих и тестовых наборов данных в формате Yolo запустите _ExtractYoloObjectsFromDICOM.exe 0_
