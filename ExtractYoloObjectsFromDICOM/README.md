@@ -30,7 +30,7 @@ https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=shari
 
 2. To generate training and testing datasets in Yolo format, run _ExtractYoloObjectsFromDICOM.exe 0_
 
-3. You have also the ability to directly convert directories with IMA-files into YOLO format, with further processing using an artificial neural network: 
+3. You have also the ability to directly convert directories with IMA-files into YOLO format with further processing using an artificial neural network: 
 
 _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
@@ -57,13 +57,13 @@ _git clone https://github.com/Alarmod/flann_
 
 _git clone https://github.com/Alarmod/dicomlib_
 
--- Библиотеке OpenCV (используется версия 3.1):
+-- библиотеке OpenCV (используется версия 3.1):
 
 _https://opencv.org_
 
 Для корректного выполнения необходимо скопировать opencv_world310.dll в папку x64\Release
 
--- Библиотеке BOOST (используется версия 1.82):
+-- библиотеке BOOST (используется версия 1.82):
 
 _https://www.boost.org_
 
@@ -75,13 +75,13 @@ https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=shari
 
 2. Для генерации обучающих и тестовых наборов данных в формате Yolo запустите _ExtractYoloObjectsFromDICOM.exe 0_
 
-3. Также у вас есть возможность напрямую конвертировать каталоги с IMA-файлами в формат YOLO, с дальнейшей обработкой с помощью искусственной нейронной сети:
+3. Также у вас есть возможность напрямую конвертировать каталоги с IMA-файлами в формат YOLO с дальнейшей обработкой с помощью искусственной нейронной сети:
 
 _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
 _python convert_dir.py_
 
-Скрипт _convert_dir.py_ использует установленный [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) плагин.
+Скрипт _convert_dir.py_ использует установленный плагин [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace).
 
 # Используемые языки программирования
 C++
