@@ -1,7 +1,7 @@
 # MRI_MedicalAnalysis
 MRI_MedicalAnalysis – open source library for medical researchers intelligent support based on cognitive graphics, artificial neural networks and high performance MRI-data processing
 
-# Description of the final product:
+# Description of the final product
 The MRI_MedicalAnalysis library with an open software code is designed for the increasing equipment of medical researchers at the expense of a number of built-in software and instrumental modules and data processing means of Magnetic Resonance Imaging (MRI), providing intellectual support for making decisions of medical researchers. This library include adapted data preliminary processing algorithms, original algorithms deep processing and visualization of data, configured artificial neural networks, high speed software implementation of research modules. The library provide
 - functional completeness – the presence of methods, algorithms and methods that provide the sufficiency of the functional support of the complex in solving the problems of processing and cognitive visualization of multidimensional biomedical data;
 - high speed processing – ensuring the mode of work close to real time, for the account of proposed methods of automated processing acceleration in the presence relevant hardware resources (CPU and GPU).
@@ -34,7 +34,8 @@ The MRI_MedicalAnalysis library with an open software code is designed for the i
 - express diagnostics of the state of the brain;
 - conducting scientific research on a set of diagnostically significant indicators in ischemic stroke of the brain;
 - conducting research in the field of cell therapy, namely research on the processes of migration and homing of stem cells in the ischemic brain.
-Main potential consumers:
+
+# Main potential consumers:
 - hospitals;
 - medical and research institutions;
 - medical diagnostic centers.
@@ -83,7 +84,7 @@ The “yolo_segment_with_nanobind” module must be configured and compiled.
 The “boot.py” file must specify the paths to the bin and lib directories containing the dll files of the ONNXRuntime and OpenCV libraries, and optionally, the paths to the files for the CUDA and CUDNN libraries.
 
 # Place of the work
-Intellectual Management Laboratory at Ailamazyan Program Systems Institute of the Russian Academy of Sciences (https://icontrol.psiras.ru/)
+Intellectual Control Laboratory at Ailamazyan Program Systems Institute of the Russian Academy of Sciences (https://icontrol.psiras.ru/)
 
 # Acknowledgments 
 This project got fund from the [Foundation for Assistance to Small Innovative Enterprises (FASIE)](https://fasie.ru)
@@ -93,7 +94,7 @@ This project got fund from the [Foundation for Assistance to Small Innovative En
 # MRI_MedicalAnalysis
 MRI_MedicalAnalysis – библиотека с открытым исходным кодом для интеллектуальной поддержки врачей-исследователей на основе когнитивной графики, искусственных нейронных сетей и высокопроизводительной обработки МРТ-данных
 
-# Описание конечного продукта:
+# Описание конечного продукта
 Библиотека MRI_MedicalAnalysis с открытым программным кодом предназначена для расширения оснащения врачей-исследователей за счет ряда встроенных программно-аппаратных модулей и средств обработки данных магнитно-резонансной томографии (МРТ), обеспечивающих интеллектуальную поддержку принятия решений врачами-исследователями. В состав библиотеки входят адаптированные алгоритмы предварительной обработки данных, оригинальные алгоритмы глубокой обработки и визуализации данных, настраиваемые искусственные нейронные сети, высокоскоростная программная реализация исследовательских модулей. Библиотека обеспечивает
 - функциональную полноту – наличие методов, алгоритмов и способов, обеспечивающих достаточность функциональной поддержки комплекса при решении задач обработки и когнитивной визуализации многомерных биомедицинских данных;
 - высокая скорость обработки – обеспечение режима работы, близкого к реальному времени, за счет предлагаемых методов автоматизированного ускорения обработки при наличии соответствующих аппаратных ресурсов (CPU и GPU).
@@ -126,7 +127,8 @@ MRI_MedicalAnalysis – библиотека с открытым исходны�
 - экспресс-диагностика состояния головного мозга;
 - проведение научных исследований комплекса диагностически значимых показателей при ишемическом инсульте головного мозга;
 - проведение исследований в области клеточной терапии, а именно исследований процессов миграции и хоуминга стволовых клеток в ишемизированном мозге.
-Основные возможные потребители:
+
+# Основные возможные потребители:
 - больницы,
 - медицинские и научно-исследовательские учреждения,
 - медицинские диагностические центры.
