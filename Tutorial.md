@@ -238,13 +238,13 @@ _git clone https://github.com/Alarmod/flann_
 
 _git clone https://github.com/Alarmod/dicomlib_
 
--- Библиотеке OpenCV (используется версия 3.1):
+-- библиотеке OpenCV (используется версия 3.1):
 
 _https://opencv.org_
 
 Для корректного выполнения необходимо скопировать opencv_world310.dll в папку x64\Release
 
--- Библиотеке BOOST (используется версия 1.82):
+-- библиотеке BOOST (используется версия 1.82):
 
 _https://www.boost.org_
 
@@ -257,7 +257,7 @@ https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=shari
 
 2. Для генерации обучающих и тестовых наборов данных в формате Yolo запустите _ExtractYoloObjectsFromDICOM.exe 0_
 
-3. Также у вас есть возможность напрямую конвертировать каталоги с IMA-файлами в формат YOLO, с дальнейшей обработкой с помощью искусственной нейронной сети:
+3. Также у вас есть возможность напрямую конвертировать каталоги с IMA-файлами в формат YOLO с дальнейшей обработкой с помощью искусственной нейронной сети:
 
 _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
@@ -279,13 +279,13 @@ https://github.com/microsoft/onnxruntime/releases (версия 1.18.0+)
 
 В версии 8.2.43 библиотеки Ultralytics изменен порядок получения масок сегментации, [разработчики отказались от использования сигмоидальной функции](https://github.com/ultralytics/ultralytics/pull/13939), что повлияло на результаты нейронных сетей, обученных на более ранней версии библиотеки. Если вы переобучаете искусственные нейронные сети с помощью Ultralytics >8.2.42, измените _#define USE_SIGMOID_FUNC true_ на _#define USE_SIGMOID_FUNC false_ в [yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
-Вы должны указать фактический путь для ONNXRuntime и OpenCV, версию среды выполнения, совместимую с вашим компилятором. Это каталоги с подпапками _bin_, _lib_ и _include_. Настройки должны быть установлены через файл _yolo_segment_with_nanobind/build.bat_. После настройки файл или команды внутри _build.bat_ должны быть запущены (выполнены).
+Вы должны указать фактический путь для ONNXRuntime и OpenCV, версию среды выполнения, совместимую с вашим компилятором. Это каталоги с подпапками _bin_, _lib_ и _include_. Настройки должны быть установлены через файл _yolo_segment_with_nanobind/build.bat_. После настройки: файл или команды внутри _build.bat_ должны быть запущены (выполнены).
 
 5. Настройте путь для системных библиотек (папки _bin_ или _lib_) через файл _boot.py_:
 
 - фактический путь для ONNXRuntime и OpenCV (всегда требуется);
 
-- фактический путь для [CUDA](https://developer.nvidia.com/cuda-toolkit) и [CUDNN](https://developer.nvidia.com/cudnn); эта конфигурация требуется, если выбран ONNXRuntime для GPU, например, ONNXRuntime 1.18.0 требует наличия [CUDA 11.8 или 12.4](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html) и совместимых драйверов); протестировано с CUDNN версии 8.9.7.29 и драйвером Nvidia версии 528.24/555.85.
+- фактический путь для [CUDA](https://developer.nvidia.com/cuda-toolkit) и [CUDNN](https://developer.nvidia.com/cudnn); эта настройка требуется, если выбран ONNXRuntime для GPU, например, ONNXRuntime 1.18.0 требует наличия [CUDA 11.8 или 12.4](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html) и совместимых драйверов); протестировано с CUDNN версии 8.9.7.29 и драйвером Nvidia версии 528.24/555.85.
 
 Руководство по загрузке файлов конфигурации для искусственных нейронных сетей:
 
