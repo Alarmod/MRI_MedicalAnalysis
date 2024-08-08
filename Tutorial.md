@@ -23,7 +23,7 @@ Ways of using:
 
 1. Run _ExtractYoloObjectsFromDICOM.exe 1_ on original DICOM-dataset, that allows You to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG-files with binary masks will be replaced, save original folders before!
 
-Example of _ExtractYoloObjectsFromDICOM.exe 1_ execution can be downloaded here: 
+Example of _ExtractYoloObjectsFromDICOM.exe 1_ execution result can be downloaded here: 
 https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=sharing
 
 2. To generate training and testing datasets in Yolo format, run _ExtractYoloObjectsFromDICOM.exe 0_
@@ -252,7 +252,7 @@ _https://www.boost.org_
 
 1. Запустите _ExtractYoloObjectsFromDICOM.exe 1_ на оригинальном наборе данных DICOM, что позволит заменить исходные файлы с масками на расширенные с помощью морфологической операции расширения. Исходные PNG-файлы с бинарными масками будут заменены, предварительно сохраните исходные папки!
 
-Пример выполнения _ExtractYoloObjectsFromDICOM.exe 1_ можно скачать здесь:
+Пример результата выполнения _ExtractYoloObjectsFromDICOM.exe 1_ можно скачать здесь:
 https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=sharing
 
 2. Для генерации обучающих и тестовых наборов данных в формате Yolo запустите _ExtractYoloObjectsFromDICOM.exe 0_
