@@ -171,7 +171,7 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 Settings in original format will be saved in _orig_settings_ directory.
 
 
-# Example of new options for using the open library code
+# Example of new variants for using the open library code
 
 The following areas of application of the developed library are expected:
 
@@ -181,18 +181,18 @@ The following areas of application of the developed library are expected:
 
 Instructions for using the open library code in third-party repositories:
 
-1. Preparing a neural network model.
-
-1.1. Converting the source data intended for training the ANN into the YOLO format (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
+1. Preparing the neural network model.
+   
+1.1. Converting the source data intended for training the ANN to the YOLO format (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
 
 1.2. Training the neural network (see the example of the training script in the file https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py).
 
-1.3. Converting the trained neural network settings to the ONNX format (see the script https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat).
+1.3. Converting the settings of the trained neural network to the ONNX format (see the script https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). The export parameters (the width and height of the internal input of the neural network) were obtained from the script https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py.
 
-3. Using the yolo_segment_with_nanobind module (https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). The Python API of the module includes the setGlobalThreadPoolSize function (the only parameter of the function specifies the number of computing threads used to implement multi-threaded processing in CPU mode) and a description of the YOLO class, which implements the following methods:
+2. Using the yolo_segment_with_nanobind module (https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). The Python API of the module includes the setGlobalThreadPoolSize function (the only parameter of the function specifies the number of computing threads used to implement multi-threaded processing in CPU mode) and a description of the YOLO class, which implements the following methods:
 
 - constructor with parameters:
-
+   
 o "name" – model name;
 
 o "net_path" – path to the neural network settings;
@@ -201,25 +201,27 @@ o "use_gpu" – flag for connecting the graphics accelerator (True or False);
 
 o "use_fp16" – flag for enabling half-precision computing mode (True or False);
 
-o "net_width" – defines the width of the input image;
+o "net_width" – defines the width of the internal input of the neural network (according to the result of get_net_info.py);
 
-o "net_height" – defines the height of the input image;
+o "net_height" – defines the height of the internal input of the neural network (according to the result of get_net_info.py);
 
 o "cudaID" – the number of the graphics accelerator;
 
-- warmup method;
-
-- process method with parameters:
-
+- the warmup method – the method for initializing the neural network model;
+   
+- the process method with parameters:
+  
 o "input" – input image in grayscale;
 
 o "rec_treshold" – recognition confidence threshold;
 
-o "max_results" – maximum number of returned results;
+o "max_results" – the maximum number of returned results (areas of interest);
 
-o "get_brain" – flag that determines the return of an object with maximum confidence (with filling of internal areas);
+o "get_brain" – a flag that determines the return of a binary mask with one object with maximum confidence (with filling of internal areas);
 
-o "erode_level" – number of iterations of the image erosion operation used for post-processing of the ANN output;
+o "erode_level" – the number of iterations of the image erosion operation used for post-processing the ANN output.
+
+The process method returns the results of the ANN operation, the output size is the same as the size of the image supplied via the "input" parameter.
 
 An example of using the yolo_segment_with_nanobind module is given in the script https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py.
 
@@ -366,7 +368,7 @@ runs_dir: runnings
 
 Способы использования:
 
-Если скорость вашего GPU FP16 низкая, измените _global_half = True_ на _global_half = False_ в train.py и test.py.
+Если скорость вашего GPU в режиме FP16 низкая, измените _global_half = True_ на _global_half = False_ в train.py и test.py.
 
 1. Обучение:
 
@@ -408,17 +410,17 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 Инструкция по использованию кода открытой библиотеки в сторонних репозиториях:
 
 1. Подготовка нейросетевой модели.
-
+   
 1.1. Конвертация исходных данных, предназначенных для обучения ИНС, в YOLO-формат (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
 
 1.2. Обучение нейронной сети (см. пример обучающего скрипта в файле https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py).
 
-1.3. Конвертация настроек обученной нейронной сети в формат ONNX (см. скрипт https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat).
+1.3. Конвертация настроек обученной нейронной сети в формат ONNX (см. скрипт https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). Параметры экспорта (ширина и высота внутреннего входа нейронной сети) получены из скрипта https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py.
 
-3. Применение модуля yolo_segment_with_nanobind (https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). Python-API модуля включает функцию setGlobalThreadPoolSize (единственный параметр функции задает количество вычислительных потоков, используемых для реализации многопоточной обработки в CPU-режиме) и описание класса YOLO, реализующего следующие методы: 
-
+2. Применение модуля yolo_segment_with_nanobind (https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). Python-API модуля включает функцию setGlobalThreadPoolSize (единственный параметр функции задает количество вычислительных потоков, используемых для реализации многопоточной обработки в CPU-режиме) и описание класса YOLO, реализующего следующие методы:
+   
 - конструктор с параметрами:
-
+  
 o "name" – имя модели;
 
 o "net_path" – путь к настройкам нейронной сети; 
@@ -427,13 +429,13 @@ o "use_gpu" – флаг подключения графического уск�
 
 o "use_fp16" – флаг включения режима вычислений с половинной точностью (True или False); 
 
-o "net_width" – определяет ширину входного изображения; 
+o "net_width" – определяет ширину внутреннего входа нейронной сети (в соответствии с результатом работы get_net_info.py); 
 
-o "net_height" – определяет высоту входного изображения;
+o "net_height" – определяет высоту внутреннего входа нейронной сети (в соответствии с результатом работы get_net_info.py);
 
 o "cudaID" – номер графического ускорителя; 
 
-- метод warmup;
+- метод warmup – метод инициализации нейросетевой модели;
 
 - метод process с параметрами:
 
@@ -441,10 +443,12 @@ o "input" – входное изображение в оттенках серо
 
 o "rec_treshold" – порог уверенности распознавания;
 
-o "max_results" – максимальное количество возвращаемых результатов;
+o "max_results" – максимальное количество возвращаемых результатов (зон интереса);
 
-o "get_brain" – флаг, определяющий возврат объекта с максимальной уверенностью (с заливкой внутренних областей);
+o "get_brain" – флаг, определяющий возврат бинарной маски с одним объектом с максимальной уверенностью (с заливкой внутренних областей);
 
-o "erode_level" – количество итераций операции эрозии изображения, применяемых для постобработки выхода ИНС;
+o "erode_level" – количество итераций операции эрозии изображения, применяемых для постобработки выхода ИНС.
+
+Метод process возвращает результаты работы ИНС, размер выхода совпадает с размером изображения, подаваемого через параметр "input".
 
 Пример использования модуля yolo_segment_with_nanobind приведен в скрипте https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py.
