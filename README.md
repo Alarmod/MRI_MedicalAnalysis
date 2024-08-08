@@ -147,7 +147,7 @@ C++ и Python
 
 1) компилятор Visual Studio 2022 с установленным набором инструментов платформы версии 14.1;
 2) CMake (3.26+);
-3) модифицированная библиотеку Flann (https://github.com/Alarmod/flann) (C++);
+3) модифицированная библиотека Flann (https://github.com/Alarmod/flann) (C++);
 4) библиотека Dicomlib (https://github.com/Alarmod/dicomlib) (C++);  
 5) библиотека OpenCV (версии 3.1 и 4.9.0+) (C++);
 6) библиотека Boost (версия 1.82) (C++);
