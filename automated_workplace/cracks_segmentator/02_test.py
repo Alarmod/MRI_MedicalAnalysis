@@ -49,7 +49,6 @@ glob_res = glob_res[:3]
 
 for file in glob_res:
     img = cv2.imread(file, cv2.IMREAD_COLOR)
-    #img = np.array(img)
 
     res = model.predict(img, rec_treshold=0.15, max_results=300, get_brain=False, erode_level=0)
     res = cv2.cvtColor(res, cv2.COLOR_GRAY2BGR)
