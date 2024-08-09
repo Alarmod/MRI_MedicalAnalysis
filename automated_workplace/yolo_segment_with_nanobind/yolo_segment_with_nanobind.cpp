@@ -338,6 +338,25 @@ public:
     memcpy(&iBlob[2 * img_size], iBlob, img_size * sizeof(T));
   }
 
+  template<typename T>
+  void BlobFromImage(cv::Mat iImg, T* iBlob)
+  {
+    int channels = iImg.channels();
+    int imgHeight = iImg.rows;
+    int imgWidth = iImg.cols;
+
+    for (int c = 0; c < channels; c++)
+    {
+      for (int h = 0; h < imgHeight; h++)
+      {
+        for (int w = 0; w < imgWidth; w++)
+        {
+          iBlob[c * imgWidth * imgHeight + h * imgWidth + w] = typename std::remove_pointer<T>::type((iImg.at<cv::Vec3b>(h, w)[c]) / 255.0f);
+        }
+      }
+    }
+  }
+
   void LetterBox(const cv::Mat& image, cv::Mat& outImage, cv::Vec4d& params, const cv::Size& newShape, bool autoShape = false, bool scaleFill = false, bool scaleUp = true, int stride = 32, const cv::Scalar& color = cv::Scalar(114))
   {
     cv::Size shape = image.size();
@@ -406,7 +425,12 @@ public:
     }
 
     T* blob = new T[m_input_tensor_length];
-    BlobFromGrayImage<T>(srcImg, blob);
+
+    if (srcImg.channels() == 1)
+       BlobFromGrayImage<T>(srcImg, blob);
+    else
+       BlobFromImage<T>(srcImg, blob);
+
     Ort::Value input_tensor = Ort::Value::CreateTensor<T>(m_memory_info, blob, m_input_tensor_length, m_input_tensor_shape.data(), m_input_tensor_shape.size());
 
     std::vector<Ort::Value> output_tensors = m_session->Run(Ort::RunOptions{ nullptr }, m_inputs_names.data(), &input_tensor, m_inputs_names.size(), m_outputs_names.data(), m_outputs_names.size());
@@ -559,13 +583,31 @@ public:
 
   nb::ndarray<nb::numpy, unsigned char> process(const nb::ndarray<nb::numpy, unsigned char> input, const float rec_treshold, const unsigned int max_results, const bool get_brain, const unsigned int erode_level)
   {
-    // Convert ndarray to mat
-    const cv::Mat gray = cv::Mat(input.shape(0), input.shape(1), CV_8UC1, (void*)input.data());
+    cv::Mat res_mask = cv::Mat::zeros(input.shape(0), input.shape(1), CV_8UC1);
+
+    int col = input.shape(1);
+    int row = input.shape(0);
+
+    bool color_data = (input.ndim() == 3);
 
     // LetterBox
     cv::Mat netInputImg;
     cv::Vec4d params;
-    LetterBox(gray, netInputImg, params, cv::Size(m_net_width, m_net_height));
+
+    if (color_data)
+    {
+      // Convert ndarray to mat
+      cv::Mat colored = cv::Mat(cv::Size(col, row), CV_8UC3, (void*)input.data());
+
+      LetterBox(colored, netInputImg, params, cv::Size(m_net_width, m_net_height), true, false, true, 32, cv::Scalar(114, 114, 114));
+    }
+    else
+    {
+      // Convert ndarray to mat
+      const cv::Mat gray = cv::Mat(input.shape(0), input.shape(1), CV_8UC1, (void*)input.data());
+
+      LetterBox(gray, netInputImg, params, cv::Size(m_net_width, m_net_height), true);
+    }
 
     // Run detection
     std::vector<OutputParams> result;
@@ -581,7 +623,6 @@ public:
       Detect<float>(netInputImg, params, result, rec_treshold, max_results, tx);
     }
 
-    cv::Mat res_mask = cv::Mat::zeros(input.shape(0), input.shape(1), CV_8UC1);
     if (result.size() > 0)
     {
       if (get_brain)
