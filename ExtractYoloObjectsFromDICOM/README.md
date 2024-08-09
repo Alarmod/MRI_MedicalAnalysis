@@ -16,7 +16,7 @@ _git clone https://github.com/Alarmod/dicomlib_
 
 _https://opencv.org_
 
-For correct execution You must copy opencv_world310.dll to x64\Release folder
+For correct execution You must copy opencv_world310.dll from _opencv\build\x64\vc14\bin_ directory to folder with ExtractYoloObjectsFromDICOM.exe
 
 -- BOOST library (version 1.82 are used): 
 
@@ -61,7 +61,7 @@ _git clone https://github.com/Alarmod/dicomlib_
 
 _https://opencv.org_
 
-Для корректного выполнения необходимо скопировать opencv_world310.dll в папку x64\Release
+Для корректного выполнения необходимо скопировать opencv_world310.dll из каталога _opencv\build\x64\vc14\bin_ в папку с ExtractYoloObjectsFromDICOM.exe
 
 -- библиотеке BOOST (используется версия 1.82):
 
