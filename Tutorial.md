@@ -218,6 +218,8 @@ The process method returns the results of the ANN operation, the output size is 
 
 An example of using the yolo_segment_with_nanobind module is given in the script https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py.
 
+Link to an example of a new use case of the open library code (segmentation of structural damage images in the form of road surface cracks): https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator.
+
 # ///////////////////////////////////////////////
 
 # Информация о предварительной подготовке к установке и использованию утилиты ExtractYoloObjectsFromDICOM
@@ -438,3 +440,5 @@ o "erode_level" – количество итераций операции эр�
 Метод process возвращает результаты работы ИНС, размер выхода совпадает с размером изображения, подаваемого через параметр "input".
 
 Пример использования модуля yolo_segment_with_nanobind приведен в скрипте https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py.
+
+Ссылка на пример нового варианта использования кода открытой библиотеки (сегментация на изображениях структурных повреждений в виде трещин дорожного покрытия): https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator.
