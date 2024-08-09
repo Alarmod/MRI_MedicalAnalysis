@@ -2,3 +2,4 @@ cmake -S . -B build -DCMAKE_GENERATOR_PLATFORM=x64 -DONNX_DIR=D:/libs/onnxruntim
 cmake --build build --config Release
 cmake --install build --prefix ./
 cmake --install build --prefix ../cracks_segmentator
+cmake --install build --prefix ../../ExtractYoloObjectsFromDICOM

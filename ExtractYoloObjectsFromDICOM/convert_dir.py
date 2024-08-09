@@ -39,12 +39,12 @@ useGPU = True
 useFP16 = False
 fp_string = "fp32"
 
-from yolo_segment_with_nanobind import yolo_segment_ext as yolo_inference
+import yolo_segment_ext as yolo_inference
 yolo_inference.setGlobalThreadPoolSize(4);
 
-model1 = YoloModel("t2_brain_" + fp_string + "_model_1", "./runs/segment/t2_brain_512/weights/best_" + fp_string + ".onnx", input_width=512, input_height=384, useGPU=useGPU, useFP16=useFP16, cuda_id=0)
-model2 = YoloModel("adc_brain_" + fp_string + "_model_2", "./runs/segment/adc_brain_512/weights/best_" + fp_string + ".onnx", input_width=512, input_height=352, useGPU=useGPU, useFP16=useFP16, cuda_id=0)
-model3 = YoloModel("swi_brain_" + fp_string + "_model_3", "./runs/segment/swi_brain_512/weights/best_" + fp_string + ".onnx", input_width=512, input_height=352, useGPU=useGPU, useFP16=useFP16, cuda_id=0)
+model1 = YoloModel("t2_brain_" + fp_string + "_model_1", "../automated_workplace/resources/runs/segment/t2_brain_512/weights/best_" + fp_string + ".onnx", input_width=512, input_height=384, useGPU=useGPU, useFP16=useFP16, cuda_id=0)
+model2 = YoloModel("adc_brain_" + fp_string + "_model_2", "../automated_workplace/resources/runs/segment/adc_brain_512/weights/best_" + fp_string + ".onnx", input_width=512, input_height=352, useGPU=useGPU, useFP16=useFP16, cuda_id=0)
+model3 = YoloModel("swi_brain_" + fp_string + "_model_3", "../automated_workplace/resources/runs/segment/swi_brain_512/weights/best_" + fp_string + ".onnx", input_width=512, input_height=352, useGPU=useGPU, useFP16=useFP16, cuda_id=0)
 
 glob_res = glob.glob("./dataset/*/*/*.png")
 
