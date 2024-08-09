@@ -30,7 +30,7 @@ https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=shari
 
 2. To generate training and testing datasets in Yolo format, run _ExtractYoloObjectsFromDICOM.exe 0_
 
-3. You have also the ability to directly convert directories with IMA-files into YOLO format with further processing using an artificial neural network: 
+3. You have also the ability to directly convert directories with IMA-files into YOLO format (but without TXT-data) with further test processing using an artificial neural network: 
 
 _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
@@ -75,7 +75,7 @@ https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=shari
 
 2. Для генерации обучающих и тестовых наборов данных в формате Yolo запустите _ExtractYoloObjectsFromDICOM.exe 0_
 
-3. Также у вас есть возможность напрямую конвертировать каталоги с IMA-файлами в формат YOLO с дальнейшей обработкой с помощью искусственной нейронной сети:
+3. Также у вас есть возможность напрямую конвертировать каталоги с IMA-файлами в формат YOLO (но без TXT-данных) с дальнейшей тестовой обработкой с помощью искусственной нейронной сети:
 
 _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
