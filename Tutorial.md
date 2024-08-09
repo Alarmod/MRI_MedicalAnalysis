@@ -204,7 +204,7 @@ o "cudaID" – the number of the graphics accelerator;
    
 - the process method with parameters:
   
-o "input" – input image in grayscale;
+o "input" – input image (single-channel/three-channel);
 
 o "rec_treshold" – recognition confidence threshold;
 
@@ -425,7 +425,7 @@ o "cudaID" – номер графического ускорителя;
 
 - метод process с параметрами:
 
-o "input" – входное изображение в оттенках серого;
+o "input" – входное изображение (одноканальное/трехканальное);
 
 o "rec_treshold" – порог уверенности распознавания;
 
