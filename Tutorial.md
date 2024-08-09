@@ -172,13 +172,6 @@ Settings in original format will be saved in _orig_settings_ directory.
 
 
 # Example of new variants for using the open library code
-
-The following areas of application of the developed library are expected:
-
-1. Isolation and measurement of stem cells in the brain labeled in a different way (e.g., using fluorescent dyes).
-
-2. Detection of other regions of interest in the brain (e.g., neoplasms).
-
 Instructions for using the open library code in third-party repositories:
 
 1. Preparing the neural network model.
@@ -400,13 +393,6 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 Настройки в исходном формате будут сохранены в каталоге _orig_settings_.
 
 # Пример новых вариантов использования кода открытой библиотеки
-
-Предполагаются следующие направления применения разработанной библиотеки:
-
-1. Выделение и измерение стволовых клеток в головном мозге, помеченных иным образом (например, с помощью флюоресцентных красителей).
-
-2. Обнаружение других областей интереса в головном мозге (например, новообразований).
-
 Инструкция по использованию кода открытой библиотеки в сторонних репозиториях:
 
 1. Подготовка нейросетевой модели.
