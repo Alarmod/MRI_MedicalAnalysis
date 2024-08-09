@@ -33,7 +33,9 @@ The MRI_MedicalAnalysis library with an open software code is designed for the i
 # List of areas of applied use: 
 - express diagnostics of the state of the brain;
 - conducting scientific research on a set of diagnostically significant indicators in ischemic stroke of the brain;
-- conducting research in the field of cell therapy, namely research on the processes of migration and homing of stem cells in the ischemic brain.
+- conducting research in the field of cell therapy, namely research on the processes of migration and homing of stem cells in the ischemic brain;
+- isolation and measurement of stem cells in the brain labeled in a different way (e.g., using fluorescent dyes);
+- detection of other regions of interest in the brain (e.g., neoplasms).
 
 # Main potential consumers:
 - hospitals;
@@ -126,7 +128,9 @@ MRI_MedicalAnalysis – библиотека с открытым исходны�
 # Перечень направлений прикладного использования:
 - экспресс-диагностика состояния головного мозга;
 - проведение научных исследований комплекса диагностически значимых показателей при ишемическом инсульте головного мозга;
-- проведение исследований в области клеточной терапии, а именно исследований процессов миграции и хоуминга стволовых клеток в ишемизированном мозге.
+- проведение исследований в области клеточной терапии, а именно исследований процессов миграции и хоуминга стволовых клеток в ишемизированном мозге;
+- выделение и измерение стволовых клеток в головном мозге, помеченных иным образом (например, с помощью флюоресцентных красителей);
+- диагностика зон интереса в головном мозге (например, новообразований).
 
 # Основные возможные потребители:
 - больницы,
