@@ -581,6 +581,27 @@ public:
     }
   }
 
+  void process_detection_result(OutputParams& result, cv::Mat& res_mask)
+  {
+    if (result.boxMask.rows && result.boxMask.cols)
+    {
+      int res_mask_padding_x = result.box.x + result.box.size().width - res_mask.cols;
+      int res_mask_padding_y = result.box.y + result.box.size().height - res_mask.rows;
+      if (res_mask_padding_x < 0) res_mask_padding_x = 0;
+      if (res_mask_padding_y < 0) res_mask_padding_y = 0;
+
+      if (res_mask_padding_x || res_mask_padding_y)
+      {
+        result.box.width -= res_mask_padding_x;
+        result.box.height -= res_mask_padding_y;
+
+        result.boxMask = result.boxMask(cv::Range(0, result.boxMask.rows - res_mask_padding_y), cv::Range(0, result.boxMask.cols - res_mask_padding_x));
+      }
+
+      res_mask(result.box).setTo(255, result.boxMask);
+    }
+  }
+
   nb::ndarray<nb::numpy, unsigned char> process(const nb::ndarray<nb::numpy, unsigned char> input, const float rec_treshold, const unsigned int max_results, const bool get_brain, const unsigned int erode_level)
   {
     cv::Mat res_mask = cv::Mat::zeros(input.shape(0), input.shape(1), CV_8UC1);
@@ -626,50 +647,11 @@ public:
     if (result.size() > 0)
     {
       if (get_brain)
-      {
-        auto& res_i = result[0];
-
-        if (res_i.boxMask.rows && res_i.boxMask.cols)
-        {
-          int res_mask_padding_x = res_i.box.x + res_i.box.size().width - res_mask.cols;
-          int res_mask_padding_y = res_i.box.y + res_i.box.size().height - res_mask.rows;
-          if (res_mask_padding_x < 0) res_mask_padding_x = 0;
-          if (res_mask_padding_y < 0) res_mask_padding_y = 0;
-
-          if (res_mask_padding_x || res_mask_padding_y)
-          {
-            res_i.box.width -= res_mask_padding_x;
-            res_i.box.height -= res_mask_padding_y;
-
-            res_i.boxMask = res_i.boxMask(cv::Range(0, res_i.boxMask.rows - res_mask_padding_y), cv::Range(0, res_i.boxMask.cols - res_mask_padding_x));
-          }
-
-          res_mask(res_i.box).setTo(255, res_i.boxMask);
-        }
-      }
+        process_detection_result(result[0], res_mask);
       else
       {
         for (int i = 0; i < result.size(); i++)
-        {
-          auto& res_i = result[i];
-          if (res_i.boxMask.rows && res_i.boxMask.cols)
-          {
-            int res_mask_padding_x = res_i.box.x + res_i.box.size().width - res_mask.cols;
-            int res_mask_padding_y = res_i.box.y + res_i.box.size().height - res_mask.rows;
-            if (res_mask_padding_x < 0) res_mask_padding_x = 0;
-            if (res_mask_padding_y < 0) res_mask_padding_y = 0;
-
-            if (res_mask_padding_x || res_mask_padding_y)
-            {
-              res_i.box.width -= res_mask_padding_x;
-              res_i.box.height -= res_mask_padding_y;
-
-              res_i.boxMask = res_i.boxMask(cv::Range(0, res_i.boxMask.rows - res_mask_padding_y), cv::Range(0, res_i.boxMask.cols - res_mask_padding_x));
-            }
-
-            res_mask(res_i.box).setTo(255, res_i.boxMask);
-          }
-        }
+          process_detection_result(result[i], res_mask);
       }
 
       if (get_brain || erode_level > 0)
