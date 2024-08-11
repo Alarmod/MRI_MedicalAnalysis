@@ -630,7 +630,24 @@ public:
         auto& res_0 = result[0];
 
         if (res_0.boxMask.rows && res_0.boxMask.cols)
+        {
+          int box_max_index_x = res_0.box.x + res_0.box.size().width;
+          int box_max_index_y = res_0.box.y + res_0.box.size().height;
+          int res_mask_padding_x = box_max_index_x - res_mask.cols + 1;
+          int res_mask_padding_y = box_max_index_y - res_mask.rows + 1;
+          if (res_mask_padding_x < 0) res_mask_padding_x = 0;
+          if (res_mask_padding_y < 0) res_mask_padding_y = 0;
+
+          if (res_mask_padding_x || res_mask_padding_y)
+          {
+            res_0.box.width -= res_mask_padding_x;
+            res_0.box.height -= res_mask_padding_y;
+
+            res_0.boxMask = res_0.boxMask(cv::Range(0, res_0.boxMask.rows - res_mask_padding_y), cv::Range(0, res_0.boxMask.cols - res_mask_padding_x));
+          }
+
           res_mask(res_0.box).setTo(255, res_0.boxMask);
+        }
       }
       else
       {
@@ -638,7 +655,24 @@ public:
         {
           auto& res_i = result[i];
           if (res_i.boxMask.rows && res_i.boxMask.cols)
+          {
+            int box_max_index_x = res_i.box.x + res_i.box.size().width;
+            int box_max_index_y = res_i.box.y + res_i.box.size().height;
+            int res_mask_padding_x = box_max_index_x - res_mask.cols + 1;
+            int res_mask_padding_y = box_max_index_y - res_mask.rows + 1;
+            if (res_mask_padding_x < 0) res_mask_padding_x = 0;
+            if (res_mask_padding_y < 0) res_mask_padding_y = 0;
+
+            if (res_mask_padding_x || res_mask_padding_y)
+            {
+              res_i.box.width -= res_mask_padding_x;
+              res_i.box.height -= res_mask_padding_y;
+
+              res_i.boxMask = res_i.boxMask(cv::Range(0, res_i.boxMask.rows - res_mask_padding_y), cv::Range(0, res_i.boxMask.cols - res_mask_padding_x));
+            }
+
             res_mask(res_i.box).setTo(255, res_i.boxMask);
+          }
         }
       }
 

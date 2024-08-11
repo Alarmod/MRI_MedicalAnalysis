@@ -22,14 +22,14 @@ if global_half:
             print("Activated NaN fix (see https://github.com/ultralytics/yolov5/issues/7908)")
             torch.backends.cudnn.enabled=False
 
-def func(model, name_val, data_val, imgsz_val, batch_val, lr0_val, epochs_val, patience_val, mod): 
+def func(model, name_val, data_val, imgsz_val, batch_val, lr0_val, lrf_val, epochs_val, patience_val, mod): 
    results = model.train(
              name=name_val, 
              data=data_val, 
              imgsz=imgsz_val, 
              batch=batch_val, 
              lr0=lr0_val, 
-             lrf=0.01, 
+             lrf=lrf_val, 
              mask_ratio=1, 
              overlap_mask=False, 
              half=global_half, 
@@ -47,9 +47,9 @@ def func(model, name_val, data_val, imgsz_val, batch_val, lr0_val, epochs_val, p
              nms=False, 
              seed=777, 
              deterministic=True, 
-             hsv_h=0.0, hsv_s=0.0, hsv_v=0.02, 
+             hsv_h=0.02, hsv_s=0.02, hsv_v=0.02, 
              perspective=0.0, flipud=0, fliplr=0, mosaic=0.0, mixup=0.0, copy_paste=0.0, 
-             degrees=7.5 if mod else 0.0, translate=0.025 if mod else 0.0, scale=0.2 if mod else 0.0, shear=0.025 if mod else 0.0, 
+             degrees=5.0 if mod else 0.0, translate=0.01 if mod else 0.0, scale=0.1 if mod else 0.0, shear=0.01 if mod else 0.0, 
              rect=True
    )
 
@@ -58,5 +58,5 @@ if __name__ == '__main__':
 
    cracks_imgsz=640
 
-   model = YOLO("yolov8n-seg.yaml", task="segment")
-   func(model, "cracks_exp", "crack-seg.yaml", cracks_imgsz, 30, 0.001, 100, 20, True)
+   model = YOLO("yolov8n-seg.yaml", task="segment")#.load("./runs/segment/cracks_exp_trans/weights/best.pt")
+   func(model, "cracks_exp", "data.yaml", cracks_imgsz, 30, 0.001, 0.01, 100, 20, True)
