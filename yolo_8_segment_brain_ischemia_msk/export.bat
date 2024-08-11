@@ -12,7 +12,7 @@ set OPTSET=16
 @REM pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 @REM pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-pip3 install -U ultralytics
+pip3 install -U ultralytics==8.2.42
 
 mkdir orig_settings
 move %CD_PATH%runs %CD_PATH%orig_settings\\runs
