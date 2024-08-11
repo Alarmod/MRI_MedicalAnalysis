@@ -42,13 +42,13 @@ _start /W /B winrar.exe x -ibck MRI_settings.zip_
 
 _start /W /B winrar.exe x -ibck MRI_tests.zip_
 
-Datasets for training can be loaded from 
+4. Datasets for training can be loaded from 
 https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive_link
 or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_data
 
 (must be stored to _datasets_ folder and unpacked)
 
-4. Configure settings.yaml (internal settings file of the _ultralytics_ library) if You already use Ultralytics in other projects
+5. Configure settings.yaml (internal settings file of the _ultralytics_ library) if You already use Ultralytics in other projects
 ```
 datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk\datasets_ folder]
 weights_dir: weights
@@ -138,13 +138,13 @@ _start /W /B winrar.exe x -ibck MRI_settings.zip_
 
 _start /W /B winrar.exe x -ibck MRI_tests.zip_
 
-Наборы данных для обучения можно загрузить с
+4.  Наборы данных для обучения можно загрузить с
 https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive_link
 или с https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_data
 
 (должны быть сохранены в папке _datasets_ и распакованы)
 
-4. Настройте settings.yaml (внутренний файл настроек библиотеки _ultralytics_), если вы уже используете Ultralytics в других проектах
+5. Настройте settings.yaml (внутренний файл настроек библиотеки _ultralytics_), если вы уже используете Ultralytics в других проектах
 ```
 datasets_dir: [Путь к папке _yolo_8_segment_brain_ischemia_msk\datasets_]
 weights_dir: weights
