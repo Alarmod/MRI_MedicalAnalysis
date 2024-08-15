@@ -9,7 +9,7 @@ https://github.com/microsoft/onnxruntime/releases (version 1.18.0+)
 
 3. Install [OpenCV 4.9.0+](https://opencv.org)
 
-4. Confiure, build and install _yolo_segment_with_nanobind_ plugin:
+4. Confiure, build and install _yolo_segment_with_nanobind_ module:
 
 In version 8.2.43 of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library. If you retrain artificial neural networks with Ultralytics >8.2.42, change _#define USE_SIGMOID_FUNC true_ to _#define USE_SIGMOID_FUNC false_ in [yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
@@ -56,7 +56,7 @@ https://github.com/microsoft/onnxruntime/releases (версия 1.18.0+)
 
 3. Установите [OpenCV 4.9.0+](https://opencv.org)
 
-4. Настройте, соберите и установите плагин _yolo_segment_with_nanobind_:
+4. Настройте, соберите и установите модуль _yolo_segment_with_nanobind_:
 
 В версии 8.2.43 библиотеки Ultralytics был изменен порядок получения масок сегментации, [разработчики отказались от использования сигмоидальной функции](https://github.com/ultralytics/ultralytics/pull/13939), что повлияло на результаты нейронных сетей, обученных на более ранней версии библиотеки. Если вы переобучаете искусственные нейронные сети с помощью Ultralytics >8.2.42, измените _#define USE_SIGMOID_FUNC true_ на _#define USE_SIGMOID_FUNC false_ в [yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
