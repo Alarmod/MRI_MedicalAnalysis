@@ -22,6 +22,7 @@ if global_half:
             print("Activated NaN fix (see https://github.com/ultralytics/yolov5/issues/7908)")
             torch.backends.cudnn.enabled=False
 
+# Don't change rect=True if You plan use yolo_segment_with_nanobind module
 def func(model, name_val, data_val, imgsz_val, batch_val, lr0_val, epochs_val, patience_val, mod): 
    results = model.train(
              name=name_val, 
