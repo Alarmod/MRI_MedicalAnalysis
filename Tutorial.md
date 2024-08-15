@@ -34,7 +34,7 @@ _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
 _python convert_dir.py_
 
-Script _convert_dir.py_ use installed [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) plugin.
+Script _convert_dir.py_ use installed [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) module.
 
 # Information on preliminary preparation for installation and using of the "Automated Workplace" application
 System requirements: Python 3.8-3.10
@@ -46,7 +46,7 @@ https://github.com/microsoft/onnxruntime/releases (version 1.18.0+)
 
 3. Install [OpenCV 4.9.0+](https://opencv.org)
 
-4. Confiure, build and install _yolo_segment_with_nanobind_ plugin:
+4. Confiure, build and install _yolo_segment_with_nanobind_ module:
 
 In version 8.2.43 of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library. If you retrain artificial neural networks with Ultralytics >8.2.42, change _#define USE_SIGMOID_FUNC true_ to _#define USE_SIGMOID_FUNC false_ in [yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
@@ -258,7 +258,7 @@ _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
 _python convert_dir.py_
 
-Скрипт _convert_dir.py_ использует установленный Плагин [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace).
+Скрипт _convert_dir.py_ использует установленный модуль [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace).
 
 # Информация о предварительной подготовке к установке и использованию приложения "Automated Workplace"
 Системные требования: Python 3.8-3.10
@@ -270,7 +270,7 @@ https://github.com/microsoft/onnxruntime/releases (версия 1.18.0+)
 
 3. Установите [OpenCV 4.9.0+](https://opencv.org)
 
-4. Настройте, соберите и установите плагин _yolo_segment_with_nanobind_:
+4. Настройте, соберите и установите модуль _yolo_segment_with_nanobind_:
 
 В версии 8.2.43 библиотеки Ultralytics изменен порядок получения масок сегментации, [разработчики отказались от использования сигмоидальной функции](https://github.com/ultralytics/ultralytics/pull/13939), что повлияло на результаты нейронных сетей, обученных на более ранней версии библиотеки. Если вы переобучаете искусственные нейронные сети с помощью Ultralytics >8.2.42, измените _#define USE_SIGMOID_FUNC true_ на _#define USE_SIGMOID_FUNC false_ в [yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
