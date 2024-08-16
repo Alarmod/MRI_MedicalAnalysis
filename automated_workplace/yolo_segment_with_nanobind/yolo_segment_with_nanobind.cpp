@@ -17,7 +17,7 @@ namespace nb = nanobind;
 template <typename T>
 size_t VectorProduct(const std::vector<T>& v)
 {
-  return static_cast<size_t>(std::accumulate(v.begin(), v.end(), 1u, std::multiplies<T>()));
+  return static_cast<size_t>(std::accumulate(v.begin(), v.end(), (T)1, std::multiplies<T>()));
 };
 
 #define USE_SIGMOID_FUNC true
@@ -89,7 +89,7 @@ public:
   }
 private:
   unsigned int m_threadPoolSize;
-  int 	       m_ref_count;
+  int          m_ref_count;
   Ort::Env* m_ortEnvPtr = nullptr;
 };
 
@@ -583,22 +583,26 @@ public:
 
   void process_detection_result(OutputParams& result, cv::Mat& res_mask)
   {
-    if (result.boxMask.rows && result.boxMask.cols)
+    auto& result_boxMask_ptr = result.boxMask;
+    if (result_boxMask_ptr.rows && result_boxMask_ptr.cols)
     {
-      int res_mask_padding_x = result.box.x + result.box.size().width - res_mask.cols;
-      int res_mask_padding_y = result.box.y + result.box.size().height - res_mask.rows;
+      auto& result_box_ptr = result.box;
+      auto& box_size = result_box_ptr.size();
+
+      int res_mask_padding_x = result_box_ptr.x + box_size.width - res_mask.cols;
+      int res_mask_padding_y = result_box_ptr.y + box_size.height - res_mask.rows;
       if (res_mask_padding_x < 0) res_mask_padding_x = 0;
       if (res_mask_padding_y < 0) res_mask_padding_y = 0;
 
       if (res_mask_padding_x || res_mask_padding_y)
       {
-        result.box.width -= res_mask_padding_x;
-        result.box.height -= res_mask_padding_y;
+        result_box_ptr.width -= res_mask_padding_x;
+        result_box_ptr.height -= res_mask_padding_y;
 
-        result.boxMask = result.boxMask(cv::Range(0, result.boxMask.rows - res_mask_padding_y), cv::Range(0, result.boxMask.cols - res_mask_padding_x));
+        result.boxMask = result_boxMask_ptr(cv::Range(0, result_boxMask_ptr.rows - res_mask_padding_y), cv::Range(0, result_boxMask_ptr.cols - res_mask_padding_x));
       }
 
-      res_mask(result.box).setTo(255, result.boxMask);
+      res_mask(result_box_ptr).setTo(255, result.boxMask);
     }
   }
 
