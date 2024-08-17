@@ -19,7 +19,7 @@ class Counter:
 
 	def __str__(self):
 		if self.count:
-			return f"Calls: {self.count}\tTotal time: {self.totalTime:.06f}\tMax time: {self.maxTime:.03f}\tAvg time: {(self.totalTime / self.count):.03f}"
+			return f"Calls: {self.count:06d}   Total time: {self.totalTime:.03f}   Max time: {self.maxTime:.03f}   Avg time: {(self.totalTime / self.count):.03f}"
 		return ""
 
 class Profiler:

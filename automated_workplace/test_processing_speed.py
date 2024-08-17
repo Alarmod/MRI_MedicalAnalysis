@@ -8,7 +8,7 @@ from MRIMAProcessor import MRIMAProcessor
 from Profiler import Profiler
 
 def test(test_message, processor, dataset, protocol_id, view_mode):
-	print(test_message)
+	print(f"\n{test_message}")
 
 	Profiler.getInstance().clear()
 	get_cached_data.cache_clear()
@@ -27,8 +27,8 @@ if __name__ == '__main__':
 
 	processor.loadSettings(settings)
 
+	print()
 	dataset = processor.scanFolder("./data")
-
 	Profiler.getInstance().print()
 
 	view_mode_brain = ViewMode()
