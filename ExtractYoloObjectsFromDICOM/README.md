@@ -81,7 +81,7 @@ _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
 _python convert_dir.py_
 
-Скрипт _convert_dir.py_ использует установленный модуль [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace). Путь к системным библиотекам (папки bin или lib) должен быть настроен аналично тому, как было сделано с файлом boot.py (см. [руководство](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) к приложению "Automated Workplace").
+Скрипт _convert_dir.py_ использует установленный модуль [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace). Путь к системным библиотекам (папки bin или lib) должен быть настроен аналично тому, как было сделано с файлом _boot.py_ (см. [руководство](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) к приложению "Automated Workplace").
 
 # Используемые языки программирования
 C++
