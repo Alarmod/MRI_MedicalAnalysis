@@ -66,7 +66,7 @@ General requirements for pre-installed software for compiling and running the de
 8) pytorch 2.2.2 or 2.3.1+ (Python);
 9) ultralytics versions 8.0.205 or (>8.1.5 and <8.2.43) (Python);
 10) ONNXRuntime library (version 1.18.0+) (C++);
-11) CUDA library versions 11.8 or 12.4;
+11) CUDA library versions 11.8.0 or 12.4.0;
 12) CUDDN library (version 8.9.7.29+).
 13) PySide2 (Python);
 14) vtk (Python);
@@ -161,7 +161,7 @@ C++ и Python
 8) pytorch 2.2.2 или 2.3.1+ (Python);
 9) ultralytics версий 8.0.205 или (>8.1.5 и <8.2.43) (Python);
 10) библиотека ONNXRuntime (версия 1.18.0+) (C++);
-11) библиотека CUDA версий 11.8 или 12.4;
+11) библиотека CUDA версий 11.8.0 или 12.4.0;
 12) библиотека CUDDN (версия 8.9.7.29+). 
 13) PySide2 (Python);
 14) vtk (Python);
