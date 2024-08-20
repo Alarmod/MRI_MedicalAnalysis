@@ -34,7 +34,7 @@ _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
 _python convert_dir.py_
 
-Script _convert_dir.py_ use installed [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) module.
+Script _convert_dir.py_ use installed [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) module. The path to the system libraries (bin or lib folders) should be configured similarly to what was done with the _boot.py_ file (see further manual for "Automated Workplace" application).
 
 # Information on preliminary preparation for installation and using of the "Automated Workplace" application
 System requirements: Python 3.8-3.10
@@ -170,7 +170,6 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 
 Settings in original format will be saved in _orig_settings_ directory.
 
-
 # Example of new variants for using the open library code
 Instructions for using the open library code in third-party repositories:
 
@@ -218,7 +217,7 @@ The process method returns the results of the ANN operation, the output size is 
 
 An example of using the yolo_segment_with_nanobind module is given in the script https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py.
 
-Link to an example of a new use case of the open library code (segmentation of structural damage images in the form of road surface cracks): https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator.
+Link to an example of a new use case of the open library code (segmentation of structural damage images in the form of road surface cracks): https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator. The path to the system libraries (bin or lib folders) should be configured in _[cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py)_ similarly to what was done with the _boot.py_ file (see manual for "Automated Workplace" application).
 
 # ///////////////////////////////////////////////
 
@@ -258,7 +257,7 @@ _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
 _python convert_dir.py_
 
-Скрипт _convert_dir.py_ использует установленный модуль [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace).
+Скрипт _convert_dir.py_ использует установленный модуль [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace). Путь к системным библиотекам (папки bin или lib) должен быть настроен аналично тому, как было сделано с файлом _boot.py_ (см. далее руководство к приложению "Automated Workplace").
 
 # Информация о предварительной подготовке к установке и использованию приложения "Automated Workplace"
 Системные требования: Python 3.8-3.10
@@ -441,4 +440,4 @@ o "erode_level" – количество итераций операции эр�
 
 Пример использования модуля yolo_segment_with_nanobind приведен в скрипте https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py.
 
-Ссылка на пример нового варианта использования кода открытой библиотеки (сегментация на изображениях структурных повреждений в виде трещин дорожного покрытия): https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator.
+Ссылка на пример нового варианта использования кода открытой библиотеки (сегментация на изображениях структурных повреждений в виде трещин дорожного покрытия): https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator. Путь к системным библиотекам (папки bin или lib) должен быть настроен в файле _[cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py)_ аналично тому, как было сделано с файлом _boot.py_ (см. руководство к приложению "Automated Workplace").
