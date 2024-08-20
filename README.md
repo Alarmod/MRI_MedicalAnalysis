@@ -83,7 +83,7 @@ To use GPU resources in the ANN training process, it is recommended to install l
 
 The “yolo_segment_with_nanobind” module must be configured and compiled. 
 
-The “boot.py” file must specify the paths to the bin and lib directories containing the dll files of the ONNXRuntime and OpenCV libraries, and optionally, the paths to the files for the CUDA and CUDNN libraries. Likewise, these paths must be written in [02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) and [convert_dir.py](https://github.com/ Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
+The “boot.py” file must specify the paths to the bin and lib directories containing the dll files of the ONNXRuntime and OpenCV libraries, and optionally, the paths to the files for the CUDA and CUDNN libraries. Likewise, these paths must be written in [02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) and [convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
 # Place of the work
 Intellectual Control Laboratory at Ailamazyan Program Systems Institute of the Russian Academy of Sciences (https://icontrol.psiras.ru/)
