@@ -20,6 +20,7 @@ size_t VectorProduct(const std::vector<T>& v)
   return static_cast<size_t>(std::accumulate(v.begin(), v.end(), (T)1, std::multiplies<T>()));
 };
 
+// https://github.com/ultralytics/ultralytics/pull/13939
 #define USE_SIGMOID_FUNC true
 
 struct OutputParams
@@ -89,14 +90,16 @@ public:
   }
 private:
   unsigned int m_threadPoolSize;
+
   int          m_ref_count;
+
   Ort::Env* m_ortEnvPtr = nullptr;
 };
 
-//use singleton
 ONNXEnvironment& getONNXEnv()
 {
   static ONNXEnvironment instance(std::thread::hardware_concurrency());
+
   return instance;
 }
 
@@ -111,6 +114,7 @@ private:
   bool isONNXProviderAvailable(const std::string& provider_name)
   {
     std::vector<std::string> available_providers = Ort::GetAvailableProviders();
+
     return (std::find(available_providers.begin(), available_providers.end(), provider_name) != available_providers.end());
   }
 public:
@@ -162,10 +166,9 @@ public:
 
     Ort::AllocatorWithDefaultOptions allocator;
 
-    //init input
+    // init input
     size_t _inputNodesNum = m_session->GetInputCount();
     m_input_name = std::move(m_session->GetInputNameAllocated(0, allocator));
-
     m_inputs_names.push_back(m_input_name.get());
 
     Ort::TypeInfo inputTypeInfo = m_session->GetInputTypeInfo(0);
@@ -173,7 +176,7 @@ public:
     ONNXTensorElementDataType _inputNodeDataType = input_tensor_info.GetElementType();
     m_input_tensor_shape = input_tensor_info.GetShape();
 
-    //dynamic shape model init
+    // dynamic shape model init
     if (m_input_tensor_shape[0] == -1)
       m_input_tensor_shape[0] = 1;
 
@@ -183,12 +186,13 @@ public:
       m_input_tensor_shape[3] = m_net_width;
     }
 
-    //init output
+    // init output
     size_t _outputNodesNum = m_session->GetOutputCount();
 
     if (_outputNodesNum != 2)
     {
       const std::string message("Error: Loaded model has " + std::to_string(_outputNodesNum) + " output(s), it's not a YOLO segmentation model");
+
       throw std::exception(message.c_str());
     }
 
@@ -197,17 +201,19 @@ public:
 
     Ort::TypeInfo type_info_output0(nullptr);
     Ort::TypeInfo type_info_output1(nullptr);
-    if (strcmp(m_output0_name.get(), m_output1_name.get()) < 0)  //make sure "output0" is in front of  "output1"
+    if (strcmp(m_output0_name.get(), m_output1_name.get()) < 0)  // make sure "output0" is in front of  "output1"
     {
-      type_info_output0 = m_session->GetOutputTypeInfo(0);  //output0
-      type_info_output1 = m_session->GetOutputTypeInfo(1);  //output1
+      type_info_output0 = m_session->GetOutputTypeInfo(0);  // output0
+      type_info_output1 = m_session->GetOutputTypeInfo(1);  // output1
+
       m_outputs_names.push_back(m_output0_name.get());
       m_outputs_names.push_back(m_output1_name.get());
     }
     else
     {
-      type_info_output0 = m_session->GetOutputTypeInfo(1);  //output0
-      type_info_output1 = m_session->GetOutputTypeInfo(0);  //output1
+      type_info_output0 = m_session->GetOutputTypeInfo(1);  // output0
+      type_info_output1 = m_session->GetOutputTypeInfo(0);  // output1
+
       m_outputs_names.push_back(m_output1_name.get());
       m_outputs_names.push_back(m_output0_name.get());
     }
@@ -215,7 +221,6 @@ public:
     auto tensor_info_output0 = type_info_output0.GetTensorTypeAndShapeInfo();
     ONNXTensorElementDataType _outputNodeDataType = tensor_info_output0.GetElementType();
     m_output0_tensor_shape = tensor_info_output0.GetShape();
-
     m_input_tensor_length = VectorProduct(m_input_tensor_shape);
 
     env.acquire();
@@ -258,7 +263,7 @@ public:
     cv::Size src_img_shape = maskParams.srcImgShape;
     cv::Rect temp_rect = output.box;
 
-    // Crop from mask_protos
+    // crop from mask_protos
     int rang_x = floor((temp_rect.x * params[0] + params[2]) / m_net_width * seg_width);
     int rang_y = floor((temp_rect.y * params[1] + params[3]) / m_net_height * seg_height);
     int rang_w = ceil(((temp_rect.x + temp_rect.width) * params[0] + params[2]) / m_net_width * seg_width) - rang_x;
@@ -288,7 +293,7 @@ public:
     roi_rangs.push_back(cv::Range(rang_y, rang_h + rang_y));
     roi_rangs.push_back(cv::Range(rang_x, rang_w + rang_x));
 
-    // Crop
+    // crop
     cv::Mat temp_mask_protos = maskProtos(roi_rangs).clone();
     cv::Mat protos = temp_mask_protos.reshape(0, { seg_channels, rang_w * rang_h });
     cv::Mat matmul_res = (maskProposals * protos).t();
@@ -332,7 +337,7 @@ public:
     unsigned char* data_ptr = iImg.data;
 
     for (im_index = 0ULL; im_index < img_size; im_index++)
-      iBlob[im_index] = static_cast<T>(data_ptr[im_index] / 255.0F);
+      iBlob[im_index] = static_cast<T>(data_ptr[im_index] / 255.0f);
 
     memcpy(&iBlob[img_size], iBlob, img_size * sizeof(T));
     memcpy(&iBlob[2 * img_size], iBlob, img_size * sizeof(T));
@@ -344,20 +349,19 @@ public:
     int channels = iImg.channels();
     int imgHeight = iImg.rows;
     int imgWidth = iImg.cols;
+    unsigned long long im_index = 0;
 
     for (int c = 0; c < channels; c++)
     {
       for (int h = 0; h < imgHeight; h++)
       {
         for (int w = 0; w < imgWidth; w++)
-        {
-          iBlob[c * imgWidth * imgHeight + h * imgWidth + w] = typename std::remove_pointer<T>::type((iImg.at<cv::Vec3b>(h, w)[c]) / 255.0f);
-        }
+          iBlob[im_index++] = typename std::remove_pointer<T>::type((iImg.at<cv::Vec3b>(h, w)[c]) / 255.0f);
       }
     }
   }
 
-  void LetterBox(const cv::Mat& image, cv::Mat& outImage, cv::Vec4d& params, const cv::Size& newShape, bool autoShape = false, bool scaleFill = false, bool scaleUp = true, int stride = 32, const cv::Scalar& color = cv::Scalar(114))
+  void LetterBox(const cv::Mat& image, cv::Mat& outImage, cv::Vec4d& params, const cv::Size& newShape, bool autoShape = false, const cv::Scalar& color = cv::Scalar(114), bool scaleFill = false, bool scaleUp = true, int stride = 32)
   {
     cv::Size shape = image.size();
     float r = std::min((float)newShape.height / (float)shape.height,
@@ -437,7 +441,7 @@ public:
 
     delete[] blob;
 
-    //post-process
+    // post-process
     {
       auto& d_val_0 = output_tensors[0];
       auto& d_val_1 = output_tensors[1];
@@ -489,15 +493,17 @@ public:
           std::vector<float> temp_proto(pdata + 4 + score_array_length, pdata + net_data_width);
           picked_proposals.push_back(temp_proto);
 
-          //rect [x,y,w,h]
+          // rect [x,y,w,h]
           x = (pdata[0] - params[2]) / params[0];
           y = (pdata[1] - params[3]) / params[1];
           w = pdata[2] / params[0];
           h = pdata[3] / params[1];
+
           left = MAX(int(x - 0.5 * w + 0.5), 0);
           top = MAX(int(y - 0.5 * h + 0.5), 0);
           class_ids.push_back(classIdPoint.x);
           confidences.push_back(max_class_score);
+
           boxes.push_back(cv::Rect(left, top, int(w + 0.5), int(h + 0.5)));
         }
 
@@ -544,7 +550,7 @@ public:
     }
   }
 
-  void mask_procesing(cv::Mat& res_mask_big, const bool get_brain, const unsigned int erode_level)
+  void mask_procesing(cv::Mat& res_mask_big, const bool get_brain, const unsigned int erode_level, const cv::Size& erode_mask_size = cv::Size(3, 3))
   {
     if (get_brain)
     {
@@ -577,7 +583,7 @@ public:
     {
       cv::Mat res_mask_big_cloned = res_mask_big.clone();
 
-      cv::erode(res_mask_big_cloned, res_mask_big, cv::getStructuringElement(cv::MORPH_ERODE, cv::Size(3, 3)), cv::Point(-1, -1), erode_level);
+      cv::erode(res_mask_big_cloned, res_mask_big, cv::getStructuringElement(cv::MORPH_ERODE, erode_mask_size), cv::Point(-1, -1), erode_level);
     }
   }
 
@@ -615,26 +621,23 @@ public:
 
     bool color_data = (input.ndim() == 3);
 
-    // LetterBox
+    // convert ndarray to mat
     cv::Mat netInputImg;
     cv::Vec4d params;
-
     if (color_data)
     {
-      // Convert ndarray to mat
-      cv::Mat colored = cv::Mat(cv::Size(col, row), CV_8UC3, (void*)input.data());
+      cv::Mat colored = cv::Mat(input.shape(0), input.shape(1), CV_8UC3, (void*)input.data());
 
-      LetterBox(colored, netInputImg, params, cv::Size(m_net_width, m_net_height), true, false, true, 32, cv::Scalar(114, 114, 114));
+      LetterBox(colored, netInputImg, params, cv::Size(m_net_width, m_net_height), true, cv::Scalar(114, 114, 114));
     }
     else
     {
-      // Convert ndarray to mat
       const cv::Mat gray = cv::Mat(input.shape(0), input.shape(1), CV_8UC1, (void*)input.data());
 
       LetterBox(gray, netInputImg, params, cv::Size(m_net_width, m_net_height), true);
     }
 
-    // Run detection
+    // run detection
     std::vector<OutputParams> result;
 
     if (m_use_fp16)
@@ -679,16 +682,16 @@ public:
       }
     }
 
-    // Dynamically allocate 'data'
+    // dynamically allocate 'data'
     unsigned char* data = new unsigned char[input.shape(0) * input.shape(1)];
 
-    // Delete 'data' when the 'owner' capsule expires
+    // delete 'data' when the 'owner' capsule expires
     nb::capsule owner(data, [](void* p) noexcept {delete[](unsigned char*)p; });
 
-    // Copy 'data_internal' to 'data'
+    // copy 'data_internal' to 'data'
     memcpy(data, res_mask.data, sizeof(unsigned char) * input.shape(0) * input.shape(1));
 
-    // Return result
+    // return result
     return nb::ndarray<nb::numpy, unsigned char>(data, { (size_t)input.shape(0), (size_t)input.shape(1) }, owner);
   }
 
