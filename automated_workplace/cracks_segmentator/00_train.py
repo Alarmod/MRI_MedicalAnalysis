@@ -59,5 +59,5 @@ if __name__ == '__main__':
 
    cracks_imgsz=640
 
-   model = YOLO("yolov8n-seg.yaml", task="segment")#.load("./runs/segment/cracks_exp_trans/weights/best.pt")
+   model = YOLO("yolov8s-seg.yaml", task="segment")#.load("./runs/segment/cracks_exp_trans/weights/best.pt")
    func(model, "cracks_exp", "data.yaml", cracks_imgsz, 30, 0.001, 0.01, 100, 20, True)

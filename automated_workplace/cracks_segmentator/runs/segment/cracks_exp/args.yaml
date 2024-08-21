@@ -1,6 +1,6 @@
 task: segment
 mode: train
-model: yolov8n-seg.yaml
+model: yolov8s-seg.yaml
 data: data.yaml
 epochs: 100
 time: null
