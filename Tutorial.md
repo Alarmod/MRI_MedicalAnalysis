@@ -34,7 +34,7 @@ _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
 _python convert_dir.py_
 
-Script [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py) use installed [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace) module. The path to the system libraries (bin or lib folders) should be configured similarly to what was done with the [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) file (see further manual for "Automated Workplace" application).
+Script [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py) use installed [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module. The path to the system libraries (bin or lib folders) should be configured similarly to what was done with the [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) file (see further manual for "Automated Workplace" application).
 
 # Information on preliminary preparation for installation and using of the "Automated Workplace" application
 System requirements: Python 3.8-3.10
@@ -46,11 +46,11 @@ https://github.com/microsoft/onnxruntime/releases (version 1.18.0+)
 
 3. Install [OpenCV 4.9.0+](https://opencv.org)
 
-4. Confiure, build and install _yolo_segment_with_nanobind_ module:
+4. Confiure, build and install [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module:
 
 In version 8.2.43 of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library. If you retrain artificial neural networks with Ultralytics >8.2.42, change _#define USE_SIGMOID_FUNC true_ to _#define USE_SIGMOID_FUNC false_ in [automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
-You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible with your compiler. This directories with _bin_, _lib_ and _include_ subfolders. Settings must be set over _yolo_segment_with_nanobind/build.bat_ file. After configuration, the file or commands inside _build.bat_ must be launched (executed).
+You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible with your compiler. This directories with _bin_, _lib_ and _include_ subfolders. Settings must be set over [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat) file. After configuration, the file or commands inside _build.bat_ must be launched (executed).
 
 5. Configure path for system libs (_bin_ or _lib_ folders) over file [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py):
 
@@ -215,7 +215,7 @@ o "erode_level" – the number of iterations of the image erosion operation used
 
 The process method returns the results of the ANN operation, the output size is the same as the size of the image supplied via the "input" parameter.
 
-An example of using the yolo_segment_with_nanobind module is given in the script [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
+An example of using the [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module is given in the script [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
 Link to an example of a new use case of the open library code (segmentation of structural damage images in the form of road surface cracks): [automated_workplace/cracks_segmentator](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator). The path to the system libraries (bin or lib folders) should be configured in [automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) similarly to what was done with the [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) file (see manual for "Automated Workplace" application).
 
@@ -257,7 +257,7 @@ _ExtractYoloObjectsFromDICOM.exe convert ./dataset/_
 
 _python convert_dir.py_
 
-Скрипт [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py) использует установленный модуль [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace). Путь к системным библиотекам (папки bin или lib) должен быть настроен аналично тому, как было сделано с файлом [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) (см. далее руководство к приложению "Automated Workplace").
+Скрипт [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py) использует установленный модуль [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). Путь к системным библиотекам (папки bin или lib) должен быть настроен аналично тому, как было сделано с файлом [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) (см. далее руководство к приложению "Automated Workplace").
 
 # Информация о предварительной подготовке к установке и использованию приложения "Automated Workplace"
 Системные требования: Python 3.8-3.10
@@ -269,11 +269,11 @@ https://github.com/microsoft/onnxruntime/releases (версия 1.18.0+)
 
 3. Установите [OpenCV 4.9.0+](https://opencv.org)
 
-4. Настройте, соберите и установите модуль _yolo_segment_with_nanobind_:
+4. Настройте, соберите и установите модуль [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind):
 
 В версии 8.2.43 библиотеки Ultralytics изменен порядок получения масок сегментации, [разработчики отказались от использования сигмоидальной функции](https://github.com/ultralytics/ultralytics/pull/13939), что повлияло на результаты нейронных сетей, обученных на более ранней версии библиотеки. Если вы переобучаете искусственные нейронные сети с помощью Ultralytics >8.2.42, измените _#define USE_SIGMOID_FUNC true_ на _#define USE_SIGMOID_FUNC false_ в [automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
-Вы должны указать фактический путь для ONNXRuntime и OpenCV, версию среды выполнения, совместимую с вашим компилятором. Это каталоги с подпапками _bin_, _lib_ и _include_. Настройки должны быть установлены через файл _yolo_segment_with_nanobind/build.bat_. После настройки: файл или команды внутри _build.bat_ должны быть запущены (выполнены).
+Вы должны указать фактический путь для ONNXRuntime и OpenCV, версию среды выполнения, совместимую с вашим компилятором. Это каталоги с подпапками _bin_, _lib_ и _include_. Настройки должны быть установлены через файл [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat). После настройки: файл или команды внутри _build.bat_ должны быть запущены (выполнены).
 
 5. Настройте путь для системных библиотек (папки _bin_ или _lib_) через файл [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py):
 
@@ -438,6 +438,6 @@ o "erode_level" – количество итераций операции эр�
 
 Метод process возвращает результаты работы ИНС, размер выхода совпадает с размером изображения, подаваемого через параметр "input".
 
-Пример использования модуля yolo_segment_with_nanobind приведен в скрипте [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
+Пример использования модуля [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) приведен в скрипте [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
 Ссылка на пример нового варианта использования кода открытой библиотеки (сегментация на изображениях структурных повреждений в виде трещин дорожного покрытия): [automated_workplace/cracks_segmentator](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator). Путь к системным библиотекам (папки bin или lib) должен быть настроен в файле [automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) аналично тому, как было сделано с файлом [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) (см. руководство к приложению "Automated Workplace").
