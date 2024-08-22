@@ -177,11 +177,11 @@ Instructions for using the open library code in third-party repositories:
    
 1.1. Converting the source data intended for training the ANN to the YOLO format (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
 
-1.2. Training the neural network (see the example of the training script in the file https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py).
+1.2. Training the neural network (see the example of the training script in the file [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py).
 
-1.3. Converting the settings of the trained neural network to the ONNX format (see the script https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). The export parameters (the width and height of the internal input of the neural network) were obtained from the script https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py.
+1.3. Converting the settings of the trained neural network to the ONNX format (see the script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). The export parameters (the width and height of the internal input of the neural network) must obtained from the script [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
 
-2. Using the yolo_segment_with_nanobind module (https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). The Python API of the module includes the setGlobalThreadPoolSize function (the only parameter of the function specifies the number of computing threads used to implement multi-threaded processing in CPU mode) and a description of the YOLO class, which implements the following methods:
+2. Using the [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module. The Python API of the module includes the setGlobalThreadPoolSize function (the only parameter of the function specifies the number of computing threads used to implement multi-threaded processing in CPU mode) and a description of the YOLO class, which implements the following methods:
 
 - constructor with parameters:
    
@@ -215,9 +215,9 @@ o "erode_level" – the number of iterations of the image erosion operation used
 
 The process method returns the results of the ANN operation, the output size is the same as the size of the image supplied via the "input" parameter.
 
-An example of using the yolo_segment_with_nanobind module is given in the script https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py.
+An example of using the yolo_segment_with_nanobind module is given in the script [convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
-Link to an example of a new use case of the open library code (segmentation of structural damage images in the form of road surface cracks): https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator. The path to the system libraries (bin or lib folders) should be configured in _[cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py)_ similarly to what was done with the _boot.py_ file (see manual for "Automated Workplace" application).
+Link to an example of a new use case of the open library code (segmentation of structural damage images in the form of road surface cracks): [automated_workplace/cracks_segmentator](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator). The path to the system libraries (bin or lib folders) should be configured in _[automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py)_ similarly to what was done with the _boot.py_ file (see manual for "Automated Workplace" application).
 
 # ///////////////////////////////////////////////
 
@@ -400,11 +400,11 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
    
 1.1. Конвертация исходных данных, предназначенных для обучения ИНС, в YOLO-формат (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
 
-1.2. Обучение нейронной сети (см. пример обучающего скрипта в файле https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py).
+1.2. Обучение нейронной сети (см. пример обучающего скрипта в файле [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py).
 
-1.3. Конвертация настроек обученной нейронной сети в формат ONNX (см. скрипт https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). Параметры экспорта (ширина и высота внутреннего входа нейронной сети) получены из скрипта https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py.
+1.3. Конвертация настроек обученной нейронной сети в формат ONNX (см. скрипт [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). Параметры экспорта (ширина и высота внутреннего входа нейронной сети) должны быть получены из скрипта [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
 
-2. Применение модуля yolo_segment_with_nanobind (https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). Python-API модуля включает функцию setGlobalThreadPoolSize (единственный параметр функции задает количество вычислительных потоков, используемых для реализации многопоточной обработки в CPU-режиме) и описание класса YOLO, реализующего следующие методы:
+2. Применение модуля [yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). Python-API модуля включает функцию setGlobalThreadPoolSize (единственный параметр функции задает количество вычислительных потоков, используемых для реализации многопоточной обработки в CPU-режиме) и описание класса YOLO, реализующего следующие методы:
    
 - конструктор с параметрами:
   
@@ -438,6 +438,6 @@ o "erode_level" – количество итераций операции эр�
 
 Метод process возвращает результаты работы ИНС, размер выхода совпадает с размером изображения, подаваемого через параметр "input".
 
-Пример использования модуля yolo_segment_with_nanobind приведен в скрипте https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py.
+Пример использования модуля yolo_segment_with_nanobind приведен в скрипте [convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
-Ссылка на пример нового варианта использования кода открытой библиотеки (сегментация на изображениях структурных повреждений в виде трещин дорожного покрытия): https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator. Путь к системным библиотекам (папки bin или lib) должен быть настроен в файле _[cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py)_ аналично тому, как было сделано с файлом _boot.py_ (см. руководство к приложению "Automated Workplace").
+Ссылка на пример нового варианта использования кода открытой библиотеки (сегментация на изображениях структурных повреждений в виде трещин дорожного покрытия): [automated_workplace/cracks_segmentator](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator). Путь к системным библиотекам (папки bin или lib) должен быть настроен в файле _[automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py)_ аналично тому, как было сделано с файлом _boot.py_ (см. руководство к приложению "Automated Workplace").
