@@ -117,7 +117,7 @@ MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqW
 
 MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
-3. Unpack full runs directory with commands: 
+3. Unpack full _runs_ directory with commands: 
 
 _start /W /B winrar.exe x -ibck MRI_settings.zip_
 
@@ -155,7 +155,7 @@ _python test.py internal_validate_ (modificated Yolo 8 validation code that clos
 
 Train and test on Nvidia RTX 16xx in FP16 mode may be slow (see https://github.com/ultralytics/yolov5/issues/7908)
 
-Manual for exporting settings to ONNX:
+Manual for exporting settings to ONNX format:
 
 To convert the settings of artificial neural networks into the ONNX format, you need run script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat).
 
@@ -175,11 +175,11 @@ Instructions for using the open library code in third-party repositories:
 
 1. Preparing the neural network model.
    
-1.1. Converting the source data intended for training the ANN to the YOLO format (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
+   1.1. Converting the source data intended for training the ANN to the YOLO format (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
 
-1.2. Training the neural network (see the example of the training script in the file [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py)).
+   1.2. Training the neural network (see the example of the training script in the file [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py)).
 
-1.3. Converting the settings of the trained neural network to the ONNX format (see the script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat)). The export parameters (the width and height of the internal input of the neural network) must be obtained from the script [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
+   1.3. Converting the settings of the trained neural network to the ONNX format (see the script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat)). The export parameters (the width and height of the internal input of the neural network) must be obtained from the script [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
 
 2. Using the [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module. The Python API of the module includes the setGlobalThreadPoolSize function (the only parameter of the function specifies the number of computing threads used to implement multi-threaded processing in CPU mode) and a description of the YOLO class, which implements the following methods:
 
@@ -340,7 +340,7 @@ MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqW
 
 MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
-3. Распакуйте полный каталог запусков с помощью команд:
+3. Распакуйте полный каталог _runs_ с помощью команд:
 
 _start /W /B winrar.exe x -ibck MRI_settings.zip_
 
@@ -378,7 +378,7 @@ _python test.py internal_validate_ (модифицированный код пр
 
 Обучение и тестирование на Nvidia RTX 16xx в режиме FP16 может быть медленным (см. https://github.com/ultralytics/yolov5/issues/7908)
 
-Руководство по экспорту настроек в ONNX:
+Руководство по экспорту настроек в формат ONNX:
 
 Чтобы преобразовать настройки искусственных нейронных сетей в формат ONNX, необходимо запустить скрипт [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat).
 
@@ -398,11 +398,11 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 
 1. Подготовка нейросетевой модели.
    
-1.1. Конвертация исходных данных, предназначенных для обучения ИНС, в YOLO-формат (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
+   1.1. Конвертация исходных данных, предназначенных для обучения ИНС, в YOLO-формат (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
 
-1.2. Обучение нейронной сети (см. пример обучающего скрипта в файле [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py)).
+   1.2. Обучение нейронной сети (см. пример обучающего скрипта в файле [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py)).
 
-1.3. Конвертация настроек обученной нейронной сети в формат ONNX (см. скрипт [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat)). Параметры экспорта (ширина и высота внутреннего входа нейронной сети) должны быть получены из скрипта [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
+   1.3. Конвертация настроек обученной нейронной сети в формат ONNX (см. скрипт [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat)). Параметры экспорта (ширина и высота внутреннего входа нейронной сети) должны быть получены из скрипта [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
 
 2. Применение модуля [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). Python-API модуля включает функцию setGlobalThreadPoolSize (единственный параметр функции задает количество вычислительных потоков, используемых для реализации многопоточной обработки в CPU-режиме) и описание класса YOLO, реализующего следующие методы:
    
