@@ -185,35 +185,35 @@ Instructions for using the open library code in third-party repositories:
 
 - constructor with parameters:
    
-o "name" – model name;
+  - "name" – model name;
 
-o "net_path" – path to the neural network settings;
+  - "net_path" – path to the neural network settings;
 
-o "use_gpu" – flag for connecting the graphics accelerator (True or False);
+  - "use_gpu" – flag for connecting the graphics accelerator (True or False);
 
-o "use_fp16" – flag for enabling half-precision computing mode (True or False);
+  - "use_fp16" – flag for enabling half-precision computing mode (True or False);
 
-o "net_width" – defines the width of the internal input of the neural network (according to the result of get_net_info.py);
+  - "net_width" – defines the width of the internal input of the neural network (according to the result of get_net_info.py);
 
-o "net_height" – defines the height of the internal input of the neural network (according to the result of get_net_info.py);
+  - "net_height" – defines the height of the internal input of the neural network (according to the result of get_net_info.py);
 
-o "cudaID" – the number of the graphics accelerator;
+  - "cudaID" – the number of the graphics accelerator;
 
-- the warmup method – the method for initializing the neural network model;
+- the "warmup" method – the method for initializing the neural network model;
    
-- the process method with parameters:
+- the "process" method with parameters:
   
-o "input" – input image (single-channel/three-channel);
+  - "input" – input image (single-channel/three-channel);
 
-o "rec_treshold" – recognition confidence threshold;
+  - "rec_treshold" – recognition confidence threshold;
 
-o "max_results" – the maximum number of returned results (areas of interest);
+  - "max_results" – the maximum number of returned results (areas of interest);
 
-o "get_brain" – a flag that determines the return of a binary mask with one object with maximum confidence (with filling of internal areas);
+  - "get_brain" – a flag that determines the return of a binary mask with one object with maximum confidence (with filling of internal areas);
 
-o "erode_level" – the number of iterations of the image erosion operation used for post-processing the ANN output.
+  - "erode_level" – the number of iterations of the image erosion operation used for post-processing the ANN output.
 
-The process method returns the results of the ANN operation, the output size is the same as the size of the image supplied via the "input" parameter.
+The "process" method returns the results of the ANN operation, the output size is the same as the size of the image supplied via the "input" parameter.
 
 An example of using the [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module is given in the script [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
@@ -408,35 +408,35 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
    
 - конструктор с параметрами:
   
-o "name" – имя модели;
+  - "name" – имя модели;
 
-o "net_path" – путь к настройкам нейронной сети; 
+  - "net_path" – путь к настройкам нейронной сети; 
 
-o "use_gpu" – флаг подключения графического ускорителя (True или False);
+  - "use_gpu" – флаг подключения графического ускорителя (True или False);
 
-o "use_fp16" – флаг включения режима вычислений с половинной точностью (True или False); 
+  - "use_fp16" – флаг включения режима вычислений с половинной точностью (True или False); 
 
-o "net_width" – определяет ширину внутреннего входа нейронной сети (в соответствии с результатом работы get_net_info.py); 
+  - "net_width" – определяет ширину внутреннего входа нейронной сети (в соответствии с результатом работы get_net_info.py); 
 
-o "net_height" – определяет высоту внутреннего входа нейронной сети (в соответствии с результатом работы get_net_info.py);
+  - "net_height" – определяет высоту внутреннего входа нейронной сети (в соответствии с результатом работы get_net_info.py);
 
-o "cudaID" – номер графического ускорителя; 
+  - "cudaID" – номер графического ускорителя; 
 
-- метод warmup – метод инициализации нейросетевой модели;
+- метод "warmup" – метод инициализации нейросетевой модели;
 
-- метод process с параметрами:
+- метод "process" с параметрами:
 
-o "input" – входное изображение (одноканальное/трехканальное);
+  - "input" – входное изображение (одноканальное/трехканальное);
 
-o "rec_treshold" – порог уверенности распознавания;
+  - "rec_treshold" – порог уверенности распознавания;
 
-o "max_results" – максимальное количество возвращаемых результатов (зон интереса);
+  - "max_results" – максимальное количество возвращаемых результатов (зон интереса);
 
-o "get_brain" – флаг, определяющий возврат бинарной маски с одним объектом с максимальной уверенностью (с заливкой внутренних областей);
+  - "get_brain" – флаг, определяющий возврат бинарной маски с одним объектом с максимальной уверенностью (с заливкой внутренних областей);
 
-o "erode_level" – количество итераций операции эрозии изображения, применяемых для постобработки выхода ИНС.
+  - "erode_level" – количество итераций операции эрозии изображения, применяемых для постобработки выхода ИНС.
 
-Метод process возвращает результаты работы ИНС, размер выхода совпадает с размером изображения, подаваемого через параметр "input".
+Метод "process" возвращает результаты работы ИНС, размер выхода совпадает с размером изображения, подаваемого через параметр "input".
 
 Пример использования модуля [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) приведен в скрипте [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
