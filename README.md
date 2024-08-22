@@ -48,36 +48,36 @@ C++ and Python
 # Requirements
 Minimum hardware requirements for the library:
 
-1) a computer with an Intel Core i3 8300 CPU (according to the Technical Specifications) and at least 16 GB of RAM;
-2) for training the neural network: an Nvidia GPU with at least 11 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1080 Ti, Nvidia RTX 3060, or Nvidia RTX 4070.
-3) for using the trained neural network (when using a GPU to accelerate computations): an Nvidia GPU with at least 4 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1650.
+- a computer with an Intel Core i3 8300 CPU (according to the Technical Specifications) and at least 16 GB of RAM;
+- for training the neural network: an Nvidia GPU with at least 11 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1080 Ti, Nvidia RTX 3060, or Nvidia RTX 4070.
+- for using the trained neural network (when using a GPU to accelerate computations): an Nvidia GPU with at least 4 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1650.
 
 Minimum operating system requirements: Windows 10 (x64).
 
 General requirements for pre-installed software for compiling and running the developed library:
 
-1) Visual Studio 2022 compiler with platform toolset version 14.1 installed;
-2) CMake (3.26+);
-3) modified Flann library (https://github.com/Alarmod/flann) (C++);
-4) Dicomlib library (https://github.com/Alarmod/dicomlib) (C++);
-5) OpenCV library (versions 3.1 and 4.9.0+) (C++);
-6) Boost library (version 1.82) (C++);
-7) python interpreter 3.8-3.10;
-8) pytorch 2.2.2 or 2.3.1+ (Python);
-9) ultralytics versions 8.0.205 or (>8.1.5 and <8.2.43) (Python);
-10) ONNXRuntime library (version 1.18.0+) (C++);
-11) CUDA library versions 11.8.0 or 12.4.0;
-12) CUDDN library (version 8.9.7.29+).
-13) PySide2 (Python);
-14) vtk (Python);
-15) pydicom (Python);
-16) pandas (version >=2.0.3) (Python);
-17) opencv-python (Python);
-18) numpy (Python);
-19) connected-components-3d (Python);
-20) pulp (Python);
-21) cachetools (Python);
-22) nanobind (Python).
+- Visual Studio 2022 compiler with platform toolset version 14.1 installed;
+- CMake (3.26+);
+- modified Flann library (https://github.com/Alarmod/flann) (C++);
+- Dicomlib library (https://github.com/Alarmod/dicomlib) (C++);
+- OpenCV library (versions 3.1 and 4.9.0+) (C++);
+- Boost library (version 1.82) (C++);
+- python interpreter 3.8-3.10;
+- pytorch 2.2.2 or 2.3.1+ (Python);
+- ultralytics library 8.0.205 or (>8.1.5 and <8.2.43) (Python);
+- ONNXRuntime library (version 1.18.0+) (C++);
+- CUDA library versions 11.8.0 or 12.4.0;
+- CUDDN library (version 8.9.7.29+).
+- PySide2 (Python);
+- vtk (Python);
+- pydicom (Python);
+- pandas (version >=2.0.3) (Python);
+- opencv-python (Python);
+- numpy (Python);
+- connected-components-3d (Python);
+- pulp (Python);
+- cachetools (Python);
+- nanobind (Python).
     
 To use GPU resources in the ANN training process, it is recommended to install libraries in the following order: pytorch, ultralytics. 
 
@@ -143,36 +143,36 @@ C++ и Python
 # Требования
 Минимальные требования по аппаратному обеспечению библиотеки: 
 
-1) компьютер с процессором Intel Core i3 8300 (согласно Техническому заданию) и объемом оперативной памяти не менее 16 гигабайт; 
-2) для обучения нейронной сети: видеокарта Nvidia с объемом памяти не менее 11 гигабайт и с поддержкой CUDA 11.8, например, Nvidia GTX 1080 Ti, Nvidia RTX 3060 или Nvidia RTX 4070.
-3) для использования обученной нейронной сети (при применении GPU для ускорения вычислений): видеокарта Nvidia с объемом памяти не менее 4 гигабайт и с поддержкой CUDA 11.8, например, видеокарта Nvidia GTX 1650.
+- компьютер с процессором Intel Core i3 8300 (согласно Техническому заданию) и объемом оперативной памяти не менее 16 гигабайт; 
+- для обучения нейронной сети: видеокарта Nvidia с объемом памяти не менее 11 гигабайт и с поддержкой CUDA 11.8, например, Nvidia GTX 1080 Ti, Nvidia RTX 3060 или Nvidia RTX 4070.
+- для использования обученной нейронной сети (при применении GPU для ускорения вычислений): видеокарта Nvidia с объемом памяти не менее 4 гигабайт и с поддержкой CUDA 11.8, например, видеокарта Nvidia GTX 1650.
 
 Минимальные требования к операционному обеспечению: Windows 10 (x64).
 
 Общие требования к предустановленному программному обеспечению для компиляции и запуска разработанной библиотеки:
 
-1) компилятор Visual Studio 2022 с установленным набором инструментов платформы версии 14.1;
-2) CMake (3.26+);
-3) модифицированная библиотека Flann (https://github.com/Alarmod/flann) (C++);
-4) библиотека Dicomlib (https://github.com/Alarmod/dicomlib) (C++);  
-5) библиотека OpenCV (версии 3.1 и 4.9.0+) (C++);
-6) библиотека Boost (версия 1.82) (C++);
-7) интерпретатор python 3.8-3.10;
-8) pytorch 2.2.2 или 2.3.1+ (Python);
-9) ultralytics версий 8.0.205 или (>8.1.5 и <8.2.43) (Python);
-10) библиотека ONNXRuntime (версия 1.18.0+) (C++);
-11) библиотека CUDA версий 11.8.0 или 12.4.0;
-12) библиотека CUDDN (версия 8.9.7.29+). 
-13) PySide2 (Python);
-14) vtk (Python);
-15) pydicom (Python);
-16) pandas (версия >=2.0.3) (Python);
-17) opencv-python (Python);
-18) numpy (Python);
-19) connected-components-3d (Python);
-20) pulp (Python);
-21) cachetools (Python);
-22) nanobind (Python).
+- компилятор Visual Studio 2022 с установленным набором инструментов платформы версии 14.1;
+- CMake (3.26+);
+- модифицированная библиотека Flann (https://github.com/Alarmod/flann) (C++);
+- библиотека Dicomlib (https://github.com/Alarmod/dicomlib) (C++);  
+- библиотека OpenCV (версии 3.1 и 4.9.0+) (C++);
+- библиотека Boost (версия 1.82) (C++);
+- интерпретатор python 3.8-3.10;
+- pytorch 2.2.2 или 2.3.1+ (Python);
+- библиотека ultralytics версий 8.0.205 или (>8.1.5 и <8.2.43) (Python);
+- библиотека ONNXRuntime (версия 1.18.0+) (C++);
+- библиотека CUDA версий 11.8.0 или 12.4.0;
+- библиотека CUDDN (версия 8.9.7.29+). 
+- PySide2 (Python);
+- vtk (Python);
+- pydicom (Python);
+- pandas (версия >=2.0.3) (Python);
+- opencv-python (Python);
+- numpy (Python);
+- connected-components-3d (Python);
+- pulp (Python);
+- cachetools (Python);
+- nanobind (Python).
 
 Для использования ресурсов GPU в процессе обучения ИНС рекомендуется устанавливать библиотеки в следующем порядке: pytorch, ultralytics.
 
