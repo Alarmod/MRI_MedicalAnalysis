@@ -177,9 +177,9 @@ Instructions for using the open library code in third-party repositories:
    
 1.1. Converting the source data intended for training the ANN to the YOLO format (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
 
-1.2. Training the neural network (see the example of the training script in the file [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py).
+1.2. Training the neural network (see the example of the training script in the file [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py)).
 
-1.3. Converting the settings of the trained neural network to the ONNX format (see the script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). The export parameters (the width and height of the internal input of the neural network) must obtained from the script [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
+1.3. Converting the settings of the trained neural network to the ONNX format (see the script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat)). The export parameters (the width and height of the internal input of the neural network) must obtained from the script [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
 
 2. Using the [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module. The Python API of the module includes the setGlobalThreadPoolSize function (the only parameter of the function specifies the number of computing threads used to implement multi-threaded processing in CPU mode) and a description of the YOLO class, which implements the following methods:
 
@@ -400,9 +400,9 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
    
 1.1. Конвертация исходных данных, предназначенных для обучения ИНС, в YOLO-формат (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
 
-1.2. Обучение нейронной сети (см. пример обучающего скрипта в файле [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py).
+1.2. Обучение нейронной сети (см. пример обучающего скрипта в файле [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py)).
 
-1.3. Конвертация настроек обученной нейронной сети в формат ONNX (см. скрипт [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). Параметры экспорта (ширина и высота внутреннего входа нейронной сети) должны быть получены из скрипта [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
+1.3. Конвертация настроек обученной нейронной сети в формат ONNX (см. скрипт [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat)). Параметры экспорта (ширина и высота внутреннего входа нейронной сети) должны быть получены из скрипта [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
 
 2. Применение модуля [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind). Python-API модуля включает функцию setGlobalThreadPoolSize (единственный параметр функции задает количество вычислительных потоков, используемых для реализации многопоточной обработки в CPU-режиме) и описание класса YOLO, реализующего следующие методы:
    
