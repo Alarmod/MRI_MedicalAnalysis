@@ -81,9 +81,9 @@ General requirements for pre-installed software for compiling and running the de
     
 To use GPU resources in the ANN training process, it is recommended to install libraries in the following order: pytorch, ultralytics. 
 
-The ["yolo_segment_with_nanobind"](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module must be configured and compiled. 
+The [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module must be configured and compiled. 
 
-The "boot.py" file must specify the paths to the bin and lib directories containing the dll files of the ONNXRuntime and OpenCV libraries, and optionally, the paths to the files for the CUDA and CUDNN libraries. Likewise, these paths must be written in [02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) and [convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
+The "boot.py" file must specify the paths to the bin and lib directories containing the dll files of the ONNXRuntime and OpenCV libraries, and optionally, the paths to the files for the CUDA and CUDNN libraries. Likewise, these paths must be written in [automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) and [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
 # Place of the work
 Intellectual Control Laboratory at Ailamazyan Program Systems Institute of the Russian Academy of Sciences (https://icontrol.psiras.ru/)
@@ -176,9 +176,9 @@ C++ и Python
 
 Для использования ресурсов GPU в процессе обучения ИНС рекомендуется устанавливать библиотеки в следующем порядке: pytorch, ultralytics.
 
-Должен быть сконфигурирован и скомпилирован модуль ["yolo_segment_with_nanobind"](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind).
+Должен быть сконфигурирован и скомпилирован модуль [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind).
 
-Через файл "boot.py" должны быть прописаны пути к bin- и lib-директориям, содержащим dll-файлы библиотек ONNXRuntime и OpenCV, опционально – пути к файлам для библиотек CUDA и CUDNN. Аналогично эти пути прописываются в [02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) и [convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
+Через файл "boot.py" должны быть прописаны пути к bin- и lib-директориям, содержащим dll-файлы библиотек ONNXRuntime и OpenCV, опционально – пути к файлам для библиотек CUDA и CUDNN. Аналогично эти пути прописываются в [automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) и [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
 # Место, где выполняется разработка
 Лаборатория интеллектуального управления Института программных систем им. А.К. Айламазяна РАН (https://icontrol.psiras.ru/)
