@@ -73,7 +73,7 @@ _python test.py internal_validate_ (modificated Yolo 8 validation code that clos
 
 Train and test on Nvidia RTX 16xx in FP16 mode may be slow (see https://github.com/ultralytics/yolov5/issues/7908)
 
-# Export settings to ONNX
+# Export settings to ONNX format
 To convert the settings of artificial neural networks into the ONNX format, you need run script _export.bat_
 
 Export results can be loaded from
@@ -169,7 +169,7 @@ _python test.py internal_validate_ (модифицированный код пр
 
 Обучение и тестирование на Nvidia RTX 16xx в режиме FP16 может быть медленным (см. https://github.com/ultralytics/yolov5/issues/7908)
 
-# Экспорт настроек в ONNX
+# Экспорт настроек в формат ONNX
 Чтобы преобразовать настройки искусственных нейронных сетей в формат ONNX, вам нужно запустить скрипт _export.bat_
 
 Результаты экспорта можно загрузить из
