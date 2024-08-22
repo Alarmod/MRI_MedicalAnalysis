@@ -36,7 +36,7 @@ MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqW
 
 MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
-3. Unpack full runs directory with commands: 
+3. Unpack full _runs_ directory with commands: 
 
 _start /W /B winrar.exe x -ibck MRI_settings.zip_
 
@@ -132,7 +132,7 @@ MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqW
 
 MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
-3. Распакуйте полный каталог запусков с помощью команд:
+3. Распакуйте полный каталог _runs_ с помощью команд:
 
 _start /W /B winrar.exe x -ibck MRI_settings.zip_
 
