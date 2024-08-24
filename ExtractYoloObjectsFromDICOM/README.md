@@ -2,7 +2,7 @@
 ExtractYoloObjectsFromDICOM - open source console tool for medical researchers intelligent support and high performance MRI-data processing. It designed for training and testing datasets convertation from IMA-files (DICOM) and binary masks (PNG) to Yolo format - grayscale images (PNG) and textual labels (TXT).
 
 # Compilation
-Project configured for compilation in Visual Studio 2022 with v141 platform toolset. Application based on 
+Project configured for compilation in Visual Studio 2022 Community Edition (or in more powerfull version) with v141 platform toolset. Application based on 
 
 -- modificated Flann library: 
 
@@ -47,7 +47,7 @@ C++
 ExtractYoloObjectsFromDICOM - консольная программа с открытым исходным кодом для интеллектуальной поддержки врачей-исследователей и высокопроизводительной обработки данных МРТ. Она предназначена для обучения и тестирования преобразования наборов данных из файлов IMA (DICOM) и бинарных масок (PNG) в формат Yolo - изображения в оттенках серого (PNG) и текстовые метки (TXT).
 
 # Компиляция
-Проект настроен для компиляции в Visual Studio 2022 с набором инструментов платформы v141. Приложение основано на
+Проект настроен для компиляции в Visual Studio 2022 Community Edition (или в версии с большими возможностями) с набором инструментов платформы v141. Приложение основано на
 
 -- модифицированной библиотеке Flann:
 
