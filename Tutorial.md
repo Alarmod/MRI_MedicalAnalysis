@@ -1,5 +1,5 @@
 # Information on preliminary preparation for installation and using of the "ExtractYoloObjectsFromDICOM" utility
-Project configured for compilation in Visual Studio 2022 with v141 platform toolset. Application based on 
+Project configured for compilation in Visual Studio 2022 Community Edition (or in more powerfull version) with v141 platform toolset. Application based on 
 
 -- modificated Flann library: 
 
@@ -222,7 +222,7 @@ Link to an example of a new use case of the open library code (segmentation of s
 # ///////////////////////////////////////////////
 
 # Информация о предварительной подготовке к установке и использованию утилиты "ExtractYoloObjectsFromDICOM"
-Проект настроен для компиляции в Visual Studio 2022 с набором инструментов платформы v141. Приложение основано на
+Проект настроен для компиляции в Visual Studio 2022 Community Edition (или в версии с большими возможностями) с набором инструментов платформы v141. Приложение основано на
 
 -- модифицированной библиотеке Flann:
 
