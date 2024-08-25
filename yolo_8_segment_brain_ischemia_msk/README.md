@@ -20,6 +20,8 @@ Warning:
 
 - CPU inference is broken in PyTorch 2.4.0 (see https://github.com/ultralytics/ultralytics/issues/15049). Use PyTorch 2.4.1 or an [older version](https://pytorch.org/get-started/previous-versions/), such as PyTorch 2.3.1.
 
+- It is recommended to train and test already trained neural networks on GPU, primarily because Ultralytics works slowly on CPU. If there is no graphics accelerator, you need to install the CPU build of PyTorch, otherwise You may encounter a BEX64 exception on the nvdxgdmal64.dll_unloaded event. An erroneously installed version of PyTorch can be removed using the command _pip3 uninstall torch torchvision torchaudio_.
+
 b) Ultralytics ==8.0.205 or (>8.1.5 and <8.2.43):
 
 _pip3 install -U ultralytics==8.0.205_ or
@@ -119,6 +121,8 @@ _pip3 install -U torch torchvision torchaudio --index-url https://download.pytor
 - PyTorch 2.3.0 имеет [ошибку](https://github.com/pytorch/pytorch/issues/121834), которая влияет на Yolo 8.
 
 - Инференс на CPU в PyTorch 2.4.0 сломан (см. https://github.com/ultralytics/ultralytics/issues/15049). Используйте PyTorch 2.4.1 или [более старую версию](https://pytorch.org/get-started/previous-versions/), например, PyTorch 2.3.1.
+
+- Рекомендуется выполнять обучение и тестирование уже обученных нейросетей на GPU, в первую очередь - из-за медленной работы Ultralytics на CPU. Если же графический ускоритель отсутствует, необходимо ставить именно CPU-сборку PyTorch, иначе Вы можете столкнуться с исключением BEX64 на событии nvdxgdmal64.dll_unloaded. Ошибочно поставленную версию PyTorch можно удалить с помощью команды _pip3 uninstall torch torchvision torchaudio_.
 
 б) Ultralytics ==8.0.205 или (>8.1.5 и <8.2.43):
 
