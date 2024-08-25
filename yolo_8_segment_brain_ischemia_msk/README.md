@@ -20,7 +20,7 @@ Warning:
 
 - CPU inference is broken in PyTorch 2.4.0 (see https://github.com/ultralytics/ultralytics/issues/15049). Use PyTorch 2.4.1 or an [older version](https://pytorch.org/get-started/previous-versions/), such as PyTorch 2.3.1.
 
-- It is recommended to train and test already trained neural networks on GPU, primarily because Ultralytics works slowly on CPU. If there is no graphics accelerator, you need to install the CPU build of PyTorch, otherwise You may encounter a BEX64 exception on the nvdxgdmal64.dll_unloaded event. An erroneously installed version of PyTorch can be removed using the command _pip3 uninstall torch torchvision torchaudio_.
+- It is recommended to train and test already trained neural networks on GPU, primarily because Ultralytics works slowly on CPU. If there is no graphics accelerator, You need to install the CPU build of PyTorch, otherwise You may encounter a BEX64 exception on the nvdxgdmal64.dll_unloaded event. An erroneously installed version of PyTorch can be removed using the command _pip3 uninstall torch torchvision torchaudio_.
 
 b) Ultralytics ==8.0.205 or (>8.1.5 and <8.2.43):
 
@@ -71,7 +71,7 @@ _python train.py_
 
 2. Testing: 
 
-_python test.py default_validate_ (Yolo 8 default validation code, the results are far from what you get in Yolo predict)
+_python test.py default_validate_ (Yolo 8 default validation code, the results are far from what You get in Yolo predict)
 
 _python test.py generate_data_ (validate with saving all data: contours, zones, cognitive visualization)
 
@@ -80,7 +80,7 @@ _python test.py internal_validate_ (modificated Yolo 8 validation code that clos
 Train and test on Nvidia RTX 16xx in FP16 mode may be slow (see https://github.com/ultralytics/yolov5/issues/7908)
 
 # Export settings to ONNX format
-To convert the settings of artificial neural networks into the ONNX format, you need run script _export.bat_
+To convert the settings of artificial neural networks into the ONNX format, You need run script _export.bat_
 
 Export results can be loaded from
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
