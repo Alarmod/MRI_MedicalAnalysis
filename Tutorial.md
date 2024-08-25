@@ -48,9 +48,9 @@ https://github.com/microsoft/onnxruntime/releases (version 1.18.0+)
 
 4. Confiure, build and install [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module:
 
-In version 8.2.43 of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library. If you retrain artificial neural networks with Ultralytics >8.2.42, change _#define USE_SIGMOID_FUNC true_ to _#define USE_SIGMOID_FUNC false_ in [automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
+In version 8.2.43 of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library. If You retrain artificial neural networks with Ultralytics >8.2.42, change _#define USE_SIGMOID_FUNC true_ to _#define USE_SIGMOID_FUNC false_ in [automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
-You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible with your compiler. This directories with _bin_, _lib_ and _include_ subfolders. Settings must be set over [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat) file. After configuration, the file or commands inside _build.bat_ must be launched (executed).
+You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible with Your compiler. This directories with _bin_, _lib_ and _include_ subfolders. Settings must be set over [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat) file. After configuration, the file or commands inside _build.bat_ must be launched (executed).
 
 5. Configure path for system libs (_bin_ or _lib_ folders) over file [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py):
 
@@ -103,7 +103,7 @@ Warning:
 
 - CPU inference is broken in PyTorch 2.4.0 (see https://github.com/ultralytics/ultralytics/issues/15049). Use PyTorch 2.4.1 or an [older version](https://pytorch.org/get-started/previous-versions/), such as PyTorch 2.3.1.
 
-- It is recommended to train and test already trained neural networks on GPU, primarily because Ultralytics works slowly on CPU. If there is no graphics accelerator, you need to install the CPU build of PyTorch, otherwise you may encounter a BEX64 exception on the nvdxgdmal64.dll_unloaded event. An erroneously installed version of PyTorch can be removed using the command _pip3 uninstall torch torchvision torchaudio_.
+- It is recommended to train and test already trained neural networks on GPU, primarily because Ultralytics works slowly on CPU. If there is no graphics accelerator, You need to install the CPU build of PyTorch, otherwise You may encounter a BEX64 exception on the nvdxgdmal64.dll_unloaded event. An erroneously installed version of PyTorch can be removed using the command _pip3 uninstall torch torchvision torchaudio_.
 
 b) Ultralytics ==8.0.205 or (>8.1.5 and <8.2.43):
 
@@ -153,7 +153,7 @@ _python train.py_
 
 2. Testing: 
 
-_python test.py default_validate_ (Yolo 8 default validation code, the results are far from what you get in Yolo predict)
+_python test.py default_validate_ (Yolo 8 default validation code, the results are far from what You get in Yolo predict)
 
 _python test.py generate_data_ (validate with saving all data: contours, zones, cognitive visualization)
 
@@ -163,7 +163,7 @@ Train and test on Nvidia RTX 16xx in FP16 mode may be slow (see https://github.c
 
 Manual for exporting settings to ONNX format:
 
-To convert the settings of artificial neural networks into the ONNX format, you need run script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat).
+To convert the settings of artificial neural networks into the ONNX format, You need run script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat).
 
 Export results can be loaded from
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
