@@ -14,7 +14,11 @@ _pip3 install -U torch torchvision torchaudio --index-url https://download.pytor
 
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu_
 
-PyTorch 2.3.0 have bug that affects to Yolo 8 https://github.com/pytorch/pytorch/issues/121834
+Warning: 
+
+- PyTorch 2.3.0 have [bug](https://github.com/pytorch/pytorch/issues/121834) that affects to Yolo 8.
+
+- CPU inference is broken in PyTorch 2.4.0 (see https://github.com/ultralytics/ultralytics/issues/15049). Use PyTorch 2.4.1 or an [older version](https://pytorch.org/get-started/previous-versions/), such as PyTorch 2.3.1.
 
 b) Ultralytics ==8.0.205 or (>8.1.5 and <8.2.43):
 
@@ -100,7 +104,7 @@ yolo_8_segment_brain_ischemia_msk - консольное приложение с
 # Установка библиотек и загрузка файлов проекта
 1. Установка библиотек
 
-a) Pytorch 2.2.2 или 2.3.1+:
+а) Pytorch 2.2.2 или 2.3.1+:
 
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_ или
 
@@ -110,9 +114,13 @@ _pip3 install -U torch torchvision torchaudio --index-url https://download.pytor
 
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu_
 
-PyTorch 2.3.0 имеет ошибку, которая влияет на Yolo 8 https://github.com/pytorch/pytorch/issues/121834
+Внимание: 
 
-b) Ultralytics ==8.0.205 или (>8.1.5 и <8.2.43):
+- PyTorch 2.3.0 имеет [ошибку](https://github.com/pytorch/pytorch/issues/121834), которая влияет на Yolo 8.
+
+- Инференс на CPU в PyTorch 2.4.0 сломан (см. https://github.com/ultralytics/ultralytics/issues/15049). Используйте PyTorch 2.4.1 или [более старую версию](https://pytorch.org/get-started/previous-versions/), например, PyTorch 2.3.1.
+
+б) Ultralytics ==8.0.205 или (>8.1.5 и <8.2.43):
 
 _pip3 install -U ultralytics==8.0.205_ или
 
