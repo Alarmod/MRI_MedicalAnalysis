@@ -63,7 +63,7 @@ General requirements for pre-installed software for compiling and running the de
 - OpenCV library (versions 3.1 and 4.9.0+) (C++);
 - Boost library (version 1.82) (C++);
 - python interpreter 3.8-3.10;
-- pytorch 2.2.2 or 2.3.1+ (Python);
+- PyTorch 2.2.2 or 2.3.1+ (Python);
 - ultralytics library 8.0.205 or (>8.1.5 and <8.2.43) (Python);
 - ONNXRuntime library (version 1.18.0+) (C++);
 - CUDA library versions 11.8.0 or 12.4.0;
@@ -79,7 +79,7 @@ General requirements for pre-installed software for compiling and running the de
 - cachetools (Python);
 - nanobind (Python).
     
-To use GPU resources in the ANN training process, it is recommended to install libraries in the following order: pytorch, ultralytics. 
+To use GPU resources in the ANN training process, it is recommended to install libraries in the following order: PyTorch, ultralytics. 
 
 The [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module must be configured and compiled. 
 
@@ -158,7 +158,7 @@ C++ и Python
 - библиотека OpenCV (версии 3.1 и 4.9.0+) (C++);
 - библиотека Boost (версия 1.82) (C++);
 - интерпретатор python 3.8-3.10;
-- pytorch 2.2.2 или 2.3.1+ (Python);
+- PyTorch 2.2.2 или 2.3.1+ (Python);
 - библиотека ultralytics версий 8.0.205 или (>8.1.5 и <8.2.43) (Python);
 - библиотека ONNXRuntime (версия 1.18.0+) (C++);
 - библиотека CUDA версий 11.8.0 или 12.4.0;
@@ -174,7 +174,7 @@ C++ и Python
 - cachetools (Python);
 - nanobind (Python).
 
-Для использования ресурсов GPU в процессе обучения ИНС рекомендуется устанавливать библиотеки в следующем порядке: pytorch, ultralytics.
+Для использования ресурсов GPU в процессе обучения ИНС рекомендуется устанавливать библиотеки в следующем порядке: PyTorch, ultralytics.
 
 Должен быть сконфигурирован и скомпилирован модуль [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind).
 
