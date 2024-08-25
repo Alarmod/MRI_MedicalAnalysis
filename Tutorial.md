@@ -81,13 +81,13 @@ Configure [Classifier] section in _settings.ini_ file and run command
 _python test_processing_speed.py_
 
 # Information on preliminary preparation for installation and using of the "yolo_8_segment_brain_ischemia_msk" application
-System requirements: Python 3.8-3.10; Pytorch 2.2.2 or 2.3.1+
+System requirements: Python 3.8-3.10; PyTorch 2.2.2 or 2.3.1+
 
 Libs installation and project files downloading:
 
 1. Install libs
 
-a) Pytorch 2.2.2 or 2.3.1+:
+a) PyTorch 2.2.2 or 2.3.1+:
 
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_ or
 
@@ -314,7 +314,7 @@ _python test_processing_speed.py_
 
 1. Установка библиотек
 
-а) Pytorch 2.2.2 или 2.3.1+:
+а) PyTorch 2.2.2 или 2.3.1+:
 
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_ или
 
