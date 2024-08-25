@@ -4,7 +4,7 @@ yolo_8_segment_brain_ischemia_msk - open source console application that designe
 # Libs installation and project files downloading
 1. Install libs
 
-a) Pytorch 2.2.2 or 2.3.1+:
+a) PyTorch 2.2.2 or 2.3.1+:
 
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_ or
 
@@ -94,7 +94,7 @@ Settings in original format will be saved in _orig_settings_ directory.
 # System requirements
 Python 3.8-3.10
 
-Pytorch 2.2.2 or 2.3.1+
+PyTorch 2.2.2 or 2.3.1+
 
 # ///////////////////////////////////////////////
 
@@ -104,7 +104,7 @@ yolo_8_segment_brain_ischemia_msk - консольное приложение с
 # Установка библиотек и загрузка файлов проекта
 1. Установка библиотек
 
-а) Pytorch 2.2.2 или 2.3.1+:
+а) PyTorch 2.2.2 или 2.3.1+:
 
 _pip3 install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118_ или
 
