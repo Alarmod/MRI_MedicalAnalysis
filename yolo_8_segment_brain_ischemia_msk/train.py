@@ -10,17 +10,23 @@ import torch
 
 global_half=True
 
-# NaN tensor values problem for GTX16xx users (no problem on other devices)
-# https://github.com/ultralytics/yolov5/issues/7908
-# При использовании видеокарт Nvidia GTX 16xx с активированной опцией global_half=True необходимо отключить поддержку CUDNN в PyTorch, установив torch.backends.cudnn.enabled=False, 
-# запуск CUDNN в режиме бенчмарка с помощью опции torch.backends.cudnn.benchmark=True не гарантирует корректной работы
-if global_half:
-   if torch.cuda.is_available():
-      if torch.cuda.device_count() > 0: 
-         dev_name = torch.cuda.get_device_name(torch.cuda.current_device())
+if torch.cuda.is_available():
+   if torch.cuda.device_count() > 0: 
+      my_device = torch.cuda.current_device()
+
+      # NaN tensor values problem for GTX16xx users (no problem on other devices)
+      # https://github.com/ultralytics/yolov5/issues/7908
+      # При использовании видеокарт Nvidia GTX 16xx с активированной опцией global_half=True необходимо отключить поддержку CUDNN в PyTorch, установив torch.backends.cudnn.enabled=False, 
+      # запуск CUDNN в режиме бенчмарка с помощью опции torch.backends.cudnn.benchmark=True не гарантирует корректной работы
+      if global_half:
+         dev_name = torch.cuda.get_device_name(my_device)
          if 'GeForce GTX 16' in dev_name:
             print("Activated NaN fix (see https://github.com/ultralytics/yolov5/issues/7908)")
             torch.backends.cudnn.enabled=False
+   else: 
+      my_device = "cpu"
+else: 
+   my_device = "cpu"
 
 # Don't change rect=True if You plan use yolo_segment_with_nanobind module
 def func(model, name_val, data_val, imgsz_val, batch_val, lr0_val, epochs_val, patience_val, mod): 
@@ -39,7 +45,7 @@ def func(model, name_val, data_val, imgsz_val, batch_val, lr0_val, epochs_val, p
              cos_lr=True, 
              dnn=False, 
              amp=True, 
-             device="0", 
+             device=my_device, 
              epochs=epochs_val, 
              patience=patience_val, 
              workers=0, 
