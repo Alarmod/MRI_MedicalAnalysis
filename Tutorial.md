@@ -137,7 +137,7 @@ or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_dat
 
 5. Configure settings.yaml (internal settings file of the _ultralytics_ library) if You already use Ultralytics in other projects
 ```
-datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk\datasets_ folder]
+datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk/datasets_ folder]
 weights_dir: weights
 runs_dir: runs
 ```
@@ -223,7 +223,12 @@ The "process" method returns the results of the ANN operation, the output size i
 
 An example of using the [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) module is given in the script [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
-Link to an example of a new use case of the open library code (segmentation of structural damage images in the form of road surface cracks): [automated_workplace/cracks_segmentator](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator). The path to the system libraries (bin or lib folders) should be configured in [automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) similarly to what was done with the [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) file (see manual for "Automated Workplace" application).
+Link to an example of a new use case of the open library code (segmentation of structural damage images in the form of road surface cracks): [automated_workplace/cracks_segmentator](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator). The path to the system libraries (bin or lib folders) should be configured in [automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) similarly to what was done with the [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) file (see manual for "Automated Workplace" application). The _settings.yaml_ file should have the following settings:
+```
+datasets_dir: [Path to _automated_workplace/cracks_segmentator/datasets/crack-seg_ folder]
+weights_dir: weights
+runs_dir: runs
+```
 
 # ///////////////////////////////////////////////
 
@@ -365,7 +370,7 @@ https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive
 
 5. Настройте settings.yaml (внутренний файл настроек библиотеки _ultralytics_), если вы уже используете Ultralytics в других проектах
 ```
-datasets_dir: [Путь к папке _yolo_8_segment_brain_ischemia_msk\datasets_]
+datasets_dir: [Путь к папке _yolo_8_segment_brain_ischemia_msk/datasets_]
 weights_dir: weights
 runs_dir: runnings
 ```
@@ -451,4 +456,9 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 
 Пример использования модуля [automated_workplace/yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind) приведен в скрипте [ExtractYoloObjectsFromDICOM/convert_dir.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/ExtractYoloObjectsFromDICOM/convert_dir.py).
 
-Ссылка на пример нового варианта использования кода открытой библиотеки (сегментация на изображениях структурных повреждений в виде трещин дорожного покрытия): [automated_workplace/cracks_segmentator](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator). Путь к системным библиотекам (папки bin или lib) должен быть настроен в файле [automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) аналично тому, как было сделано с файлом [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) (см. руководство к приложению "Automated Workplace").
+Ссылка на пример нового варианта использования кода открытой библиотеки (сегментация на изображениях структурных повреждений в виде трещин дорожного покрытия): [automated_workplace/cracks_segmentator](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/cracks_segmentator). Путь к системным библиотекам (папки bin или lib) должен быть настроен в файле [automated_workplace/cracks_segmentator/02_test.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/cracks_segmentator/02_test.py) аналично тому, как было сделано с файлом [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py) (см. руководство к приложению "Automated Workplace"). В файле _settings.yaml_ должны быть следующие настройки: 
+```
+datasets_dir: [Path to _automated_workplace/cracks_segmentator/datasets/crack-seg_ folder]
+weights_dir: weights
+runs_dir: runs
+```
