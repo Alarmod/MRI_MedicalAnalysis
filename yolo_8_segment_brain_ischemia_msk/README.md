@@ -56,7 +56,7 @@ or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_dat
 
 5. Configure settings.yaml (internal settings file of the _ultralytics_ library) if You already use Ultralytics in other projects
 ```
-datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk\datasets_ folder]
+datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk/datasets_ folder]
 weights_dir: weights
 runs_dir: runs
 ```
@@ -158,7 +158,7 @@ https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive
 
 5. Настройте settings.yaml (внутренний файл настроек библиотеки _ultralytics_), если вы уже используете Ultralytics в других проектах
 ```
-datasets_dir: [Путь к папке _yolo_8_segment_brain_ischemia_msk\datasets_]
+datasets_dir: [Путь к папке _yolo_8_segment_brain_ischemia_msk/datasets_]
 weights_dir: weights
 runs_dir: runnings
 ```
@@ -198,4 +198,4 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 # Системные требования
 Python 3.8-3.10
 
-Pytorch 2.2.2 или 2.3.1+
+PyTorch 2.2.2 или 2.3.1+
