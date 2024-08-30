@@ -49,8 +49,8 @@ C++ and Python
 Minimum hardware requirements for the library:
 
 - a computer with an Intel Core i3 8300 CPU (according to the Technical Specifications) and at least 16 GB of RAM;
-- for training the neural network: an Nvidia GPU with at least 11 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1080 Ti, Nvidia RTX 3060, or Nvidia RTX 4070.
-- for using the trained neural network (when using a GPU to accelerate computations): an Nvidia GPU with at least 4 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1650.
+- for training the neural networks: an Nvidia GPU with at least 11 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1080 Ti, Nvidia RTX 3060, or Nvidia RTX 4070.
+- for using the trained neural networks (when using a GPU to accelerate computations): an Nvidia GPU with at least 4 GB of memory and CUDA 11.8 support, such as an Nvidia GTX 1650.
 
 Minimum operating system requirements: Windows 10 (x64).
 
@@ -144,8 +144,8 @@ C++ и Python
 Минимальные требования по аппаратному обеспечению библиотеки: 
 
 - компьютер с процессором Intel Core i3 8300 (согласно Техническому заданию) и объемом оперативной памяти не менее 16 гигабайт; 
-- для обучения нейронной сети: видеокарта Nvidia с объемом памяти не менее 11 гигабайт и с поддержкой CUDA 11.8, например, Nvidia GTX 1080 Ti, Nvidia RTX 3060 или Nvidia RTX 4070.
-- для использования обученной нейронной сети (при применении GPU для ускорения вычислений): видеокарта Nvidia с объемом памяти не менее 4 гигабайт и с поддержкой CUDA 11.8, например, видеокарта Nvidia GTX 1650.
+- для обучения нейронных сетей: видеокарта Nvidia с объемом памяти не менее 11 гигабайт и с поддержкой CUDA 11.8, например, Nvidia GTX 1080 Ti, Nvidia RTX 3060 или Nvidia RTX 4070.
+- для использования обученных нейронных сетей (при применении GPU для ускорения вычислений): видеокарта Nvidia с объемом памяти не менее 4 гигабайт и с поддержкой CUDA 11.8, например, видеокарта Nvidia GTX 1650.
 
 Минимальные требования к операционному обеспечению: Windows 10 (x64).
 
