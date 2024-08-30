@@ -135,7 +135,7 @@ or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_dat
 
 (must be stored to _datasets_ folder and unpacked)
 
-5. Configure settings.yaml (internal settings file of the _ultralytics_ library) if You already use Ultralytics in other projects
+5. Configure _settings.yaml_ (internal settings file of the Ultralytics library) if You already use Ultralytics in other projects
 ```
 datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk/datasets_ folder]
 weights_dir: weights
@@ -368,7 +368,7 @@ https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive
 
 (должны быть сохранены в папке _datasets_ и распакованы)
 
-5. Настройте settings.yaml (внутренний файл настроек библиотеки _ultralytics_), если вы уже используете Ultralytics в других проектах
+5. Настройте _settings.yaml_ (внутренний файл настроек библиотеки Ultralytics), если вы уже используете Ultralytics в других проектах
 ```
 datasets_dir: [Путь к папке _yolo_8_segment_brain_ischemia_msk/datasets_]
 weights_dir: weights
