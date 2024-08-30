@@ -34,7 +34,7 @@ _pip3 install -U ultralytics==8.2.42_
 
 Scale bug in ultralytics 8.0.206-8.1.5 fixed by authors this project: https://github.com/ultralytics/ultralytics/commit/1a04cd38e7285969c0e4d827f4fbe52c834798ed
 
-In version 8.2.43 and more new of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library, therefore it is recommended to either retrain our artificial neural networks, or use for tests Ultralytics library with version <8.2.43.
+In version 8.2.43 and more new versions of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library, therefore it is recommended to either retrain our artificial neural networks, or use for tests Ultralytics library with version <8.2.43.
 
 2. Load MRI_settings.zip and MRI_tests.zip: 
 
@@ -54,7 +54,7 @@ or from https://huggingface.co/datasets/alarmod/MRI/tree/main/train_and_test_dat
 
 (must be stored to _datasets_ folder and unpacked)
 
-5. Configure settings.yaml (internal settings file of the _ultralytics_ library) if You already use Ultralytics in other projects
+5. Configure _settings.yaml_ (internal settings file of the Ultralytics library) if You already use Ultralytics in other projects
 ```
 datasets_dir: [Path to _yolo_8_segment_brain_ischemia_msk/datasets_ folder]
 weights_dir: weights
@@ -136,7 +136,7 @@ _pip3 install -U ultralytics==8.2.42_
 
 Ошибка масштабирования в ultralytics 8.0.206-8.1.5 исправлена ​​авторами этого проекта: https://github.com/ultralytics/ultralytics/commit/1a04cd38e7285969c0e4d827f4fbe52c834798ed
 
-В версии 8.2.43 и более новых сборках библиотеки Ultralytics был изменен порядок получения масок сегментации, [разработчики отказались от использования сигмоидальной функции](https://github.com/ultralytics/ultralytics/pull/13939), что повлияло на результаты нейронных сетей, обученных на более ранней версии библиотеки, поэтому рекомендуется либо переобучить наши искусственные нейронные сети, либо использовать для тестов библиотеку Ultralytics версии <8.2.43.
+В версии 8.2.43 и более новых версиях библиотеки Ultralytics был изменен порядок получения масок сегментации, [разработчики отказались от использования сигмоидальной функции](https://github.com/ultralytics/ultralytics/pull/13939), что повлияло на результаты нейронных сетей, обученных на более ранней версии библиотеки, поэтому рекомендуется либо переобучить наши искусственные нейронные сети, либо использовать для тестов библиотеку Ultralytics версии <8.2.43.
 
 2. Загрузите MRI_settings.zip и MRI_tests.zip:
 
@@ -156,7 +156,7 @@ https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive
 
 (должны быть сохранены в папке _datasets_ и распакованы)
 
-5. Настройте settings.yaml (внутренний файл настроек библиотеки _ultralytics_), если вы уже используете Ultralytics в других проектах
+5. Настройте _settings.yaml_ (внутренний файл настроек библиотеки Ultralytics), если вы уже используете Ultralytics в других проектах
 ```
 datasets_dir: [Путь к папке _yolo_8_segment_brain_ischemia_msk/datasets_]
 weights_dir: weights
