@@ -13,7 +13,7 @@ _git clone https://github.com/Alarmod/dicomlib_
 
 _https://opencv.org_
 
-For correct execution You must copy opencv_world310.dll from _opencv\build\x64\vc14\bin_ directory to folder with ExtractYoloObjectsFromDICOM.exe
+For correct execution You must copy opencv_world310.dll from _opencv\build\x64\vc14\bin_ directory to folder with ExtractYoloObjectsFromDICOM.exe or add this directory to _PATH_ enviroment variable.
 
 -- BOOST library (version 1.82 are used): 
 
@@ -21,7 +21,7 @@ _https://www.boost.org_
 
 Ways of using:
 
-1. Run _ExtractYoloObjectsFromDICOM.exe 1_ on original DICOM-dataset, that allows You to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG-files with binary masks will be replaced, save original folders before!
+1. Run _ExtractYoloObjectsFromDICOM.exe 1_ on [original DICOM-dataset](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/dataset/orig_dicom_dataset), that allows You to replace the original files with masks with expanded ones using dilate morphological operation. Original PNG-files with binary masks will be replaced, save original folders before!
 
 Example of _ExtractYoloObjectsFromDICOM.exe 1_ execution result can be downloaded here: 
 https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=sharing
@@ -247,7 +247,7 @@ _git clone https://github.com/Alarmod/dicomlib_
 
 _https://opencv.org_
 
-Для корректного выполнения необходимо скопировать opencv_world310.dll из каталога _opencv\build\x64\vc14\bin_ в папку с ExtractYoloObjectsFromDICOM.exe
+Для корректного выполнения необходимо скопировать opencv_world310.dll из каталога _opencv\build\x64\vc14\bin_ в папку с ExtractYoloObjectsFromDICOM.exe или добавьте этот каталог в переменную среды _PATH_.
 
 -- библиотеке BOOST (используется версия 1.82):
 
@@ -255,7 +255,7 @@ _https://www.boost.org_
 
 Способы использования:
 
-1. Запустите _ExtractYoloObjectsFromDICOM.exe 1_ на оригинальном наборе данных DICOM, что позволит заменить исходные файлы с масками на расширенные с помощью морфологической операции расширения. Исходные PNG-файлы с бинарными масками будут заменены, предварительно сохраните исходные папки!
+1. Запустите _ExtractYoloObjectsFromDICOM.exe 1_ на [оригинальном наборе данных DICOM](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/dataset/orig_dicom_dataset), что позволит заменить исходные файлы с масками на расширенные с помощью морфологической операции расширения. Исходные PNG-файлы с бинарными масками будут заменены, предварительно сохраните исходные папки!
 
 Пример результата выполнения _ExtractYoloObjectsFromDICOM.exe 1_ можно скачать здесь:
 https://drive.google.com/file/d/1SJ1TNAfcWX5mexRBFR_jyzMFN-3xsurI/view?usp=sharing
