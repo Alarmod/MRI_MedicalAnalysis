@@ -183,6 +183,8 @@ Instructions for using the open library code in third-party repositories:
    
    1.1. Converting the source data intended for training the ANN to the YOLO format (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
 
+The library code is optimized for Yolo 8 with using rectangular input (training and using with the _rect=True_ parameter). It is necessary that the images included in the training dataset have the same aspect ratio, otherwise training using batches will be ineffective (due to the fact that for each batch the alignment of incoming data is performed independently). To correct datasets that do not meet the specified requirement, it is recommended to use the LetterBox function (see [C++ code](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp) that run with the _autoShape=True_ parameter or [Python code](https://github.com/ultralytics/yolov5/blob/master/utils/augmentations.py) that run with the _auto=True_ parameter).
+
    1.2. Training the neural network (see the example of the training script in the file [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py)).
 
    1.3. Converting the settings of the trained neural network to the ONNX format (see the script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat)). The export parameters (the width and height of the internal input of the neural network) must be obtained from the script [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py).
@@ -415,6 +417,8 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 1. Подготовка нейросетевой модели.
    
    1.1. Конвертация исходных данных, предназначенных для обучения ИНС, в YOLO-формат (https://docs.ultralytics.com/datasets/segment/#ultralytics-yolo-format).
+
+Код библиотеки оптимизирован для работы Yolo 8 с применением прямоугольного входа (обучение и использование с параметром _rect=True_). Необходимо, чтобы изображения, включаемые в обучающую выборку, были с одним и тем же соотношением сторон, иначе обучение с использованием батчей будет неэффективным (из-за того, что для каждого батча выравнивавание поступающих данных осуществляется независимо). Для коррекции датасетов, не отвечающих указанному требоваванию, рекомендуется использовать функцию LetterBox (см. [С++-код](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp), запускаемый с параметром _autoShape=True_, или [Python-код](https://github.com/ultralytics/yolov5/blob/master/utils/augmentations.py), запускаемый с параметром _auto=True_).
 
    1.2. Обучение нейронной сети (см. пример обучающего скрипта в файле [yolo_8_segment_brain_ischemia_msk/train.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/train.py)).
 
