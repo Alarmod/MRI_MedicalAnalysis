@@ -201,9 +201,9 @@ Instructions for using the open library code in third-party repositories:
 
   - "use_fp16" – flag for enabling half-precision computing mode (True or False);
 
-  - "net_width" – defines the width of the internal input of the neural network (according to the result of get_net_info.py);
+  - "net_width" – defines the width of the internal input of the neural network (according to the result of [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py));
 
-  - "net_height" – defines the height of the internal input of the neural network (according to the result of get_net_info.py);
+  - "net_height" – defines the height of the internal input of the neural network (according to the result of [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py));
 
   - "cudaID" – the number of the graphics accelerator;
 
@@ -436,9 +436,9 @@ _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 
   - "use_fp16" – флаг включения режима вычислений с половинной точностью (True или False); 
 
-  - "net_width" – определяет ширину внутреннего входа нейронной сети (в соответствии с результатом работы get_net_info.py); 
+  - "net_width" – определяет ширину внутреннего входа нейронной сети (в соответствии с результатом работы [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py)); 
 
-  - "net_height" – определяет высоту внутреннего входа нейронной сети (в соответствии с результатом работы get_net_info.py);
+  - "net_height" – определяет высоту внутреннего входа нейронной сети (в соответствии с результатом работы [yolo_8_segment_brain_ischemia_msk/get_net_info.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/get_net_info.py));
 
   - "cudaID" – номер графического ускорителя; 
 
