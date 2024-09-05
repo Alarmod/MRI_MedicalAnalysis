@@ -17,6 +17,7 @@ from ultralytics.data import build_dataloader
 from ultralytics.data.utils import check_det_dataset
 from ultralytics.data.dataset import YOLODataset
 from ultralytics.utils import ops, LOGGER, TQDM, callbacks, colorstr, emojis
+from ultralytics.utils.checks import check_imgsz
 from ultralytics.utils.torch_utils import de_parallel, smart_inference_mode, select_device
 from ultralytics.utils.plotting import Annotator, colors, output_to_target
 from ultralytics.nn.autobackend import AutoBackend
@@ -81,24 +82,24 @@ def plot_images_and_export_data(
 ):
     """Plot image grid with labels."""
     if isinstance(images, torch.Tensor):
-        images = images.cpu().float().numpy()
+       images = images.cpu().float().numpy()
     if isinstance(cls, torch.Tensor):
-        cls = cls.cpu().numpy()
+       cls = cls.cpu().numpy()
     if isinstance(bboxes, torch.Tensor):
-        bboxes = bboxes.cpu().numpy()
+       bboxes = bboxes.cpu().numpy()
     if isinstance(masks, torch.Tensor):
-        masks = masks.cpu().numpy().astype(int)
+       masks = masks.cpu().numpy().astype(int)
     if isinstance(kpts, torch.Tensor):
-        kpts = kpts.cpu().numpy()
+       kpts = kpts.cpu().numpy()
     if isinstance(batch_idx, torch.Tensor):
-        batch_idx = batch_idx.cpu().numpy()
+       batch_idx = batch_idx.cpu().numpy()
 
     max_size = 1920             # max image size
     bs, _, h, w = images.shape  # batch size, _, height, width
     bs = min(bs, max_subplots)  # limit plot images
     ns = np.ceil(bs**0.5)       # number of subplots (square)
     if np.max(images[0]) <= 1:
-        images *= 255           # de-normalise (optional)
+       images *= 255           # de-normalise (optional)
 
     # Build Image
     mosaic = np.full((int(ns * h), int(ns * w), 3), 255, dtype=np.uint8)  # init
@@ -109,9 +110,9 @@ def plot_images_and_export_data(
     # Resize (optional)
     scale = max_size / ns / max(h, w)
     if scale < 1:
-        h = math.ceil(scale * h)
-        w = math.ceil(scale * w)
-        mosaic = cv2.resize(mosaic, tuple(int(x * ns) for x in (w, h)))
+       h = math.ceil(scale * h)
+       w = math.ceil(scale * w)
+       mosaic = cv2.resize(mosaic, tuple(int(x * ns) for x in (w, h)))
 
     # Annotate
     fs = int((h + w) * ns * 0.01)  # font size
@@ -594,9 +595,6 @@ def postprocess(self, preds_val, max_time_img_val):
     proto = preds_val[1][-1] if len(preds_val[1]) == 3 else preds_val[1]  # second output is len 3 if pt, but only 1 if exported
     return p, proto
 
-from ultralytics.utils.checks import check_imgsz
-from ultralytics.utils.ops import Profile
-
 def validation_caller(validator_obj, visualize_conf_thres=0.01, visualize_show_labels=False, trainer=None, model=None):
     """Supports validation of a pre-trained model if passed or a model being trained if trainer is passed (trainer gets priority).
        Based on https://github.com/ultralytics/ultralytics/blob/main/ultralytics/engine/validator.py
@@ -625,7 +623,7 @@ def validation_caller(validator_obj, visualize_conf_thres=0.01, visualize_show_l
                fp16=validator_obj.args.half,
        )
 
-       validator_obj.device = model.device  # update device
+       validator_obj.device = model.device   # update device
        validator_obj.args.half = model.fp16  # update half
        stride, pt, jit, engine = model.stride, model.pt, model.jit, model.engine
        imgsz = check_imgsz(validator_obj.args.imgsz, stride=stride)
@@ -676,13 +674,6 @@ def validation_caller(validator_obj, visualize_conf_thres=0.01, visualize_show_l
 
     validator_obj.run_callbacks("on_val_start")
 
-    dt = (
-          Profile(device=validator_obj.device),
-          Profile(device=validator_obj.device),
-          Profile(device=validator_obj.device),
-          Profile(device=validator_obj.device),
-    )
-
     bar = TQDM(validator_obj.dataloader, desc=validator_obj.get_desc(), total=len(validator_obj.dataloader))
     validator_obj.init_metrics(de_parallel(model))
     validator_obj.jdict = []  # empty before each val
@@ -694,22 +685,22 @@ def validation_caller(validator_obj, visualize_conf_thres=0.01, visualize_show_l
         validator_obj.batch_i = batch_i
 
         # Preprocess
-        with dt[0]:
-             batch_with_data = validator_obj.preprocess(batch)
+        batch_with_data = validator_obj.preprocess(batch)
 
         # Inference
-        with dt[1]:
-             preds = model(batch_with_data["img"], augment=augment)
+        preds = model(batch_with_data["img"], augment=augment)
 
         # Loss
-        with dt[2]:
-             if validator_obj.training:
-                validator_obj.loss += model.loss(batch, preds)[1]
+        if validator_obj.training:
+           validator_obj.loss += model.loss(batch, preds)[1]
+
+        if torch.cuda.is_available():
+           if torch.cuda.device_count() > 0: 
+              torch.cuda.synchronize(validator_obj.device)
 
         # Postprocess
-        with dt[3]:
-             #preds = validator_obj.postprocess(preds)
-             preds = postprocess(self=validator_obj, preds_val=preds, max_time_img_val=0.05) # increase max_time_img_val for extra slow GPU
+        #preds = validator_obj.postprocess(preds)
+        preds = postprocess(self=validator_obj, preds_val=preds, max_time_img_val=0.05) # increase max_time_img_val for extra slow GPU
 
         #validator_obj.update_metrics(preds, batch_with_data)
         #print(f"\r\n")
@@ -774,7 +765,6 @@ def validation_caller(validator_obj, visualize_conf_thres=0.01, visualize_show_l
 
     stats = validator_obj.get_stats()
     validator_obj.check_stats(stats)
-    validator_obj.speed = dict(zip(validator_obj.speed.keys(), (x.t / len(validator_obj.dataloader.dataset) * 1e3 for x in dt)))
     validator_obj.finalize_metrics()
     validator_obj.print_results()
     validator_obj.run_callbacks("on_val_end")
@@ -784,11 +774,6 @@ def validation_caller(validator_obj, visualize_conf_thres=0.01, visualize_show_l
        results = {**stats, **trainer.label_loss_items(validator_obj.loss.cpu() / len(validator_obj.dataloader), prefix="val")}
        return {k: round(float(v), 5) for k, v in results.items()}  # return results as 5 decimal place floats
     else:
-       LOGGER.info(
-                   "Speed: %.1fms preprocess, %.1fms inference, %.1fms loss, %.1fms postprocess per image"
-                   % tuple(validator_obj.speed.values())
-       )
-
        if validator_obj.args.save_json and validator_obj.jdict:
           with open(str(validator_obj.save_dir / "predictions.json"), "w") as f:
                LOGGER.info(f"Saving {f.name}...")
