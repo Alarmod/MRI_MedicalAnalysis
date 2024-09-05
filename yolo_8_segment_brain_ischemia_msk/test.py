@@ -10,12 +10,14 @@ from pathlib import Path
 import torch
 
 from ultralytics import YOLO
+
 from ultralytics.models.yolo import segment
+
 from ultralytics.data import build_dataloader
 from ultralytics.data.utils import check_det_dataset
 from ultralytics.data.dataset import YOLODataset
-from ultralytics.utils import ops, TQDM, callbacks, colorstr
-from ultralytics.utils.torch_utils import de_parallel, smart_inference_mode
+from ultralytics.utils import ops, LOGGER, TQDM, callbacks, colorstr, emojis
+from ultralytics.utils.torch_utils import de_parallel, smart_inference_mode, select_device
 from ultralytics.utils.plotting import Annotator, colors, output_to_target
 from ultralytics.nn.autobackend import AutoBackend
 
@@ -91,12 +93,12 @@ def plot_images_and_export_data(
     if isinstance(batch_idx, torch.Tensor):
         batch_idx = batch_idx.cpu().numpy()
 
-    max_size = 1920  # max image size
+    max_size = 1920             # max image size
     bs, _, h, w = images.shape  # batch size, _, height, width
     bs = min(bs, max_subplots)  # limit plot images
-    ns = np.ceil(bs**0.5)  # number of subplots (square)
+    ns = np.ceil(bs**0.5)       # number of subplots (square)
     if np.max(images[0]) <= 1:
-        images *= 255  # de-normalise (optional)
+        images *= 255           # de-normalise (optional)
 
     # Build Image
     mosaic = np.full((int(ns * h), int(ns * w), 3), 255, dtype=np.uint8)  # init
@@ -576,162 +578,264 @@ def save_results(results, mask, imgsz_val, brain=None, brain_imgsz_val=None, too
     else: 
        print("Invalid input data")
 
+def postprocess(self, preds_val, max_time_img_val):
+    """Post-processes YOLO predictions and returns output detections with proto."""
+    p = ops.non_max_suppression(
+        preds_val[0],
+        self.args.conf,
+        self.args.iou,
+        labels=self.lb,
+        multi_label=True,
+        agnostic=self.args.single_cls,
+        max_det=self.args.max_det,
+        nc=self.nc,
+        max_time_img=max_time_img_val,
+    )
+    proto = preds_val[1][-1] if len(preds_val[1]) == 3 else preds_val[1]  # second output is len 3 if pt, but only 1 if exported
+    return p, proto
+
+from ultralytics.utils.checks import check_imgsz
+from ultralytics.utils.ops import Profile
+
+def validation_caller(validator_obj, visualize_conf_thres=0.01, visualize_show_labels=False, trainer=None, model=None):
+    """Supports validation of a pre-trained model if passed or a model being trained if trainer is passed (trainer gets priority).
+       Based on https://github.com/ultralytics/ultralytics/blob/main/ultralytics/engine/validator.py
+    """
+    validator_obj.training = trainer is not None
+    augment = validator_obj.args.augment and (not validator_obj.training)
+    if validator_obj.training:
+       validator_obj.device = trainer.device
+       validator_obj.data = trainer.data
+       validator_obj.args.half = validator_obj.device.type != "cpu"  # force FP16 val during training
+
+       model = trainer.ema.ema or trainer.model
+       model = model.half() if validator_obj.args.half else model.float()
+
+       validator_obj.loss = torch.zeros_like(trainer.loss_items, device=trainer.device)
+       validator_obj.args.plots &= trainer.stopper.possible_stop or (trainer.epoch == trainer.epochs - 1)
+       model.eval()
+    else:
+       callbacks.add_integration_callbacks(validator_obj)
+
+       model = AutoBackend(
+               weights=model or validator_obj.args.model,
+               device=select_device(validator_obj.args.device, validator_obj.args.batch),
+               dnn=validator_obj.args.dnn,
+               data=validator_obj.args.data,
+               fp16=validator_obj.args.half,
+       )
+
+       validator_obj.device = model.device  # update device
+       validator_obj.args.half = model.fp16  # update half
+       stride, pt, jit, engine = model.stride, model.pt, model.jit, model.engine
+       imgsz = check_imgsz(validator_obj.args.imgsz, stride=stride)
+
+       if engine:
+          validator_obj.args.batch = model.batch_size
+       elif not pt and not jit:
+          validator_obj.args.batch = 1  # export.py models default to batch-size 1
+          LOGGER.info(f"Forcing batch=1 square inference (1,3,{imgsz},{imgsz}) for non-PyTorch models")
+
+       if str(validator_obj.args.data).split(".")[-1] in {"yaml", "yml"}:
+          validator_obj.data = check_det_dataset(validator_obj.args.data)
+       elif validator_obj.args.task == "classify":
+          validator_obj.data = check_cls_dataset(validator_obj.args.data, split=validator_obj.args.split)
+       else:
+          raise FileNotFoundError(emojis(f"Dataset '{validator_obj.args.data}' for task={validator_obj.args.task} not found ❌"))
+
+       if validator_obj.device.type in {"cpu", "mps"}:
+          validator_obj.args.workers = 0  # faster CPU val as time dominated by inference, not dataloading
+       if not pt:
+          validator_obj.args.rect = False
+
+       validator_obj.stride = model.stride  # used in get_dataloader() for padding
+
+       # original yolo-code
+       # validator_obj.dataloader = validator_obj.dataloader or validator_obj.get_dataloader(validator_obj.data.get(validator_obj.args.split), validator_obj.args.batch)
+
+       yolo_data = YOLODataset(img_path=validator_obj.data.get('test'),
+                   imgsz=validator_obj.args.imgsz,
+                   augment=False,
+                   hyp=validator_obj.args,
+                   rect=validator_obj.args.rect, 
+                   cache=validator_obj.args.cache or None,
+                   single_cls=validator_obj.args.single_cls,
+                   stride=max(int(model.stride), 32),
+                   pad=0.0, #pad=0.0 if mode == 'train' else 0.5,
+                   prefix=colorstr(f'val: '),
+                   task="segment",
+                   classes=validator_obj.args.classes,
+                   data=validator_obj.data,
+                   fraction=1.0
+       )
+
+       validator_obj.dataloader = build_dataloader(yolo_data, batch=validator_obj.args.batch, workers=validator_obj.args.workers, shuffle=False, rank=-1)
+
+       model.eval()
+       model.warmup(imgsz=(1 if pt else validator_obj.args.batch, 3, imgsz, imgsz))  # warmup
+
+    validator_obj.run_callbacks("on_val_start")
+
+    dt = (
+          Profile(device=validator_obj.device),
+          Profile(device=validator_obj.device),
+          Profile(device=validator_obj.device),
+          Profile(device=validator_obj.device),
+    )
+
+    bar = TQDM(validator_obj.dataloader, desc=validator_obj.get_desc(), total=len(validator_obj.dataloader))
+    validator_obj.init_metrics(de_parallel(model))
+    validator_obj.jdict = []  # empty before each val
+
+    for batch_i, batch in enumerate(bar):
+        validator_obj.plot_masks = []
+
+        validator_obj.run_callbacks("on_val_batch_start")
+        validator_obj.batch_i = batch_i
+
+        # Preprocess
+        with dt[0]:
+             batch_with_data = validator_obj.preprocess(batch)
+
+        # Inference
+        with dt[1]:
+             preds = model(batch_with_data["img"], augment=augment)
+
+        # Loss
+        with dt[2]:
+             if validator_obj.training:
+                validator_obj.loss += model.loss(batch, preds)[1]
+
+        # Postprocess
+        with dt[3]:
+             #preds = validator_obj.postprocess(preds)
+             preds = postprocess(self=validator_obj, preds_val=preds, max_time_img_val=0.05) # increase max_time_img_val for extra slow GPU
+
+        #validator_obj.update_metrics(preds, batch_with_data)
+        #print(f"\r\n")
+
+        for si, (pred, proto) in enumerate(zip(preds[0], preds[1])):
+            validator_obj.seen += 1
+            npr = len(pred)
+            stat = dict(
+                   conf=torch.zeros(0, device=validator_obj.device),
+                   pred_cls=torch.zeros(0, device=validator_obj.device),
+                   tp=torch.zeros(npr, validator_obj.niou, dtype=torch.bool, device=validator_obj.device),
+                   tp_m=torch.zeros(npr, validator_obj.niou, dtype=torch.bool, device=validator_obj.device),
+            )
+
+            pbatch = validator_obj._prepare_batch(si, batch_with_data)
+            cls, bbox = pbatch.pop("cls"), pbatch.pop("bbox")
+            nl = len(cls)
+            stat["target_cls"] = cls
+            stat["target_img"] = cls.unique()
+            if npr == 0:
+               if nl:
+                  for k in validator_obj.stats.keys():
+                      validator_obj.stats[k].append(stat[k])
+                  if validator_obj.args.plots:
+                     validator_obj.confusion_matrix.process_batch(detections=None, gt_bboxes=bbox, gt_cls=cls)
+               continue
+
+            # Masks
+            gt_masks = pbatch.pop("masks")
+
+            # Predictions
+            if validator_obj.args.single_cls:
+               pred[:, 5] = 0
+            predn, pred_masks = validator_obj._prepare_pred(pred, pbatch, proto)
+            stat["conf"] = predn[:, 4]
+            stat["pred_cls"] = predn[:, 5]
+
+            # Evaluate
+            if nl:
+               stat["tp"] = validator_obj._process_batch(predn, bbox, cls)
+               stat["tp_m"] = validator_obj._process_batch(
+                   predn, bbox, cls, pred_masks, gt_masks, validator_obj.args.overlap_mask, masks=True
+               )
+               if validator_obj.args.plots:
+                  validator_obj.confusion_matrix.process_batch(predn, bbox, cls)
+
+            for k in validator_obj.stats.keys():
+                validator_obj.stats[k].append(stat[k])
+
+            # Save data to plotting
+            pred_masks = torch.as_tensor(pred_masks, dtype=torch.uint8)
+            validator_obj.plot_masks.append(pred_masks[:validator_obj.args.max_det])
+
+        # plot_val_samples
+        plot_images_and_export_data(batch_with_data['img'], batch_with_data['batch_idx'], batch_with_data['cls'].squeeze(-1), batch_with_data['bboxes'], None, batch_with_data['masks'], paths=batch_with_data['im_file'], fname=validator_obj.save_dir / f'val_batch{batch_i}_labels.jpg', names=validator_obj.names, on_plot=validator_obj.on_plot, conf_thres=visualize_conf_thres, show_labels=visualize_show_labels)
+
+        # plot_predictions
+        plot_images_and_export_data(batch_with_data['img'], *output_to_target(preds[0], max_det=validator_obj.args.max_det), torch.cat(validator_obj.plot_masks, dim=0) if len(validator_obj.plot_masks) else validator_obj.plot_masks, paths=batch_with_data['im_file'], fname=validator_obj.save_dir / f'val_batch{batch_i}_pred.jpg', names=validator_obj.names, on_plot=validator_obj.on_plot, conf_thres=visualize_conf_thres, show_labels=visualize_show_labels)
+        validator_obj.plot_masks = None
+
+        validator_obj.run_callbacks("on_val_batch_end")
+
+    stats = validator_obj.get_stats()
+    validator_obj.check_stats(stats)
+    validator_obj.speed = dict(zip(validator_obj.speed.keys(), (x.t / len(validator_obj.dataloader.dataset) * 1e3 for x in dt)))
+    validator_obj.finalize_metrics()
+    validator_obj.print_results()
+    validator_obj.run_callbacks("on_val_end")
+
+    if validator_obj.training:
+       model.float()
+       results = {**stats, **trainer.label_loss_items(validator_obj.loss.cpu() / len(validator_obj.dataloader), prefix="val")}
+       return {k: round(float(v), 5) for k, v in results.items()}  # return results as 5 decimal place floats
+    else:
+       LOGGER.info(
+                   "Speed: %.1fms preprocess, %.1fms inference, %.1fms loss, %.1fms postprocess per image"
+                   % tuple(validator_obj.speed.values())
+       )
+
+       if validator_obj.args.save_json and validator_obj.jdict:
+          with open(str(validator_obj.save_dir / "predictions.json"), "w") as f:
+               LOGGER.info(f"Saving {f.name}...")
+               json.dump(validator_obj.jdict, f)  # flatten and save
+       stats = validator_obj.eval_json(stats)  # update stats
+       if validator_obj.args.plots or validator_obj.args.save_json:
+          LOGGER.info(f"Results saved to {colorstr('bold', validator_obj.save_dir)}")
+       return stats
+
 # Based on original Yolo codes
-def internal_validate(exp_name, big_data, imgsz_val, model_path, dataset_info, batch_size=1, visualize_conf_thres=global_visualize_conf_thres, visualize_show_labels = False, iou_val=0.6, conf_val=0.01, max_det_val=300): 
+def internal_validate(exp_name, big_data, imgsz_val, model_path, dataset_info, batch_size=1, visualize_conf_thres=global_visualize_conf_thres, visualize_show_labels=False, iou_val=0.6, conf_val=0.01, max_det_val=300): 
     dir_path = "./runs/segment/" + exp_name + ("_big" if big_data else "")
     os.makedirs(dir_path, exist_ok = True)
     shutil.rmtree(dir_path)
 
     # rect=True не трогать
 
+    print(f"\ndataset_info: {dataset_info}")
     with torch.no_grad(): 
-      args = dict(workers=global_workers, plots=True, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, show_labels=True, show_conf=True, task="segment", name=exp_name + ("_big" if big_data else ""), model=model_path, imgsz=imgsz_val, iou=iou_val, conf=conf_val, max_det=max_det_val)
-      validator = segment.SegmentationValidator(args=args)
-      validator.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-      validator.seen = 0
-      validator.run_callbacks('on_val_start')
-      validator.jdict = []
-
-      modelxxx = AutoBackend(validator.args.model, 
-                             device=validator.device, 
-                             dnn=validator.args.dnn, 
-                             data=validator.args.data, 
-                             fp16=validator.args.half, 
-                             verbose=validator.args.verbose, 
-                             fuse=True)
-
-      validator.data = check_det_dataset(dataset_info)
-
-      yolo_data = YOLODataset(img_path=validator.data.get('test'),
-                              imgsz=validator.args.imgsz,
-                              augment=False,
-                              hyp=validator.args,
-                              rect=validator.args.rect, 
-                              cache=validator.args.cache or None,
-                              single_cls=validator.args.single_cls,
-                              stride=max(int(modelxxx.stride), 32),
-                              pad=0.0, #pad=0.0 if mode == 'train' else 0.5,
-                              prefix=colorstr(f'val: '),
-                              task="segment",
-                              classes=validator.args.classes,
-                              data=validator.data,
-                              fraction=1.0)
-      validator.dataloader = build_dataloader(yolo_data, batch=batch_size, workers=validator.args.workers, shuffle=False, rank=-1)
-
-      modelxxx.model.eval()
-      modelxxx = de_parallel(modelxxx)
-      validator.init_metrics(modelxxx)
-
-      # based on ultralytics/engine/validator.py and ultralytics/models/yolo/segment/val.py
-      bar = TQDM(validator.dataloader, desc=validator.get_desc(), total=len(validator.dataloader))
-      dt = ops.Profile(), ops.Profile(), ops.Profile()
-      for batch_i, batch_with_data in enumerate(bar): 
-          validator.plot_masks = []
-
-          validator.run_callbacks('on_val_batch_start')
-          validator.batch_i = batch_i
-
-          # Preprocess
-          with dt[0]:
-               batch_with_data = validator.preprocess(batch_with_data)
-
-          # Inference
-          with dt[1]: 
-               preds = modelxxx(batch_with_data['img'])
-
-          # Postprocess
-          with dt[2]:
-               preds = validator.postprocess(preds)
-
-          #validator.update_metrics(preds, batch_with_data)
-          #print(f"\r\n")
-
-          for si, (pred, proto) in enumerate(zip(preds[0], preds[1])):
-               validator.seen += 1
-               npr = len(pred)
-               stat = dict(
-                   conf=torch.zeros(0, device=validator.device),
-                   pred_cls=torch.zeros(0, device=validator.device),
-                   tp=torch.zeros(npr, validator.niou, dtype=torch.bool, device=validator.device),
-                   tp_m=torch.zeros(npr, validator.niou, dtype=torch.bool, device=validator.device),
-               )
-               pbatch = validator._prepare_batch(si, batch_with_data)
-               cls, bbox = pbatch.pop("cls"), pbatch.pop("bbox")
-               nl = len(cls)
-               stat["target_cls"] = cls
-               stat["target_img"] = cls.unique()
-               if npr == 0:
-                   if nl:
-                       for k in validator.stats.keys():
-                           validator.stats[k].append(stat[k])
-                       if validator.args.plots:
-                           validator.confusion_matrix.process_batch(detections=None, gt_bboxes=bbox, gt_cls=cls)
-                   continue
-
-               # Masks
-               gt_masks = pbatch.pop("masks")
-               # Predictions
-               if validator.args.single_cls:
-                   pred[:, 5] = 0
-               predn, pred_masks = validator._prepare_pred(pred, pbatch, proto)
-               stat["conf"] = predn[:, 4]
-               stat["pred_cls"] = predn[:, 5]
-
-               # Evaluate
-               if nl:
-                   stat["tp"] = validator._process_batch(predn, bbox, cls)
-                   stat["tp_m"] = validator._process_batch(
-                       predn, bbox, cls, pred_masks, gt_masks, validator.args.overlap_mask, masks=True
-                   )
-                   if validator.args.plots:
-                       validator.confusion_matrix.process_batch(predn, bbox, cls)
-
-               for k in validator.stats.keys():
-                   validator.stats[k].append(stat[k])
-
-               # Save data to plotting
-               pred_masks = torch.as_tensor(pred_masks, dtype=torch.uint8)
-               validator.plot_masks.append(pred_masks[:validator.args.max_det])
-
-          # plot_val_samples
-          plot_images_and_export_data(batch_with_data['img'], batch_with_data['batch_idx'], batch_with_data['cls'].squeeze(-1), batch_with_data['bboxes'], None, batch_with_data['masks'], paths=batch_with_data['im_file'], fname=validator.save_dir / f'val_batch{batch_i}_labels.jpg', names=validator.names, on_plot=validator.on_plot, conf_thres=visualize_conf_thres, show_labels=visualize_show_labels)
-
-          # plot_predictions
-          plot_images_and_export_data(batch_with_data['img'], *output_to_target(preds[0], max_det=validator.args.max_det), torch.cat(validator.plot_masks, dim=0) if len(validator.plot_masks) else validator.plot_masks, paths=batch_with_data['im_file'], fname=validator.save_dir / f'val_batch{batch_i}_pred.jpg', names=validator.names, on_plot=validator.on_plot, conf_thres=visualize_conf_thres, show_labels=visualize_show_labels)
-          validator.plot_masks.clear()
-
-          validator.run_callbacks('on_val_batch_end')
-      stats = validator.get_stats()
-      validator.check_stats(stats)
-      validator.finalize_metrics()
-      validator.print_results()
-      validator.run_callbacks('on_val_end')
+         args = dict(data=dataset_info, augment=False, seed=777, cache=None, dnn=False, batch=batch_size, workers=global_workers, plots=True, overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, show_labels=True, show_conf=True, task="segment", name=exp_name + ("_big" if big_data else ""), model=model_path, imgsz=imgsz_val, iou=iou_val, conf=conf_val, max_det=max_det_val)
+         validation_caller(segment.SegmentationValidator(args=args), visualize_conf_thres, visualize_show_labels)
 
 def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
     if default_validate: 
        # t2_brain
        model_brain = YOLO("./runs/segment/t2_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt")
-       model_brain.val(workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_t2_brain_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01, max_det=1)
+       model_brain.val(dnn=False, workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_t2_brain_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01, max_det=1)
 
        # t2_ischemia
        model = YOLO("./runs/segment/t2_ischemia_" + str(brain_and_ischemia_imgsz) + "_augmented/weights/best.pt")
-       model.val(workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_t2_ischemia_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01)
+       model.val(dnn=False, workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_t2_ischemia_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01)
 
        # adc_brain
        model_brain = YOLO("./runs/segment/adc_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt")
-       model_brain.val(workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_adc_brain_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01, max_det=1)
+       model_brain.val(dnn=False, workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_adc_brain_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01, max_det=1)
 
        # adc_ischemia
        model = YOLO("./runs/segment/adc_ischemia_" + str(brain_and_ischemia_imgsz) + "_augmented/weights/best.pt")
-       model.val(workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_adc_ischemia_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01)
+       model.val(dnn=False, workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_adc_ischemia_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01)
 
        # swi_brain
        model_brain = YOLO("./runs/segment/swi_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt")
-       model_brain.val(workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_swi_brain_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01, max_det=1)
+       model_brain.val(dnn=False, workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_swi_brain_" + str(brain_and_ischemia_imgsz) + "_default", batch=4, imgsz=brain_and_ischemia_imgsz, iou=global_iou, conf=0.01, max_det=1)
 
        # swi_msc
        model = YOLO("./runs/segment/swi_msc_mod_" + str(msk_imgsz) + "_augmented/weights/best.pt")
-       model.val(workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_swi_msc_" + str(msk_imgsz) + "_default", batch=4, imgsz=msk_imgsz, iou=global_iou, conf=0.01)
+       model.val(dnn=False, workers=global_workers, task="segment", overlap_mask=global_overlap_mask, single_cls=global_single_cls, save_json=global_save_json, mask_ratio=global_mask_ratio, retina_masks=global_retina_masks, half=global_half, rect=True, name="val_swi_msc_" + str(msk_imgsz) + "_default", batch=4, imgsz=msk_imgsz, iou=global_iou, conf=0.01)
     elif generate_data: 
        def_tresh = 0.01
 
@@ -739,7 +843,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        model_brain = YOLO("./runs/segment/t2_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt")
        source_val = "./datasets/t2_data/brain/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+          results = model_brain.predict(dnn=False, workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                         name="predict_t2_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
                                         batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
                                         conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
@@ -750,7 +854,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        model = YOLO("./runs/segment/t2_ischemia_" + str(brain_and_ischemia_imgsz) + "_augmented/weights/best.pt")
        source_val = "./datasets/t2_data/ischemia/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+          results = model.predict(dnn=False, workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                   name="predict_t2_ischemia_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
                                   batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
                                   conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
@@ -761,7 +865,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        model_brain = YOLO("./runs/segment/adc_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt")
        source_val = "./datasets/adc_data/brain/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+          results = model_brain.predict(dnn=False, workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                   name="predict_adc_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
                                   batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
                                   conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
@@ -772,7 +876,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        model = YOLO("./runs/segment/adc_ischemia_" + str(brain_and_ischemia_imgsz) + "_augmented/weights/best.pt")
        source_val = "./datasets/adc_data/ischemia/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+          results = model.predict(dnn=False, workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                   name="predict_adc_ischemia_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
                                   batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
                                   conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
@@ -783,7 +887,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        model_brain = YOLO("./runs/segment/swi_brain_" + str(brain_and_ischemia_imgsz) + "/weights/best.pt")
        source_val = "./datasets/swi_data/brain/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model_brain.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+          results = model_brain.predict(dnn=False, workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                   name="predict_swi_brain_" + str(brain_and_ischemia_imgsz) + "_default" + ("_big" if big_data else ""), 
                                   batch=4, source=source_val, imgsz=brain_and_ischemia_imgsz, save=True, 
                                   conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=big_data, 
@@ -794,7 +898,7 @@ def runtime_func(big_data, default_validate, generate_data, generate_data_hq):
        model = YOLO("./runs/segment/swi_msc_mod_" + str(msk_imgsz) + "_augmented/weights/best.pt")
        source_val = "./datasets/swi_data/msc/test/images" + ("_big" if big_data else "")
        if os.path.exists(source_val) and os.listdir(source_val): 
-          results = model.predict(workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
+          results = model.predict(dnn=False, workers=global_workers, retina_masks=global_retina_masks, half=global_half, verbose=False, 
                                   name="predict_swi_msc_" + str(msk_imgsz) + "_default" + ("_big" if big_data else ""), 
                                   batch=4, source=source_val, imgsz=msk_imgsz, save=True, 
                                   conf=(global_hq_threshold if generate_data_hq else def_tresh), iou=global_iou, show_labels=False, 
