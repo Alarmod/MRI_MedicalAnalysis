@@ -13,7 +13,7 @@ You need to run the _driver_patch.reg_ file and import the changes into the regi
    
    2.4. Save settings with button "Apply changes". These settings remain in effect until You decide to completely reinstall Your video card driver (clean installation)
 
-3. Configure rigel.exe
+3. Configure _rigel.exe_
 
    3.1. Add the _clocks_control_and_driver_patch_ folder, where _rigel.exe_ will be stored, to the exclusion folders of Your antivirus
 
@@ -42,7 +42,7 @@ You need to run the _driver_patch.reg_ file and import the changes into the regi
    
    2.4. Сохраните настройки кнопкой "Apply changes". Эти настройки остаются в силе до тех пор, пока Вы не решите полностью переустановить драйвер Вашей видеокарты (чистая установка)
 
-3. Настройте rigel.exe
+3. Настройте _rigel.exe_
    
    3.1. Добавьте папку _clocks_control_and_driver_patch_, в которой будет храниться с _rigel.exe_, в папки исключения Вашего антивируса
    
