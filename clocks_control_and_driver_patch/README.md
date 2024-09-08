@@ -13,6 +13,9 @@ You need to run the _driver_patch.reg_ file and import the changes into the regi
    
    2.4. Save settings with button "Apply changes". These settings remain in effect until You decide to completely reinstall Your video card driver (clean installation)
 
+![plot](./nvidiaProfileInspector/settings_1.png)
+![plot](./nvidiaProfileInspector/settings_2.png)
+
 3. Configure _rigel.exe_
 
    3.1. Add the _clocks_control_and_driver_patch_ folder, where _rigel.exe_ will be stored, to the exclusion folders of Your antivirus
@@ -20,6 +23,8 @@ You need to run the _driver_patch.reg_ file and import the changes into the regi
    3.2. Download and unpack _rigel-X.XX.X-win.zip_
 
    3.3. Set _rigel.exe_ settings as You see on _rigel_security_settings.png_
+
+![plot](./rigel_security_settings.png)
 
 4. Restart Your computer
 
@@ -44,6 +49,9 @@ These recommendations will ensure that you get the most out of Your GPU!
    
    2.4. Сохраните настройки кнопкой "Apply changes". Эти настройки остаются в силе до тех пор, пока Вы не решите полностью переустановить драйвер Вашей видеокарты (чистая установка)
 
+![plot](./nvidiaProfileInspector/settings_1.png)
+![plot](./nvidiaProfileInspector/settings_2.png)
+
 3. Настройте _rigel.exe_
    
    3.1. Добавьте папку _clocks_control_and_driver_patch_, в которой будет храниться с _rigel.exe_, в папки исключения Вашего антивируса
@@ -51,6 +59,8 @@ These recommendations will ensure that you get the most out of Your GPU!
    3.2. Скачайте и распакуйте _rigel-X.XX.X-win.zip_
    
    3.3. Установите настройки _rigel.exe_, как Вы видите на _rigel_security_settings.png_
+
+![plot](./rigel_security_settings.png)
 
 4. Перезагрузите Ваш компьютер
 
