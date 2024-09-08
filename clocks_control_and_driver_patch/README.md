@@ -25,6 +25,8 @@ You need to run the _driver_patch.reg_ file and import the changes into the regi
 
 5. Every time if You want to use the video card to work with the library, run corresponding bat-file for Your GPU or pre-created similar bat-file with optimal for You customizations. These settings (locked by _rigel.exe_) remain in effect until you restart Your computer
 
+These recommendations will ensure that you get the most out of Your GPU!
+
 # ///////////////////////////////////////////////
 
 # Руководство по настройке GPU
@@ -53,3 +55,5 @@ You need to run the _driver_patch.reg_ file and import the changes into the regi
 4. Перезагрузите Ваш компьютер
 
 5. Каждый раз, если Вы хотите использовать видеокарту для работы с библиотекой, запускайте соответствующий bat-файл для Вашего GPU или предварительно созданный аналогичный bat-файл с оптимальными для Вас настройками. Эти настройки (заблокированные _rigel.exe_) остаются в силе до перезагрузки Вашего компьютера
+
+Данные рекомендации обеспечат максимально эффективное использование Вашего GPU!
