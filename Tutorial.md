@@ -50,7 +50,7 @@ https://github.com/microsoft/onnxruntime/releases (version 1.18.0+)
 
 In version 8.2.43 of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library. If You retrain artificial neural networks with Ultralytics >8.2.42, change _#define USE_SIGMOID_FUNC true_ to _#define USE_SIGMOID_FUNC false_ in [automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
-You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible with Your compiler. This directories with _bin_, _lib_ and _include_ subfolders. Settings must be set over [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat) file. After configuration, the file or commands inside _build.bat_ must be launched (executed).
+You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible with Your compiler. This directories with _bin_, _lib_ and _include_ subfolders. Settings must be set over [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat) file. After configuration, the file or commands inside [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat) must be launched (executed).
 
 5. Configure path for system libs (_bin_ or _lib_ folders) over file [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py):
 
@@ -60,7 +60,7 @@ You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible
 
 Manual to loading configuration files for artificial neural networks:
 
-Load MRI_settings_ONNX.zip from
+Load _MRI_settings_ONNX.zip_ from
 
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
 or
@@ -117,11 +117,11 @@ _pip3 install -U ultralytics==8.2.42_
 
 In version 8.2.43 and more new versions of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library, therefore it is recommended to either retrain our artificial neural networks, or use for tests Ultralytics library with version <8.2.43.
 
-2. Load MRI_settings.zip and MRI_tests.zip: 
+2. Load _MRI_settings.zip_ and _MRI_tests.zip_: 
 
-MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing or  https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
+_MRI_settings.zip_ --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing or  https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
 
-MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
+_MRI_tests.zip_ --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
 3. Unpack full _runs_ directory with commands: 
 
@@ -170,7 +170,7 @@ https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive
 or
 https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 
-MRI_settings_ONNX.zip can be unpacked with command
+_MRI_settings_ONNX.zip_ can be unpacked with command
 
 _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 
@@ -286,7 +286,7 @@ https://github.com/microsoft/onnxruntime/releases (версия 1.18.0+)
 
 В версии 8.2.43 библиотеки Ultralytics изменен порядок получения масок сегментации, [разработчики отказались от использования сигмоидальной функции](https://github.com/ultralytics/ultralytics/pull/13939), что повлияло на результаты нейронных сетей, обученных на более ранней версии библиотеки. Если вы переобучаете искусственные нейронные сети с помощью Ultralytics >8.2.42, измените _#define USE_SIGMOID_FUNC true_ на _#define USE_SIGMOID_FUNC false_ в [automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/yolo_segment_with_nanobind.cpp)
 
-Вы должны указать фактический путь для ONNXRuntime и OpenCV, версию среды выполнения, совместимую с вашим компилятором. Это каталоги с подпапками _bin_, _lib_ и _include_. Настройки должны быть установлены через файл [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat). После настройки: файл или команды внутри _build.bat_ должны быть запущены (выполнены).
+Вы должны указать фактический путь для ONNXRuntime и OpenCV, версию среды выполнения, совместимую с вашим компилятором. Это каталоги с подпапками _bin_, _lib_ и _include_. Настройки должны быть установлены через файл [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat). После настройки: файл или команды внутри [automated_workplace/yolo_segment_with_nanobind/build.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/yolo_segment_with_nanobind/build.bat) должны быть запущены (выполнены).
 
 5. Настройте путь для системных библиотек (папки _bin_ или _lib_) через файл [automated_workplace/boot.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/boot.py):
 
@@ -296,7 +296,7 @@ https://github.com/microsoft/onnxruntime/releases (версия 1.18.0+)
 
 Руководство по загрузке файлов конфигурации для искусственных нейронных сетей:
 
-Загрузите MRI_settings_ONNX.zip из
+Загрузите _MRI_settings_ONNX.zip_ из
 
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
 или
@@ -352,11 +352,11 @@ _pip3 install -U ultralytics==8.2.42_
 
 В версии 8.2.43 и более новых версиях библиотеки Ultralytics был изменен порядок получения масок сегментации, [разработчики отказались от использования сигмоидальной функции](https://github.com/ultralytics/ultralytics/pull/13939), что повлияло на результаты нейронных сетей, обученных на более ранней версии библиотеки, поэтому рекомендуется либо переобучить наши искусственные нейронные сети, либо использовать для тестов библиотеку Ultralytics версии <8.2.43.
 
-2. Загрузите MRI_settings.zip и MRI_tests.zip:
+2. Загрузите _MRI_settings.zip_ и _MRI_tests.zip_:
 
-MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing или https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
+_MRI_settings.zip_ --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing или https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
 
-MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
+_MRI_tests.zip_ --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
 3. Распакуйте полный каталог _runs_ с помощью команд:
 
@@ -405,7 +405,7 @@ https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive
 или
 https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 
-MRI_settings_ONNX.zip можно распаковать с помощью команды
+_MRI_settings_ONNX.zip_ можно распаковать с помощью команды
 
 _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 
