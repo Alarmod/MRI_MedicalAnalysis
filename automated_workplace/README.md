@@ -22,7 +22,7 @@ You must set actual path for ONNXRuntime and OpenCV, runtime version, compatible
 - actual path for [CUDA](https://developer.nvidia.com/cuda-toolkit) and [CUDNN](https://developer.nvidia.com/cudnn); this configuration requared if selected ONNXRuntime for GPU, for example, ONNXRuntime 1.18.0 requires presence [CUDA 11.8.0 or 12.4.0](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html) and compatible drivers); tested with CUDNN version 8.9.7.29 and Nvidia driver version 528.24/555.85.
 
 # Loading configuration files for artificial neural networks
-Load MRI_settings_ONNX.zip from
+Load _MRI_settings_ONNX.zip_ from
 
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
 or
@@ -69,7 +69,7 @@ https://github.com/microsoft/onnxruntime/releases (версия 1.18.0+)
 - фактический путь для [CUDA](https://developer.nvidia.com/cuda-toolkit) и [CUDNN](https://developer.nvidia.com/cudnn); эта настройка требуется, если выбран ONNXRuntime для GPU, например, ONNXRuntime 1.18.0 требует наличия [CUDA 11.8.0 или 12.4.0](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html) и совместимых драйверов); протестировано с CUDNN версии 8.9.7.29 и драйвером Nvidia версии 528.24/555.85.
 
 # Загрузка файлов конфигурации для искусственных нейронных сетей
-Загрузите MRI_settings_ONNX.zip из
+Загрузите _MRI_settings_ONNX.zip_ из
 
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
 или
