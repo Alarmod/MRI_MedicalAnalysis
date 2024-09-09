@@ -36,11 +36,11 @@ Scale bug in ultralytics 8.0.206-8.1.5 fixed by authors this project: https://gi
 
 In version 8.2.43 and more new versions of the Ultralytics library, the order of obtaining segmentation masks was changed, the [developers abandoned the use of sigmoid function](https://github.com/ultralytics/ultralytics/pull/13939), which affected the results of neural networks trained on an earlier version of the library, therefore it is recommended to either retrain our artificial neural networks, or use for tests Ultralytics library with version <8.2.43.
 
-2. Load MRI_settings.zip and MRI_tests.zip: 
+2. Load _MRI_settings.zip_ and _MRI_tests.zip_: 
 
-MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing or  https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
+_MRI_settings.zip_ --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing or  https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
 
-MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
+_MRI_tests.zip_ --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
 3. Unpack full _runs_ directory with commands: 
 
@@ -87,7 +87,7 @@ https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive
 or
 https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 
-MRI_settings_ONNX.zip can be unpacked with command
+_MRI_settings_ONNX.zip_ can be unpacked with command
 
 _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 
@@ -138,11 +138,11 @@ _pip3 install -U ultralytics==8.2.42_
 
 В версии 8.2.43 и более новых версиях библиотеки Ultralytics был изменен порядок получения масок сегментации, [разработчики отказались от использования сигмоидальной функции](https://github.com/ultralytics/ultralytics/pull/13939), что повлияло на результаты нейронных сетей, обученных на более ранней версии библиотеки, поэтому рекомендуется либо переобучить наши искусственные нейронные сети, либо использовать для тестов библиотеку Ultralytics версии <8.2.43.
 
-2. Загрузите MRI_settings.zip и MRI_tests.zip:
+2. Загрузите _MRI_settings.zip_ и _MRI_tests.zip_:
 
-MRI_settings.zip --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing или https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
+_MRI_settings.zip_ --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoAqWOzlhDh/view?usp=sharing или https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings.zip
 
-MRI_tests.zip --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
+_MRI_tests.zip_ --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
 3. Распакуйте полный каталог _runs_ с помощью команд:
 
@@ -189,7 +189,7 @@ https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive
 или
 https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 
-MRI_settings_ONNX.zip можно распаковать командой
+_MRI_settings_ONNX.zip_ можно распаковать командой
 
 _start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
 
