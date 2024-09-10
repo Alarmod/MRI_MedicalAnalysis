@@ -27,3 +27,5 @@ _data.yaml_ - файл с описанием датасета, использу�
 # Данные об используемом датасете
 
 На основе [датасета Crack-Seg](https://docs.ultralytics.com/datasets/segment/crack-seg/), который был [незначительно модифицирован](https://github.com/ultralytics/ultralytics/pull/15736) разработчиками настоящей открытой программной библиотеки.
+
+<img src="https://github.com/ultralytics/docs/releases/download/0/crack-segmentation-sample.avif">
