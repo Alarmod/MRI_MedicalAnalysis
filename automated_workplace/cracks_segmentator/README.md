@@ -1,6 +1,6 @@
 # Description of data and launch order:
 
-- _00_train.py_ - script for training the neural network that performing segmentation, training time is about 8.5 hours on Nvidia GTX 3060
+- _00_train.py_ - script for training the neural network that performing segmentation, training time is about 3.5 hours on Nvidia GTX 3060
 
 - _01_convert_settings.bat_ - script for converting neural network settings to ONNX format
 
@@ -14,7 +14,7 @@ Based on [Crack-Seg dataset](https://docs.ultralytics.com/datasets/segment/crack
 
 # Описание данных и порядок запуска: 
 
-- _00_train.py_ - скрипт для обучения нейронной сети, осуществляющей сегментацию, время обучения - порядка 8.5 часов на Nvidia GTX 3060
+- _00_train.py_ - скрипт для обучения нейронной сети, осуществляющей сегментацию, время обучения - порядка 3.5 часов на Nvidia GTX 3060
 
 - _01_convert_settings.bat_ - скрипт для конвертации настроек нейросети в формат ONNX
 
