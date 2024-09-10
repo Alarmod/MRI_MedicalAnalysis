@@ -8,8 +8,6 @@ _02_test.py_ - script for testing the neural network using the [../yolo_segment_
 
 _data.yaml_ - file with a description of the dataset used for training and testing
 
-# Information about used dataset 
-
 Based on [Crack-Seg dataset](https://docs.ultralytics.com/datasets/segment/crack-seg/) that has been [slightly modified](https://github.com/ultralytics/ultralytics/pull/15736) by the developers of this open source software library.
 
 # ///////////////////////////////////////////////
@@ -23,8 +21,6 @@ _01_convert_settings.bat_ - скрипт для конвертации наст�
 _02_test.py_ - скрипт для тестирования нейросети с использованием модуля [../yolo_segment_with_nanobind](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/yolo_segment_with_nanobind)
 
 _data.yaml_ - файл с описанием датасета, используемого для обучения и тестирования
-
-# Данные об используемом датасете
 
 На основе [датасета Crack-Seg](https://docs.ultralytics.com/datasets/segment/crack-seg/), который был [незначительно модифицирован](https://github.com/ultralytics/ultralytics/pull/15736) разработчиками настоящей открытой программной библиотеки.
 
