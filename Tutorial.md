@@ -1,5 +1,5 @@
 # Information on preliminary preparation for installation and using of the "ExtractYoloObjectsFromDICOM" utility
-Project configured for compilation in Visual Studio 2022 Community Edition (or in more powerfull version) with v141 platform toolset. Application based on 
+Project configured for compilation in Visual Studio 2022 Community Edition (or more powerfull version). Application based on 
 
 -- modificated Flann library: 
 
@@ -9,13 +9,13 @@ _git clone https://github.com/Alarmod/flann_
 
 _git clone https://github.com/Alarmod/dicomlib_
 
--- OpenCV library (version 3.1 are used):
+-- OpenCV library (version 4.9.0 are used):
 
 _https://opencv.org_
 
-For correct execution You must copy opencv_world310.dll from _opencv\build\x64\vc14\bin_ directory to folder with ExtractYoloObjectsFromDICOM.exe or add this directory to _PATH_ enviroment variable.
+For correct execution You must copy opencv_world490.dll from _opencv\build\x64\vc16\bin_ directory to folder with ExtractYoloObjectsFromDICOM.exe or add this directory to _PATH_ enviroment variable.
 
--- BOOST library (version 1.82 are used): 
+-- BOOST library (version 1.86 are used): 
 
 _https://www.boost.org_
 
@@ -235,7 +235,7 @@ runs_dir: runs
 # ///////////////////////////////////////////////
 
 # Информация о предварительной подготовке к установке и использованию утилиты "ExtractYoloObjectsFromDICOM"
-Проект настроен для компиляции в Visual Studio 2022 Community Edition (или в версии с большими возможностями) с набором инструментов платформы v141. Приложение основано на
+Проект настроен для компиляции в Visual Studio 2022 Community Edition (или в версии с большими возможностями). Приложение основано на
 
 -- модифицированной библиотеке Flann:
 
@@ -245,13 +245,13 @@ _git clone https://github.com/Alarmod/flann_
 
 _git clone https://github.com/Alarmod/dicomlib_
 
--- библиотеке OpenCV (используется версия 3.1):
+-- библиотеке OpenCV (используется версия 4.9.0):
 
 _https://opencv.org_
 
-Для корректного выполнения необходимо скопировать opencv_world310.dll из каталога _opencv\build\x64\vc14\bin_ в папку с ExtractYoloObjectsFromDICOM.exe или добавьте этот каталог в переменную среды _PATH_.
+Для корректного выполнения необходимо скопировать opencv_world490.dll из каталога _opencv\build\x64\vc16\bin_ в папку с ExtractYoloObjectsFromDICOM.exe или добавьте этот каталог в переменную среды _PATH_.
 
--- библиотеке BOOST (используется версия 1.82):
+-- библиотеке BOOST (используется версия 1.86):
 
 _https://www.boost.org_
 
