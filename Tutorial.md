@@ -176,7 +176,7 @@ _powershell -command "Expand-Archive -Force MRI_settings_ONNX.zip ./"_
 
 Settings in original format will be saved in _orig_settings_ directory.
 
-# Example of new variants for using the open library code
+# Example 1 of new variant for using the open source library code
 Instructions for using the open library code in third-party repositories:
 
 1. Preparing the neural network model.
@@ -231,6 +231,9 @@ datasets_dir: [Path to _automated_workplace/cracks_segmentator/datasets/crack-se
 weights_dir: weights
 runs_dir: runs
 ```
+
+# Example 2 of new variant for using the open source library code
+An example of cognitive contour visualization of fire and smoke sources is posted in the repository: https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer
 
 # ///////////////////////////////////////////////
 
@@ -411,7 +414,7 @@ _powershell -command "Expand-Archive -Force MRI_settings_ONNX.zip ./"_
 
 Настройки в исходном формате будут сохранены в каталоге _orig_settings_.
 
-# Пример новых вариантов использования кода открытой библиотеки
+# Пример 1 нового варианта использования кода открытой библиотеки
 Инструкция по использованию кода открытой библиотеки в сторонних репозиториях:
 
 1. Подготовка нейросетевой модели.
@@ -466,3 +469,6 @@ datasets_dir: [Path to _automated_workplace/cracks_segmentator/datasets/crack-se
 weights_dir: weights
 runs_dir: runs
 ```
+
+# Пример 2 нового варианта использования кода открытой библиотеки
+Пример когнитивной контурной визуализации очагов огня и дыма размещен в репозитории: https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer
