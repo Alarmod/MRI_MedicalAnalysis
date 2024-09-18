@@ -14,6 +14,8 @@ The output is images with cognitive contour markings. The implementation code is
 The results must be displayed on the screen and saved in the folder [./fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result)
 The original task that this code solves is visualization of the brain area with ischemic lesions and implanted mesenchymal stem cells.
 
+# ///////////////////////////////////////////////
+
 # Пример использования разработанного программного кода для визуализации разметки датасета
 
 Датасет: небольшой набор из тех изображений, что используются авторами настоящей библиотеки для решения задачи поиска огня и дыма (см. [Abramov N., Emelyanova Yu., Fralenko V., Khachumov V., Khachumov M., Shustova M., Talalaev A. Intelligent Methods for Forest Fire Detection Using Unmanned Aerial Vehicles // Fire 2024, Volume 7, Issue 3, 89. DOI: 10.3390/fire7030089 (WoS Q1)](https://doi.org/10.3390/fire7030089))
