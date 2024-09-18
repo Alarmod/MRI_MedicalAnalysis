@@ -44,9 +44,9 @@ _MRI_tests.zip_ --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDl
 
 3. Unpack full _runs_ directory with commands: 
 
-_start /W /B winrar.exe x -ibck MRI_settings.zip_
+_powershell -command "Expand-Archive -Force MRI_settings.zip ./"_
 
-_start /W /B winrar.exe x -ibck MRI_tests.zip_
+_powershell -command "Expand-Archive -Force MRI_tests.zip ./"_
 
 4. Datasets for training can be loaded from 
 https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive_link
@@ -89,7 +89,7 @@ https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 
 _MRI_settings_ONNX.zip_ can be unpacked with command
 
-_start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
+_powershell -command "Expand-Archive -Force MRI_settings_ONNX.zip ./"_
 
 Settings in original format will be saved in _orig_settings_ directory.
 
@@ -146,9 +146,9 @@ _MRI_tests.zip_ --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDl
 
 3. Распакуйте полный каталог _runs_ с помощью команд:
 
-_start /W /B winrar.exe x -ibck MRI_settings.zip_
+_powershell -command "Expand-Archive -Force MRI_settings.zip ./"_
 
-_start /W /B winrar.exe x -ibck MRI_tests.zip_
+_powershell -command "Expand-Archive -Force MRI_tests.zip ./"_
 
 4.  Наборы данных для обучения можно загрузить с
 https://drive.google.com/file/d/1SSYDAWpAw0Sbaz3dpHn_EH6ZuGZWt-LW/view?usp=drive_link
@@ -191,7 +191,7 @@ https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 
 _MRI_settings_ONNX.zip_ можно распаковать командой
 
-_start /W /B winrar.exe x -ibck MRI_settings_ONNX.zip_
+_powershell -command "Expand-Archive -Force MRI_settings_ONNX.zip ./"_
 
 Настройки в исходном формате будут сохранены в каталоге _orig_settings_.
 
