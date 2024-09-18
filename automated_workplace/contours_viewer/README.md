@@ -30,10 +30,10 @@ _python test.py_
 Результаты должны быть показаны на экран и сохранены в папку [./fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result)
 Оригинальная задача, что решает этот код - визуализация области мозга с ишемическими поражениями и имплантированными мезенхимальными стволовыми клетками.
 
-![plot](./contours_viewer/fire_and_smoke/result/015.png)
+![plot](./fire_and_smoke/result/015.png)
 
-![plot](./contours_viewer/fire_and_smoke/result/028.png)
+![plot](./fire_and_smoke/result/028.png)
 
-![plot](./contours_viewer/fire_and_smoke/result/123.png)
+![plot](./fire_and_smoke/result/123.png)
 
-![plot](./contours_viewer/fire_and_smoke/result/155.png)
+![plot](./fire_and_smoke/result/155.png)
