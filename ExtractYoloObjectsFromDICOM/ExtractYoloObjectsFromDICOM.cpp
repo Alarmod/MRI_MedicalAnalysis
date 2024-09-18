@@ -1,32 +1,38 @@
 ﻿#include <iostream>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <algorithm>
 #include <tuple>
-#include <experimental/filesystem>
 
 #include <concave.h>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 using namespace cv;
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/path.hpp>
-namespace fs = boost::filesystem;
+
+#ifdef __cpp_lib_filesystem
+#include <filesystem>
+namespace fs = std::filesystem;
+#elif __cpp_lib_experimental_filesystem
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1;
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#else
+#error "no filesystem support ='("
+#endif
 
 #include "dicomlib/Buffer.hpp"
 #include "dicomlib/DataSet.hpp"
 #include "dicomlib/File.hpp"
 #include "dicomlib/Tag.hpp"
 using namespace dicom;
-
-#include <string>
-#include <sstream>
-
-#include <opencv2/imgproc.hpp>
 
 struct dataset
 {
@@ -67,7 +73,7 @@ struct ExtractPoint
 
 typedef double qreal;
 
-void validate_points(Mat* cv_arr_local, Mat* mask, std::vector<std::pair<int, int>>* data_for_check, int& label, bool full_connection)
+static void validate_points(Mat* cv_arr_local, Mat* mask, std::vector<std::pair<int, int>>* data_for_check, int& label, bool full_connection)
 {
   std::vector<std::pair<int, int>> data_for_check_new;
 
@@ -161,7 +167,7 @@ void validate_points(Mat* cv_arr_local, Mat* mask, std::vector<std::pair<int, in
   }
 }
 
-void update_image(Mat& img_out, unsigned char intense, double x_start, double y_start, int thickness, bool single_class, unsigned char v_index, unsigned char single_class_empty_color)
+static void update_image(Mat& img_out, unsigned char intense, double x_start, double y_start, int thickness, bool single_class, unsigned char v_index, unsigned char single_class_empty_color)
 {
   for (double y = y_start - thickness; y <= y_start + thickness; y++)
   {
@@ -240,7 +246,7 @@ void update_image(Mat& img_out, unsigned char intense, double x_start, double y_
   }
 }
 
-void process_func(Mat& img, Mat& img_out, bool single_class, const unsigned char possible_values_count, const unsigned char possible_values[], std::string file_without_extension, std::string& out_str, int thickness_value, double step_mod, double scale_factor, int img_mul_value, unsigned char single_class_empty_color, bool one_object, bool full_connection, bool remove_small_target_objects)
+static void process_func(Mat& img, Mat& img_out, bool single_class, const unsigned char possible_values_count, const unsigned char possible_values[], std::string file_without_extension, std::string& out_str, int thickness_value, double step_mod, double scale_factor, int img_mul_value, unsigned char single_class_empty_color, bool one_object, bool full_connection, bool remove_small_target_objects)
 {
   //printf("NEXT\r\n");
 
@@ -517,7 +523,12 @@ void process_func(Mat& img, Mat& img_out, bool single_class, const unsigned char
           Mat canny_output;
 
           Mat cv_arr_resized = Mat(img_mul_value * height_dcm_local, img_mul_value * width_dcm_local, CV_8U);
+#if CV_VERSION_MAJOR > 3
+          cv::resize(cv_arr_local, cv_arr_resized, cv_arr_resized.size(), 0, 0, cv::INTER_AREA);
+#else
           cv::resize(cv_arr_local, cv_arr_resized, cv_arr_resized.size(), 0, 0, CV_INTER_AREA);
+#endif
+
           ::Canny(cv_arr_resized, canny_output, 55, 200, 3, true);
 
           for (unsigned short y = 0; y < img_mul_value * height_dcm_local; y++)
@@ -647,12 +658,18 @@ struct train_test_split_result {
   std::vector<String> test;
 };
 
-train_test_split_result train_test_split(std::vector<String>& data, double test_size)
+static train_test_split_result train_test_split(std::vector<String>& data, double test_size)
 {
   srand(777U);
   train_test_split_result result;
 
+#if __cplusplus > 201100L
+  std::random_device rd;
+  std::mt19937 g(rd());
+  std::shuffle(data.begin(), data.end(), g);
+#else
   std::random_shuffle(data.begin(), data.end());
+#endif
 
   for (size_t i = 0; i < data.size(); i++)
   {
@@ -669,7 +686,7 @@ train_test_split_result train_test_split(std::vector<String>& data, double test_
   return result;
 }
 
-void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<String>& input_img_paths, dataset& data, bool single_class, const unsigned char possible_values_count, const unsigned char* possible_values, std::string mode, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target, bool only_dilate_and_save_masks, bool blue_mode = false)
+static void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<String>& input_img_paths, dataset& data, bool single_class, const unsigned char possible_values_count, const unsigned char* possible_values, std::string mode, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target, bool only_dilate_and_save_masks, bool blue_mode = false)
 {
   UINT16 val_min = 65535U;
   UINT16 val_max = 0U;
@@ -687,7 +704,12 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
       std::string file_without_extension = base_filename.substr(0, p);
 
       dicom::DataSet* full_ds = new dicom::DataSet(); // исходный датасет
+
+#if CV_VERSION_MAJOR > 3
+      std::wstring full_path = fs::path(input_img_paths[i]).wstring();
+#else
       std::wstring full_path = fs::path(input_img_paths[i].operator std::string()).wstring();
+#endif
       dicom::ReadW(full_path, *full_ds);
       const std::vector<UINT16>& full_pixel_data = full_ds->operator()(dicom::TAG_PIXEL_DATA).Get<std::vector<UINT16> >();
 
@@ -696,7 +718,8 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
       if (full_ds->exists(TAG_ROWS)) full_ds->operator()(TAG_ROWS) >> height_dcm;
 
       std::string target_path = data.path + file_without_extension + ".png";
-      Mat img_target = (data.have_target_mask && std::experimental::filesystem::exists(target_path)) ? imread(target_path, IMREAD_GRAYSCALE) : Mat::zeros(height_dcm, width_dcm, CV_8U);
+
+      Mat img_target = (data.have_target_mask && fs::exists(target_path)) ? imread(target_path, IMREAD_GRAYSCALE) : Mat::zeros(height_dcm, width_dcm, CV_8U);
 
       if (only_dilate_and_save_masks)
       {
@@ -718,7 +741,8 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
       //index_of_first_pixel_in_section_1 = 0UL;
 
       std::string brain_path = data.path + file_without_extension + "_brain.png";
-      Mat img_brain = (data.have_brain_mask && std::experimental::filesystem::exists(brain_path)) ? imread(brain_path, IMREAD_GRAYSCALE) : Mat::zeros(height_dcm, width_dcm, CV_8U);
+
+      Mat img_brain = (data.have_brain_mask && fs::exists(brain_path)) ? imread(brain_path, IMREAD_GRAYSCALE) : Mat::zeros(height_dcm, width_dcm, CV_8U);
 
       if (num_of_frames == 1)
       {
@@ -790,10 +814,15 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
           imwrite(".\\" + tomograph_operating_mode + "\\" + "brain\\" + mode + "\\images\\" + file_without_extension + ".png", img_out_debug_brain);
 
           Mat im_resized;
+#if CV_VERSION_MAJOR > 3
+          cv::resize(img_out_debug_brain, im_resized, cv::Size(), scale_factor, scale_factor, cv::INTER_LINEAR);
+#else
           cv::resize(img_out_debug_brain, im_resized, cv::Size(), scale_factor, scale_factor, CV_INTER_LINEAR);
+#endif
 
           std::string out_str_brain = "";
-          if (std::experimental::filesystem::exists(brain_path))
+
+          if (fs::exists(brain_path))
             process_func(img_brain, im_resized, single_class, possible_values_count, possible_values, file_without_extension, out_str_brain, thickness, step_mod, scale_factor, img_mul, 1U, one_object, full_connection, remove_small_target_objects);
 
           imwrite(".\\" + tomograph_operating_mode + "\\" + "debug\\" + file_without_extension + "_brain.png", im_resized);
@@ -816,10 +845,14 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
           imwrite(".\\" + tomograph_operating_mode + "\\" + target + "\\" + mode + "\\images\\" + file_without_extension + ".png", img_out_debug_target);
 
           Mat im_resized;
+#if CV_VERSION_MAJOR > 3
+          cv::resize(img_out_debug_target, im_resized, cv::Size(), scale_factor, scale_factor, cv::INTER_LINEAR);
+#else
           cv::resize(img_out_debug_target, im_resized, cv::Size(), scale_factor, scale_factor, CV_INTER_LINEAR);
+#endif
 
           std::string out_str_target = "";
-          if (std::experimental::filesystem::exists(target_path))
+          if (fs::exists(target_path))
             process_func(img_target, im_resized, single_class, possible_values_count, possible_values, file_without_extension, out_str_target, thickness_target, step_mod, scale_factor, img_mul_target, 0U, one_object, full_connection, remove_small_target_objects);
 
           imwrite(".\\" + tomograph_operating_mode + "\\" + "debug\\" + file_without_extension + "_" + target + ".png", im_resized);
@@ -844,7 +877,7 @@ void dataset_process(UINT16 normalize_value_start, UINT16 normalize_value_end, s
     std::cout << mode << " :: Pixel Data --- min: " + std::to_string(val_min) + ", max: " + std::to_string(val_max) << std::endl;
 }
 
-void dataset_parser(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<dataset>& data, bool single_class, const unsigned char possible_values_count, const unsigned char* possible_values, double test_size, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target, bool only_dilate_and_save_masks)
+static void dataset_parser(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<dataset>& data, bool single_class, const unsigned char possible_values_count, const unsigned char* possible_values, double test_size, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target, bool only_dilate_and_save_masks)
 {
   std::cout << "Total datasets: " << data.size() << std::endl << std::endl;
 
@@ -873,7 +906,7 @@ void dataset_parser(UINT16 normalize_value_start, UINT16 normalize_value_end, st
   }
 }
 
-int func(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<dataset>& data, int argc, char* argv[], double test_size, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target)
+static int func(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string tomograph_operating_mode, std::vector<dataset>& data, int argc, char* argv[], double test_size, int thickness, int thickness_target, int img_mul, int img_mul_target, std::string target)
 {
   std::cout << "ExtractYoloObjectsFromDICOM.exe" << std::endl;
 
@@ -945,7 +978,7 @@ int func(UINT16 normalize_value_start, UINT16 normalize_value_end, std::string t
   return 0;
 }
 
-inline bool ends_with(std::string const& value, std::string const& ending)
+static inline bool ends_with(std::string const& value, std::string const& ending)
 {
   if (ending.size() > value.size()) return false;
   return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
@@ -960,7 +993,7 @@ int main(int argc, char* argv[])
   if (argc == 3 && strcmp(argv[1], "convert") == 0)
   {
     const bool blue_mode = false;
-       
+
     std::string path = argv[2];
     if (ends_with(path, "/") == false && ends_with(path, "\\") == false)
       path += "/";
@@ -1011,7 +1044,12 @@ int main(int argc, char* argv[])
             std::string output_file = c_path.substr(0, idx) + ".png";
 
             dicom::DataSet* full_ds = new dicom::DataSet(); // исходный датасет
+
+#if CV_VERSION_MAJOR > 3
+            std::wstring full_path = fs::path(c_path).wstring();
+#else
             std::wstring full_path = fs::path(c_path.operator std::string()).wstring();
+#endif
             dicom::ReadW(full_path, *full_ds);
             const std::vector<UINT16>& full_pixel_data = full_ds->operator()(dicom::TAG_PIXEL_DATA).Get<std::vector<UINT16> >();
 

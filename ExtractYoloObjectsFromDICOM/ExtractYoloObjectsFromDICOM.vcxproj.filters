@@ -59,9 +59,6 @@
     <ClCompile Include="dicomlib\PresentationContexts.cpp">
       <Filter>dicomlib</Filter>
     </ClCompile>
-    <ClCompile Include="dicomlib\QueryRetrieve.cpp">
-      <Filter>dicomlib</Filter>
-    </ClCompile>
     <ClCompile Include="dicomlib\ServiceBase.cpp">
       <Filter>dicomlib</Filter>
     </ClCompile>
@@ -172,9 +169,6 @@
       <Filter>dicomlib</Filter>
     </ClInclude>
     <ClInclude Include="dicomlib\PresentationContexts.hpp">
-      <Filter>dicomlib</Filter>
-    </ClInclude>
-    <ClInclude Include="dicomlib\QueryRetrieve.hpp">
       <Filter>dicomlib</Filter>
     </ClInclude>
     <ClInclude Include="dicomlib\ServiceBase.hpp">
