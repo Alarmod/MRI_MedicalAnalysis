@@ -56,12 +56,12 @@ Minimum operating system requirements: Windows 10 (x64).
 
 General requirements for pre-installed software for compiling and running the developed library:
 
-- Visual Studio 2022 Community Edition (or more powerfull version) compiler with platform toolset version 14.1 installed;
+- Visual Studio 2022 Community Edition (or more powerfull version) compiler;
 - CMake (3.26+);
 - modified Flann library (https://github.com/Alarmod/flann) (C++);
 - Dicomlib library (https://github.com/Alarmod/dicomlib) (C++);
-- OpenCV library (versions 3.1 and 4.9.0+) (C++);
-- Boost library (version 1.82) (C++);
+- OpenCV library (version 4.9.0+) (C++);
+- Boost library (version 1.86) (C++);
 - python interpreter 3.8-3.10;
 - PyTorch 2.2.2 or 2.3.1+ (Python);
 - ultralytics library 8.0.205 or (>8.1.5 and <8.2.43) (Python);
@@ -151,12 +151,12 @@ C++ и Python
 
 Общие требования к предустановленному программному обеспечению для компиляции и запуска разработанной библиотеки:
 
-- компилятор Visual Studio 2022 Community Edition (или версия с большими возможностями) с установленным набором инструментов платформы версии 14.1;
+- компилятор Visual Studio 2022 Community Edition (или версия с большими возможностями);
 - CMake (3.26+);
 - модифицированная библиотека Flann (https://github.com/Alarmod/flann) (C++);
 - библиотека Dicomlib (https://github.com/Alarmod/dicomlib) (C++);  
-- библиотека OpenCV (версии 3.1 и 4.9.0+) (C++);
-- библиотека Boost (версия 1.82) (C++);
+- библиотека OpenCV (версия 4.9.0+) (C++);
+- библиотека Boost (версия 1.86) (C++);
 - интерпретатор python 3.8-3.10;
 - PyTorch 2.2.2 или 2.3.1+ (Python);
 - библиотека ultralytics версий 8.0.205 или (>8.1.5 и <8.2.43) (Python);
