@@ -10,6 +10,16 @@ To run an example of using the code of the developed library program code, you n
 
 _python test.py_
 
+The _draw_contours_ function takes the following parameters as input:
+
+- "rgb_image" – full color image on which the cognitive contour will be applied;
+
+- "data" – binary mask with target objects;
+
+- "color" – color that will be used for drawing the cognitive contour;
+
+- "thickness_value" – the contour thickness.
+
 The output is images with cognitive contour markings. The implementation code is imported from [../MRIMAProcessor.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/MRIMAProcessor.py).
 The results must be displayed on the screen and saved in the folder [./fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result)
 The original task that this code solves is visualization of the brain area with ischemic lesions and implanted mesenchymal stem cells.
@@ -27,6 +37,15 @@ The original task that this code solves is visualization of the brain area with 
 Для запуска примера использования программного кода разработанной библиотеки необходимо запустить команду 
 
 _python test.py_
+
+Функция _draw_contours_ принимает на вход следующие параметры: 
+ - "rgb_image" – полноцветное изображение, на которое будет наносится когнитивный контур;
+
+  - "data" – бинарная маска с целевыми объектами; 
+
+  - "color" – цвет, который будет использоваться при отрисовке когнитивного контура;
+
+  - "thickness_value" – толщина контура.
 
 На выходе получаются изображения с когнитивной контурной разметкой. Код реализации импортирован из [../MRIMAProcessor.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/MRIMAProcessor.py).
 Результаты должны быть показаны на экран и сохранены в папку [./fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result)
