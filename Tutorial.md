@@ -230,7 +230,7 @@ weights_dir: weights
 runs_dir: runs
 ```
 
-# Example 2 of new variant for using the open source library code (visualization of the dataset markup)
+# Example 2 of new variant for using the open source library code (dataset markup visualization)
 An example of cognitive contour visualization of fire and smoke sources is posted in the repository: https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer
 
 Dataset: small set of images that used by the authors of this library to solve the problem of fire and smoke detection (see [Abramov N., Emelyanova Yu., Fralenko V., Khachumov V., Khachumov M., Shustova M., Talalaev A. Intelligent Methods for Forest Fire Detection Using Unmanned Aerial Vehicles // Fire 2024, Volume 7, Issue 3, 89. DOI: 10.3390/fire7030089](https://doi.org/10.3390/fire7030089))
@@ -486,7 +486,7 @@ weights_dir: weights
 runs_dir: runs
 ```
 
-# Пример 2 нового варианта использования кода открытой библиотеки (для визуализации разметки датасета)
+# Пример 2 нового варианта использования кода открытой библиотеки (визуализация разметки датасета)
 Пример когнитивной контурной визуализации очагов огня и дыма размещен в репозитории: https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer
 
 Датасет: небольшой набор из тех изображений, что используются авторами настоящей библиотеки для решения задачи поиска огня и дыма (см. [Abramov N., Emelyanova Yu., Fralenko V., Khachumov V., Khachumov M., Shustova M., Talalaev A. Intelligent Methods for Forest Fire Detection Using Unmanned Aerial Vehicles // Fire 2024, Volume 7, Issue 3, 89. DOI: 10.3390/fire7030089](https://doi.org/10.3390/fire7030089))
