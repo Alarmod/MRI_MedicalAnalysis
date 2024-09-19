@@ -163,7 +163,7 @@ Train and test on Nvidia RTX 16xx in FP16 mode may be slow (see https://github.c
 
 Manual for exporting settings to ONNX format:
 
-To convert the settings of artificial neural networks into the ONNX format, You need run script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat).
+To convert the settings of artificial neural networks into the ONNX format, You need run script [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). Settings in original format will be saved in _orig_settings_ directory.
 
 Export results can be loaded from
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
@@ -173,8 +173,6 @@ https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 _MRI_settings_ONNX.zip_ can be unpacked with command
 
 _powershell -command "Expand-Archive -Force MRI_settings_ONNX.zip ./"_
-
-Settings in original format will be saved in _orig_settings_ directory.
 
 # Example 1 of new variant for using the open source library code (search for road surface cracks in images)
 Instructions for using the open library code in third-party repositories:
@@ -254,7 +252,6 @@ The _draw_contours_ function takes the following parameters as input:
 The output is images with cognitive contour markings. The implementation code is imported from [../MRIMAProcessor.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/MRIMAProcessor.py).
 The results must be displayed on the screen and saved in the folder [./fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result).
 The original task that this code solves is visualization of the brain area with ischemic lesions and implanted mesenchymal stem cells.
-
 
 # ///////////////////////////////////////////////
 
@@ -422,7 +419,7 @@ _python test.py internal_validate_ (модифицированный код пр
 
 Руководство по экспорту настроек в формат ONNX:
 
-Чтобы преобразовать настройки искусственных нейронных сетей в формат ONNX, необходимо запустить скрипт [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat).
+Чтобы преобразовать настройки искусственных нейронных сетей в формат ONNX, необходимо запустить скрипт [yolo_8_segment_brain_ischemia_msk/export.bat](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/yolo_8_segment_brain_ischemia_msk/export.bat). Настройки в исходном формате будут сохранены в каталоге _orig_settings_.
 
 Результаты экспорта можно загрузить из
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
@@ -432,8 +429,6 @@ https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 _MRI_settings_ONNX.zip_ можно распаковать с помощью команды
 
 _powershell -command "Expand-Archive -Force MRI_settings_ONNX.zip ./"_
-
-Настройки в исходном формате будут сохранены в каталоге _orig_settings_.
 
 # Пример 1 нового варианта использования кода открытой библиотеки (поиск на изображениях трещин дорожного покрытия)
 Инструкция по использованию кода открытой библиотеки в сторонних репозиториях:
@@ -513,4 +508,3 @@ _python test.py_
 На выходе получаются изображения с когнитивной контурной разметкой. Код реализации импортирован из [../MRIMAProcessor.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/MRIMAProcessor.py).
 Результаты должны быть показаны на экран и сохранены в папку [./fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result).
 Оригинальная задача, что решает этот код - визуализация области мозга с ишемическими поражениями и имплантированными мезенхимальными стволовыми клетками.
-
