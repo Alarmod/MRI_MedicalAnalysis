@@ -80,7 +80,7 @@ _python test.py internal_validate_ (modificated Yolo 8 validation code that clos
 Train and test on Nvidia RTX 16xx in FP16 mode may be slow (see https://github.com/ultralytics/yolov5/issues/7908)
 
 # Export settings to ONNX format
-To convert the settings of artificial neural networks into the ONNX format, You need run script _export.bat_
+To convert the settings of artificial neural networks into the ONNX format, You need run script _export.bat_. Settings in original format will be saved in _orig_settings_ directory.
 
 Export results can be loaded from
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
@@ -90,8 +90,6 @@ https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 _MRI_settings_ONNX.zip_ can be unpacked with command
 
 _powershell -command "Expand-Archive -Force MRI_settings_ONNX.zip ./"_
-
-Settings in original format will be saved in _orig_settings_ directory.
 
 # System requirements
 Python 3.8-3.10
@@ -182,7 +180,7 @@ _python test.py internal_validate_ (модифицированный код пр
 Обучение и тестирование на Nvidia RTX 16xx в режиме FP16 может быть медленным (см. https://github.com/ultralytics/yolov5/issues/7908)
 
 # Экспорт настроек в формат ONNX
-Чтобы преобразовать настройки искусственных нейронных сетей в формат ONNX, вам нужно запустить скрипт _export.bat_
+Чтобы преобразовать настройки искусственных нейронных сетей в формат ONNX, вам нужно запустить скрипт _export.bat_. Настройки в исходном формате будут сохранены в каталоге _orig_settings_.
 
 Результаты экспорта можно загрузить из
 https://drive.google.com/file/d/16cPNC6zRKNaNQz6J40XU74XuVZYVBzWi/view?usp=drive_link
@@ -192,8 +190,6 @@ https://huggingface.co/alarmod/MRI_settings/blob/main/MRI_settings_ONNX.zip
 _MRI_settings_ONNX.zip_ можно распаковать командой
 
 _powershell -command "Expand-Archive -Force MRI_settings_ONNX.zip ./"_
-
-Настройки в исходном формате будут сохранены в каталоге _orig_settings_.
 
 # Системные требования
 Python 3.8-3.10
