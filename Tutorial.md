@@ -123,7 +123,7 @@ _MRI_settings.zip_ --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoA
 
 _MRI_tests.zip_ --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
-3. Unpack full _runs_ directory with commands: 
+3. Unpack full _runs_ directory with commands (Windows' built-in PowerShell tool is used): 
 
 _powershell -command "Expand-Archive -Force MRI_settings.zip ./"_
 
@@ -382,7 +382,7 @@ _MRI_settings.zip_ --- https://drive.google.com/file/d/15uKf4ayCEnhhBj73WTrgIHoA
 
 _MRI_tests.zip_ --- https://drive.google.com/file/d/15to8SyUL6DXNHhYwYQR9KJZ4bDlC3Yyq/view?usp=sharing
 
-3. Распакуйте полный каталог _runs_ с помощью команд:
+3. Распакуйте полный каталог _runs_ с помощью команд (используется встроенный в Windows инструмент PowerShell):
 
 _powershell -command "Expand-Archive -Force MRI_settings.zip ./"_
 
