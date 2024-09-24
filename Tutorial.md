@@ -250,7 +250,7 @@ The _draw_contours_ function takes the following parameters as input:
    - "thickness_value" – the contour thickness.
 
 The output is images with cognitive contour markings. The implementation code is imported from [../MRIMAProcessor.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/MRIMAProcessor.py).
-The results must be displayed on the screen and saved in the folder [./fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result).
+The results must be displayed on the screen and saved in the folder [automated_workplace/contours_viewer/fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result).
 The original task that this code solves is visualization of the brain area with ischemic lesions and implanted mesenchymal stem cells.
 
 # ///////////////////////////////////////////////
@@ -506,5 +506,5 @@ _python test.py_
    - "thickness_value" – толщина контура.
 
 На выходе получаются изображения с когнитивной контурной разметкой. Код реализации импортирован из [../MRIMAProcessor.py](https://github.com/Alarmod/MRI_MedicalAnalysis/blob/main/automated_workplace/MRIMAProcessor.py).
-Результаты должны быть показаны на экран и сохранены в папку [./fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result).
+Результаты должны быть показаны на экран и сохранены в папку [automated_workplace/contours_viewer/fire_and_smoke/result](https://github.com/Alarmod/MRI_MedicalAnalysis/tree/main/automated_workplace/contours_viewer/fire_and_smoke/result).
 Оригинальная задача, что решает этот код - визуализация области мозга с ишемическими поражениями и имплантированными мезенхимальными стволовыми клетками.
