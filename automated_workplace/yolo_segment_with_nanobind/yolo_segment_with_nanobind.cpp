@@ -15,7 +15,7 @@ namespace nb = nanobind;
 #define half Ort::Float16_t
 
 template <typename T>
-size_t VectorProduct(const std::vector<T>& v)
+inline size_t VectorProduct(const std::vector<T>& v)
 {
   return static_cast<size_t>(std::accumulate(v.begin(), v.end(), (T)1, std::multiplies<T>()));
 };
@@ -29,6 +29,12 @@ struct OutputParams
   float confidence;
   cv::Rect box;
   cv::Mat boxMask;
+
+  OutputParams()
+  {
+    id = 0;
+    confidence = 0.0F;
+  }
 };
 
 struct MaskParams
@@ -45,8 +51,10 @@ private:
     Ort::ThreadingOptions tp_options;
     tp_options.SetGlobalIntraOpNumThreads(intra_op_threads);
     tp_options.SetGlobalInterOpNumThreads(1);
+
     return new Ort::Env(tp_options, ORT_LOGGING_LEVEL_WARNING, "Default");
   }
+
 public:
   ONNXEnvironment(unsigned int threadPoolSize)
   {
@@ -66,9 +74,12 @@ public:
     {
       if (m_threadPoolSize == threadPoolSize)
         return true;
+
       m_threadPoolSize = threadPoolSize;
+
       delete m_ortEnvPtr;
       m_ortEnvPtr = createEnvironment(m_threadPoolSize);
+
       return true;
     }
     return false;
@@ -88,6 +99,7 @@ public:
   {
     return *m_ortEnvPtr;
   }
+
 private:
   unsigned int m_threadPoolSize;
 
@@ -96,14 +108,14 @@ private:
   Ort::Env* m_ortEnvPtr = nullptr;
 };
 
-ONNXEnvironment& getONNXEnv()
+static ONNXEnvironment& getONNXEnv()
 {
   static ONNXEnvironment instance(std::thread::hardware_concurrency());
 
   return instance;
 }
 
-bool setONNXGlobalThreadPoolSize(int threadPoolSize)
+static bool setONNXGlobalThreadPoolSize(int threadPoolSize)
 {
   return getONNXEnv().setGlobalThreadPoolSize(threadPoolSize);
 }
@@ -117,6 +129,7 @@ private:
 
     return (std::find(available_providers.begin(), available_providers.end(), provider_name) != available_providers.end());
   }
+
 public:
   YOLO(const std::string& name, const std::string& net_path, const bool use_gpu, const bool use_fp16, const unsigned int net_width, const unsigned int net_height, const unsigned int cudaID = 0)
   {
@@ -171,9 +184,9 @@ public:
     m_input_name = std::move(m_session->GetInputNameAllocated(0, allocator));
     m_inputs_names.push_back(m_input_name.get());
 
-    Ort::TypeInfo inputTypeInfo = m_session->GetInputTypeInfo(0);
+    auto inputTypeInfo = m_session->GetInputTypeInfo(0);
     auto input_tensor_info = inputTypeInfo.GetTensorTypeAndShapeInfo();
-    ONNXTensorElementDataType _inputNodeDataType = input_tensor_info.GetElementType();
+    auto _inputNodeDataType = input_tensor_info.GetElementType();
     m_input_tensor_shape = input_tensor_info.GetShape();
 
     // dynamic shape model init
@@ -219,7 +232,7 @@ public:
     }
 
     auto tensor_info_output0 = type_info_output0.GetTensorTypeAndShapeInfo();
-    ONNXTensorElementDataType _outputNodeDataType = tensor_info_output0.GetElementType();
+    auto _outputNodeDataType = tensor_info_output0.GetElementType();
     m_output0_tensor_shape = tensor_info_output0.GetShape();
     m_input_tensor_length = VectorProduct(m_input_tensor_shape);
 
@@ -253,7 +266,7 @@ public:
     }
   }
 
-  void GetMask(const cv::Mat& maskProposals, const cv::Mat& maskProtos, OutputParams& output, const MaskParams& maskParams)
+  void GetMask(const cv::Mat& maskProposals, const cv::Mat& maskProtos, OutputParams& output, const MaskParams& maskParams) const
   {
     int seg_channels = maskProtos.size[1];
     int seg_height = maskProtos.size[2];
@@ -333,7 +346,7 @@ public:
   void BlobFromGrayImage(const cv::Mat& iImg, T* iBlob)
   {
     unsigned long long im_index;
-    unsigned long long img_size = iImg.rows * iImg.cols;
+    unsigned long long img_size = (unsigned long long)iImg.rows * (unsigned long long)iImg.cols;
     unsigned char* data_ptr = iImg.data;
 
     for (im_index = 0ULL; im_index < img_size; im_index++)
@@ -422,7 +435,7 @@ public:
     int col = srcImg.cols;
     int row = srcImg.rows;
 
-    if (m_input_tensor_length != col * row * 3)
+    if (m_input_tensor_length != (size_t)col * (size_t)row * (size_t)3)
     {
       std::cout << "Warning: Incorrect model input, skipped" << std::endl;
       return;
@@ -458,7 +471,7 @@ public:
 
       int net_data_width = (int)m_output0_tensor_shape[1];
 
-      int score_array_length = net_data_width - 4 - m_output1_tensor_shape[1];
+      int score_array_length = net_data_width - 4 - (int)m_output1_tensor_shape[1];
 
       cv::Mat output0 = cv::Mat(cv::Size((int)m_output0_tensor_shape[2], (int)m_output0_tensor_shape[1]), type, all_data).t();
 
@@ -509,8 +522,6 @@ public:
 
         pdata += net_data_width;
       }
-
-      all_data += one_output_length;
 
       std::vector<int> nms_result;
       cv::dnn::NMSBoxes(boxes, confidences, rec_treshold, _nmsThreshold, nms_result);
