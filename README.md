@@ -59,7 +59,7 @@ Minimum operating system requirements: Windows 10 (x64).
 General requirements for pre-installed software for compiling and running the developed library:
 
 - Visual Studio 2022 Community Edition (or more powerfull version) compiler;
-- CMake (3.26+);
+- CMake (version 3.26+);
 - modified Flann library (https://github.com/Alarmod/flann) (C++);
 - Dicomlib library (https://github.com/Alarmod/dicomlib) (C++);
 - OpenCV library (version 4.9.0+) (C++);
@@ -156,7 +156,7 @@ C++ и Python
 Общие требования к предустановленному программному обеспечению для компиляции и запуска разработанной библиотеки:
 
 - компилятор Visual Studio 2022 Community Edition (или версия с большими возможностями);
-- CMake (3.26+);
+- CMake (версия 3.26+);
 - модифицированная библиотека Flann (https://github.com/Alarmod/flann) (C++);
 - библиотека Dicomlib (https://github.com/Alarmod/dicomlib) (C++);  
 - библиотека OpenCV (версия 4.9.0+) (C++);
